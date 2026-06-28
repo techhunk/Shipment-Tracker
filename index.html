@@ -694,22 +694,16 @@
                     </button>
                 </div>
 
-                <div class="mt-20">
+<div class="mt-20">
     <h3>📱 Telegram Notifications (Connected)</h3>
     <p style="color: #28a745; margin: 10px 0; font-weight: bold;">
         ✅ Telegram notifications are ENABLED!
     </p>
-    <p style="color: #666; margin: 10px 0;">
-        You will receive alerts for:
-    </p>
-    <ul style="color: #666; margin-left: 20px;">
-        <li>✈️ Departure day (ETD alert)</li>
-        <li>🎯 1 day before arrival (ETA alert)</li>
-    </ul>
-    <p style="color: #999; margin-top: 15px; font-size: 0.9em;">
-        💡 Alerts are sent automatically every day at 6:00 AM based on your shipment dates.
-    </p>
+    ...
 </div>
+
+</div>  <!-- ⭐ Close the settings form-card -->
+</div>  <!-- ⭐ Close the settings tab-content -->
 
     <!-- ======================================
          EDIT SHIPMENT MODAL
@@ -763,25 +757,23 @@
          JAVASCRIPT
          ====================================== -->
     <script>
-        // ============================================
-        // CONFIGURATION
-        // ============================================
-        let SCRIPT_URL = localStorage.getItem('scriptURL') || '';
-        const STATUSES = ['Booked', 'In Transit', 'Arrived', 'Delayed'];
-        let allShipments = [];
-        let currentFilter = 'all';
+// ============================================
+// CONFIGURATION
+// ============================================
+// ⭐ REPLACE WITH YOUR ACTUAL WEB APP URL
+let SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzK0ZazFqDgqH1Np1k6mAe1j4j2GcgSHRRleVUFAzUMsk676HkxEFT0KtP2gbQBdZM8dQ/exec';
 
-        // ============================================
-        // INITIALIZATION
-        // ============================================
-        window.addEventListener('load', () => {
-            if (!SCRIPT_URL) {
-                showAlert('⚠️ Please add your Google Apps Script URL in Settings first!', 'info');
-            } else {
-                loadShipments();
-            }
-        });
+const STATUSES = ['Booked', 'In Transit', 'Arrived', 'Delayed'];
+let allShipments = [];
+let currentFilter = 'all';
 
+// ============================================
+// INITIALIZATION
+// ============================================
+window.addEventListener('load', () => {
+  // URL is hardcoded, just load data
+  loadShipments();
+});
         // ============================================
         // TAB SWITCHING
         // ============================================
