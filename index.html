@@ -761,17 +761,26 @@
 // CONFIGURATION
 // ============================================
 // ⭐ REPLACE WITH YOUR ACTUAL WEB APP URL
-let SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzK0ZazFqDgqH1Np1k6mAe1j4j2GcgSHRRleVUFAzUMsk676HkxEFT0KtP2gbQBdZM8dQ/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzK0ZazFqDgqH1Np1k6mAe1j4j2GcgSHRRleVUFAzUMsk676HkxEFT0KtP2gbQBdZM8dQ/exec';
 
 const STATUSES = ['Booked', 'In Transit', 'Arrived', 'Delayed'];
 let allShipments = [];
 let currentFilter = 'all';
 
+console.log("✅ Script URL loaded:", SCRIPT_URL);
+
 // ============================================
 // INITIALIZATION
 // ============================================
 window.addEventListener('load', () => {
-  // URL is hardcoded, just load data
+  console.log("✅ Page loaded, loading shipments...");
+  
+  if (!SCRIPT_URL || SCRIPT_URL.includes('AKfycbzK0ZazFqDgqH1Np1k6mAe1j4j2GcgSHRRleVUFAzUMsk676HkxEFT0KtP2gbQBdZM8dQ')) {
+    showAlert('❌ ERROR: Script URL not configured! Replace the placeholder URL with your actual URL.', 'error');
+    console.error("❌ SCRIPT_URL is not set or is still a placeholder!");
+    return;
+  }
+  
   loadShipments();
 });
         // ============================================
