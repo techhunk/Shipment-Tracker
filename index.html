@@ -695,29 +695,21 @@
                 </div>
 
                 <div class="mt-20">
-                    <h3>📱 WhatsApp Notifications (Optional)</h3>
-                    <p style="color: #666; margin: 10px 0;">
-                        To enable WhatsApp alerts:
-                    </p>
-                    <ol style="color: #666; margin-left: 20px;">
-                        <li>Get a free API key from: <a href="https://www.callmebot.com/blog/free-api-whatsapp-messages/" target="_blank">CallMeBot</a></li>
-                        <li>Add your phone number and API key to the Apps Script</li>
-                        <li>Uncomment the sendWhatsAppNotification() code in Apps Script</li>
-                    </ol>
-                </div>
-
-                <div class="mt-20">
-                    <h3>🔧 Maintenance</h3>
-                    <button class="btn btn-danger" onclick="confirmClearData()">
-                        🗑️ Clear All Data
-                    </button>
-                    <p style="color: #999; margin-top: 10px; font-size: 0.9em;">
-                        ⚠️ This will delete all shipments from the sheet!
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
+    <h3>📱 Telegram Notifications (Connected)</h3>
+    <p style="color: #28a745; margin: 10px 0; font-weight: bold;">
+        ✅ Telegram notifications are ENABLED!
+    </p>
+    <p style="color: #666; margin: 10px 0;">
+        You will receive alerts for:
+    </p>
+    <ul style="color: #666; margin-left: 20px;">
+        <li>✈️ Departure day (ETD alert)</li>
+        <li>🎯 1 day before arrival (ETA alert)</li>
+    </ul>
+    <p style="color: #999; margin-top: 15px; font-size: 0.9em;">
+        💡 Alerts are sent automatically every day at 6:00 AM based on your shipment dates.
+    </p>
+</div>
 
     <!-- ======================================
          EDIT SHIPMENT MODAL
