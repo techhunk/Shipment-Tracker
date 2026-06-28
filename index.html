@@ -766,8 +766,7 @@
 // ============================================
 // CONFIGURATION
 // ============================================
-// ⭐ REPLACE WITH YOUR ACTUAL WEB APP URL
-let SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzK0ZazFqDgqH1Np1k6mAe1j4j2GcgSHRRleVUFAzUMsk676HkxEFT0KtP2gbQBdZM8dQ/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzK0ZazFqDgqH1Np1k6mAe1j4j2GcgSHRRleVUFAzUMsk676HkxEFT0KtP2gbQBdZM8dQ/exec';
 
 const STATUSES = ['Booked', 'In Transit', 'Arrived', 'Delayed'];
 let allShipments = [];
@@ -777,8 +776,7 @@ let currentFilter = 'all';
 // INITIALIZATION
 // ============================================
 window.addEventListener('load', () => {
-  // URL is hardcoded, just load data
-  loadShipments();
+    loadShipments();
 });
         // ============================================
         // TAB SWITCHING
@@ -807,13 +805,11 @@ window.addEventListener('load', () => {
         // LOAD ALL SHIPMENTS
         // ============================================
         async function loadShipments() {
-            if (!SCRIPT_URL) {
-                showAlert('❌ Script URL not configured!', 'error');
-                return;
-            }
-
             try {
-                const response = await fetch(`${SCRIPT_URL}?action=getShipments`);
+                const response = await fetch(`${SCRIPT_URL}?action=getShipments`, {
+                    method: 'GET',
+                    redirect: 'follow'
+                });
                 const result = await response.json();
 
                 if (result.success) {
@@ -926,12 +922,13 @@ window.addEventListener('load', () => {
             };
 
             try {
-// In submitAddShipment, submitUpdateShipment, deleteShipment — add this header:
-const response = await fetch(SCRIPT_URL, {
-    method: 'POST',
-    headers: { 'Content-Type': 'text/plain' },  // ← add this line
-    body: JSON.stringify(shipmentData)
-});
+                const response = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify(shipmentData),
+                    redirect: 'follow'
+                });
+
                 const result = await response.json();
 
                 if (result.success) {
@@ -985,7 +982,9 @@ const response = await fetch(SCRIPT_URL, {
             try {
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
-                    body: JSON.stringify(shipmentData)
+                    headers: { 'Content-Type': 'text/plain' },
+                    body: JSON.stringify(shipmentData),
+                    redirect: 'follow'
                 });
 
                 const result = await response.json();
@@ -1015,10 +1014,12 @@ const response = await fetch(SCRIPT_URL, {
             try {
                 const response = await fetch(SCRIPT_URL, {
                     method: 'POST',
+                    headers: { 'Content-Type': 'text/plain' },
                     body: JSON.stringify({
                         action: 'deleteShipment',
                         ID: shipmentID
-                    })
+                    }),
+                    redirect: 'follow'
                 });
 
                 const result = await response.json();
@@ -1038,14 +1039,7 @@ const response = await fetch(SCRIPT_URL, {
         // SETTINGS
         // ============================================
         function saveSettings() {
-            const url = document.getElementById('scriptURL').value;
-            if (!url) {
-                showAlert('❌ Please enter a URL', 'error');
-                return;
-            }
-            localStorage.setItem('scriptURL', url);
-            SCRIPT_URL = url;
-            showAlert('✅ Settings saved!', 'success');
+            showAlert('✅ URL is hardcoded and active — no change needed.', 'success');
         }
 
         function confirmClearData() {
