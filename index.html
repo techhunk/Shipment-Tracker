@@ -694,16 +694,22 @@
                     </button>
                 </div>
 
-<div class="mt-20">
+                <div class="mt-20">
     <h3>📱 Telegram Notifications (Connected)</h3>
     <p style="color: #28a745; margin: 10px 0; font-weight: bold;">
         ✅ Telegram notifications are ENABLED!
     </p>
-    ...
+    <p style="color: #666; margin: 10px 0;">
+        You will receive alerts for:
+    </p>
+    <ul style="color: #666; margin-left: 20px;">
+        <li>✈️ Departure day (ETD alert)</li>
+        <li>🎯 1 day before arrival (ETA alert)</li>
+    </ul>
+    <p style="color: #999; margin-top: 15px; font-size: 0.9em;">
+        💡 Alerts are sent automatically every day at 6:00 AM based on your shipment dates.
+    </p>
 </div>
-
-</div>  <!-- ⭐ Close the settings form-card -->
-</div>  <!-- ⭐ Close the settings tab-content -->
 
     <!-- ======================================
          EDIT SHIPMENT MODAL
@@ -761,26 +767,17 @@
 // CONFIGURATION
 // ============================================
 // ⭐ REPLACE WITH YOUR ACTUAL WEB APP URL
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzK0ZazFqDgqH1Np1k6mAe1j4j2GcgSHRRleVUFAzUMsk676HkxEFT0KtP2gbQBdZM8dQ/exec';
+let SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzK0ZazFqDgqH1Np1k6mAe1j4j2GcgSHRRleVUFAzUMsk676HkxEFT0KtP2gbQBdZM8dQ/exec';
 
 const STATUSES = ['Booked', 'In Transit', 'Arrived', 'Delayed'];
 let allShipments = [];
 let currentFilter = 'all';
 
-console.log("✅ Script URL loaded:", SCRIPT_URL);
-
 // ============================================
 // INITIALIZATION
 // ============================================
 window.addEventListener('load', () => {
-  console.log("✅ Page loaded, loading shipments...");
-  
-  if (!SCRIPT_URL || SCRIPT_URL.includes('AKfycbzK0ZazFqDgqH1Np1k6mAe1j4j2GcgSHRRleVUFAzUMsk676HkxEFT0KtP2gbQBdZM8dQ')) {
-    showAlert('❌ ERROR: Script URL not configured! Replace the placeholder URL with your actual URL.', 'error');
-    console.error("❌ SCRIPT_URL is not set or is still a placeholder!");
-    return;
-  }
-  
+  // URL is hardcoded, just load data
   loadShipments();
 });
         // ============================================
@@ -929,11 +926,12 @@ window.addEventListener('load', () => {
             };
 
             try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify(shipmentData)
-                });
-
+// In submitAddShipment, submitUpdateShipment, deleteShipment — add this header:
+const response = await fetch(SCRIPT_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain' },  // ← add this line
+    body: JSON.stringify(shipmentData)
+});
                 const result = await response.json();
 
                 if (result.success) {
