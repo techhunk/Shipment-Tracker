@@ -279,6 +279,8 @@
     .s-transit  { background: #DBEAFE; color: #1E40AF; }
     .s-arrived  { background: #D1FAE5; color: #065F46; }
     .s-delayed  { background: #FFE4E6; color: #9F1239; }
+    .s-closed   { background: #F1F5F9; color: #64748B; }
+    tr.row-closed td { opacity: .45; }
 
     .action-btns { display: flex; gap: 6px; }
 
@@ -469,7 +471,7 @@
           <div class="stat-icon" style="background:#EFF6FF">📦</div>
           <div class="stat-info">
             <div class="stat-val" id="stat-total">—</div>
-            <div class="stat-label">Total Shipments</div>
+            <div class="stat-label">Active Shipments</div>
           </div>
         </div>
         <div class="stat-card">
@@ -504,11 +506,13 @@
             <input type="text" id="search" placeholder="Search by ID or origin…" oninput="renderTable()">
           </div>
           <div class="filter-pills">
-            <button class="pill active" onclick="setFilter('all',this)">All</button>
+            <button class="pill active" onclick="setFilter('active',this)">🟢 Active</button>
+            <button class="pill" onclick="setFilter('all',this)">All</button>
             <button class="pill" onclick="setFilter('Booked',this)">Booked</button>
             <button class="pill" onclick="setFilter('In Transit',this)">In Transit</button>
             <button class="pill" onclick="setFilter('Arrived',this)">Arrived</button>
             <button class="pill" onclick="setFilter('Delayed',this)">Delayed</button>
+            <button class="pill" onclick="setFilter('Closed',this)">🔒 Closed</button>
           </div>
         </div>
         <div class="table-wrap">
@@ -584,6 +588,7 @@
                 <option>In Transit</option>
                 <option>Arrived</option>
                 <option>Delayed</option>
+                <option>Closed</option>
               </select>
             </div>
             <div class="field full">
@@ -665,6 +670,7 @@
             <option>In Transit</option>
             <option>Arrived</option>
             <option>Delayed</option>
+            <option>Closed</option>
           </select>
         </div>
         <div class="field">
@@ -710,10 +716,10 @@
 // CONFIG
 // ═══════════════════════════════════════════
 let SCRIPT_URL = localStorage.getItem('shiptrack_url') || 
-  'https://script.google.com/macros/s/AKfycbwqr9UmQ6gYz5hrOdGLABD-byStlt2SMx23cgs3WYee7qynOwyMct2Ukf3vu66XwYwp/exec';
+  'https://script.google.com/macros/s/AKfycbzK0ZazFqDgqH1Np1k6mAe1j4j2GcgSHRRleVUFAzUMsk676HkxEFT0KtP2gbQBdZM8dQ/exec';
 
 let allShipments = [];
-let currentFilter = 'all';
+let currentFilter = 'active';
 let pendingDeleteID = null;
 
 // ═══════════════════════════════════════════
@@ -794,10 +800,11 @@ function showEmptyState() {
 // STATS
 // ═══════════════════════════════════════════
 function updateStats() {
-  document.getElementById('stat-total').textContent   = allShipments.length;
-  document.getElementById('stat-transit').textContent = allShipments.filter(s => s.Status === 'In Transit').length;
-  document.getElementById('stat-arrived').textContent = allShipments.filter(s => s.Status === 'Arrived').length;
-  document.getElementById('stat-delayed').textContent  = allShipments.filter(s => s.Status === 'Delayed').length;
+  const active = allShipments.filter(s => s.Status !== 'Closed');
+  document.getElementById('stat-total').textContent   = active.length;
+  document.getElementById('stat-transit').textContent = active.filter(s => s.Status === 'In Transit').length;
+  document.getElementById('stat-arrived').textContent = active.filter(s => s.Status === 'Arrived').length;
+  document.getElementById('stat-delayed').textContent  = active.filter(s => s.Status === 'Delayed').length;
 }
 
 // ═══════════════════════════════════════════
@@ -805,13 +812,27 @@ function updateStats() {
 // ═══════════════════════════════════════════
 function renderTable() {
   const q = (document.getElementById('search').value || '').toLowerCase();
+  const ACTIVE_STATUSES = ['Booked', 'In Transit', 'Delayed', 'Arrived'];
+
   let list = allShipments.filter(s => {
-    const matchFilter = currentFilter === 'all' || s.Status === currentFilter;
-    const matchSearch = !q || 
+    const matchFilter =
+      currentFilter === 'all'    ? true :
+      currentFilter === 'active' ? ACTIVE_STATUSES.includes(s.Status) :
+      s.Status === currentFilter;
+    const matchSearch = !q ||
       String(s.ID).toLowerCase().includes(q) ||
       String(s.Origin).toLowerCase().includes(q) ||
       String(s.Destination).toLowerCase().includes(q);
     return matchFilter && matchSearch;
+  });
+
+  // ── SORT: Air first, then by nearest ETA ──
+  const typeOrder = { Air: 0, Road: 1, Sea: 2, 'Cross-border': 3 };
+  list.sort((a, b) => {
+    const tA = typeOrder[a.ShipmentType] ?? 9;
+    const tB = typeOrder[b.ShipmentType] ?? 9;
+    if (tA !== tB) return tA - tB;
+    return new Date(a.ETA) - new Date(b.ETA);
   });
 
   const tbody = document.getElementById('tbody');
@@ -828,7 +849,7 @@ function renderTable() {
   const typeColor = { Air:'#EFF6FF', Sea:'#F0FDFA', Road:'#FFF7ED', 'Cross-border':'#FAF5FF' };
 
   tbody.innerHTML = list.map(s => `
-    <tr>
+    <tr class="${s.Status === 'Closed' ? 'row-closed' : ''}">
       <td><span class="ship-id">${s.ID}</span></td>
       <td>
         <span class="type-badge" style="background:${typeColor[s.ShipmentType]||'#F8FAFC'}">
@@ -863,6 +884,7 @@ function statusBadge(s) {
     'In Transit': '<span class="status s-transit">In Transit</span>',
     'Arrived':    '<span class="status s-arrived">Arrived</span>',
     'Delayed':    '<span class="status s-delayed">Delayed</span>',
+    'Closed':     '<span class="status s-closed">🔒 Closed</span>',
   };
   return map[s] || `<span class="status">${s}</span>`;
 }
@@ -887,9 +909,19 @@ async function addShipment() {
   const status = document.getElementById('a-status').value;
   const notes  = document.getElementById('a-notes').value.trim();
 
-  if (!id || !type || !origin || !dest || !etd || !eta) {
-    toast('Please fill in all required fields.', 'error'); return;
-  }
+  if (!id)     { toast('❌ Shipment ID is required.', 'error'); document.getElementById('a-id').focus(); return; }
+  if (!type)   { toast('❌ Please select a shipment type.', 'error'); document.getElementById('a-type').focus(); return; }
+  if (!origin) { toast('❌ Origin is required.', 'error'); document.getElementById('a-origin').focus(); return; }
+  if (!dest)   { toast('❌ Destination is required.', 'error'); document.getElementById('a-dest').focus(); return; }
+  if (!etd)    { toast('❌ Departure date (ETD) is required.', 'error'); document.getElementById('a-etd').focus(); return; }
+  if (!eta)    { toast('❌ Arrival date (ETA) is required.', 'error'); document.getElementById('a-eta').focus(); return; }
+
+  // Validate dates are real dates
+  const etdDate = new Date(etd);
+  const etaDate = new Date(eta);
+  if (isNaN(etdDate.getTime())) { toast('❌ Departure date is invalid (e.g. June has only 30 days).', 'error'); document.getElementById('a-etd').focus(); return; }
+  if (isNaN(etaDate.getTime())) { toast('❌ Arrival date is invalid (e.g. June has only 30 days).', 'error'); document.getElementById('a-eta').focus(); return; }
+  if (etaDate < etdDate)        { toast('❌ Arrival date must be after departure date.', 'error'); document.getElementById('a-eta').focus(); return; }
 
   const btn = event.target;
   btn.textContent = 'Saving…'; btn.disabled = true;
