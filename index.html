@@ -659,11 +659,38 @@
     </div>
     <div class="modal-body">
       <div class="form-grid">
-        <div class="field full">
+        <div class="field">
           <label>Shipment ID</label>
-          <input type="text" id="e-id" readonly>
+          <input type="text" id="e-id" placeholder="Shipment ID">
+          <input type="hidden" id="e-original-id">
         </div>
         <div class="field">
+          <label>Type</label>
+          <select id="e-type">
+            <option value="">Select…</option>
+            <option>Air</option>
+            <option>Sea</option>
+            <option>Road</option>
+            <option>Cross-border</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Origin</label>
+          <input type="text" id="e-origin" placeholder="e.g. Dubai">
+        </div>
+        <div class="field">
+          <label>Destination</label>
+          <input type="text" id="e-dest" placeholder="e.g. London">
+        </div>
+        <div class="field">
+          <label>ETD (Departure)</label>
+          <input type="date" id="e-etd">
+        </div>
+        <div class="field">
+          <label>ETA (Arrival)</label>
+          <input type="date" id="e-eta">
+        </div>
+        <div class="field full">
           <label>Status</label>
           <select id="e-status">
             <option>Booked</option>
@@ -673,17 +700,9 @@
             <option>Closed</option>
           </select>
         </div>
-        <div class="field">
-          <label>ETD</label>
-          <input type="date" id="e-etd">
-        </div>
-        <div class="field">
-          <label>ETA</label>
-          <input type="date" id="e-eta">
-        </div>
         <div class="field full">
           <label>Notes</label>
-          <textarea id="e-notes"></textarea>
+          <textarea id="e-notes" placeholder="Optional notes…"></textarea>
         </div>
       </div>
     </div>
@@ -948,28 +967,54 @@ function clearAddForm() {
 // ═══════════════════════════════════════════
 // EDIT SHIPMENT
 // ═══════════════════════════════════════════
+
+// Converts any date format to YYYY-MM-DD for date input fields
+function toInputDate(val) {
+  if (!val) return '';
+  try {
+    const d = new Date(val);
+    if (isNaN(d.getTime())) return '';
+    // Format as YYYY-MM-DD
+    const yyyy = d.getFullYear();
+    const mm   = String(d.getMonth() + 1).padStart(2, '0');
+    const dd   = String(d.getDate()).padStart(2, '0');
+    return `${yyyy}-${mm}-${dd}`;
+  } catch(e) { return ''; }
+}
+
 function openEdit(id) {
   const s = allShipments.find(x => x.ID == id);
   if (!s) return;
-  document.getElementById('e-id').value     = s.ID;
-  document.getElementById('e-status').value = s.Status;
-  document.getElementById('e-etd').value    = s.ETD;
-  document.getElementById('e-eta').value    = s.ETA;
-  document.getElementById('e-notes').value  = s.Notes || '';
+  // Store original ID in hidden field (in case user changes the ID)
+  document.getElementById('e-original-id').value = s.ID;
+  document.getElementById('e-id').value           = s.ID;
+  document.getElementById('e-type').value         = s.ShipmentType || '';
+  document.getElementById('e-origin').value       = s.Origin || '';
+  document.getElementById('e-dest').value         = s.Destination || '';
+  document.getElementById('e-status').value       = s.Status || 'Booked';
+  document.getElementById('e-etd').value          = toInputDate(s.ETD);
+  document.getElementById('e-eta').value          = toInputDate(s.ETA);
+  document.getElementById('e-notes').value        = s.Notes || '';
   document.getElementById('edit-overlay').classList.add('open');
 }
 function closeEditModal() { document.getElementById('edit-overlay').classList.remove('open'); }
 function closeEdit(e) { if (e.target === document.getElementById('edit-overlay')) closeEditModal(); }
 
 async function updateShipment() {
+  const originalID = document.getElementById('e-original-id').value;
   const data = {
-    action: 'updateShipment',
-    ID:     document.getElementById('e-id').value,
-    Status: document.getElementById('e-status').value,
-    ETD:    document.getElementById('e-etd').value,
-    ETA:    document.getElementById('e-eta').value,
-    Notes:  document.getElementById('e-notes').value,
+    action:       'updateShipment',
+    ID:           originalID,
+    NewID:        document.getElementById('e-id').value.trim(),
+    ShipmentType: document.getElementById('e-type').value,
+    Origin:       document.getElementById('e-origin').value.trim(),
+    Destination:  document.getElementById('e-dest').value.trim(),
+    Status:       document.getElementById('e-status').value,
+    ETD:          document.getElementById('e-etd').value,
+    ETA:          document.getElementById('e-eta').value,
+    Notes:        document.getElementById('e-notes').value,
   };
+  if (!data.NewID) { toast('❌ Shipment ID cannot be empty.', 'error'); return; }
   const btn = event.target;
   btn.textContent = 'Saving…'; btn.disabled = true;
   const res = await apiFetch('POST', data);
