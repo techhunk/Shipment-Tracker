@@ -6,132 +6,91 @@
   <title>ShipTrack — Shipment Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
   <style>
-    /* ── TOKENS ─────────────────────────────── */
     :root {
-      --sky:   #E8F4FD;
-      --blue:  #2563EB;
-      --blue2: #1D4ED8;
-      --teal:  #0D9488;
-      --amber: #F59E0B;
-      --rose:  #F43F5E;
-      --green: #10B981;
-      --ink:   #0F172A;
-      --muted: #64748B;
-      --line:  #E2E8F0;
-      --card:  #FFFFFF;
-      --bg:    #F1F5F9;
+      --blue:  #2563EB; --blue2: #1D4ED8;
+      --rose:  #F43F5E; --green: #10B981; --amber: #F59E0B; --teal: #0D9488;
+      --ink:   #0F172A; --muted: #64748B; --line:  #E2E8F0;
+      --card:  #FFFFFF; --bg:    #F1F5F9;
       --radius: 14px;
       --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
-      --shadow-lg: 0 8px 32px rgba(0,0,0,.12);
+      --shadow-lg: 0 8px 32px rgba(0,0,0,.14);
     }
-
-    /* ── RESET ──────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      min-height: 100vh;
-    }
+    body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
 
-    /* ── SIDEBAR ────────────────────────────── */
+    /* ── LOGIN SCREEN ── */
+    #login-screen {
+      position: fixed; inset: 0; background: var(--ink);
+      display: flex; align-items: center; justify-content: center; z-index: 9999;
+    }
+    #login-screen.hidden { display: none; }
+    .login-box {
+      background: #1E293B; border-radius: 20px; padding: 44px 40px;
+      width: 360px; box-shadow: var(--shadow-lg); text-align: center;
+    }
+    .login-logo { font-size: 2.8rem; margin-bottom: 10px; }
+    .login-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .login-sub { font-size: .85rem; color: rgba(255,255,255,.4); margin-bottom: 28px; }
+    .login-field { position: relative; margin-bottom: 14px; }
+    .login-field input {
+      width: 100%; padding: 13px 16px; background: rgba(255,255,255,.07);
+      border: 1.5px solid rgba(255,255,255,.1); border-radius: 10px;
+      color: #fff; font-size: .95rem; font-family: inherit; outline: none;
+      transition: border-color .2s;
+    }
+    .login-field input:focus { border-color: var(--blue); }
+    .login-field input::placeholder { color: rgba(255,255,255,.3); }
+    .login-btn {
+      width: 100%; padding: 13px; background: var(--blue); color: #fff;
+      border: none; border-radius: 10px; font-size: .95rem; font-weight: 700;
+      cursor: pointer; margin-top: 6px; transition: background .2s;
+      font-family: inherit;
+    }
+    .login-btn:hover { background: var(--blue2); }
+    .login-err { color: #F87171; font-size: .82rem; margin-top: 10px; min-height: 20px; }
+    .login-remember { display: flex; align-items: center; gap: 8px; margin: 10px 0 4px; text-align: left; }
+    .login-remember input { width: auto; }
+    .login-remember label { font-size: .82rem; color: rgba(255,255,255,.5); cursor: pointer; }
+
+    /* ── LAYOUT ── */
     .layout { display: flex; min-height: 100vh; }
-
     .sidebar {
-      width: 240px;
-      background: var(--ink);
-      display: flex;
-      flex-direction: column;
-      padding: 28px 0;
-      position: fixed;
-      height: 100vh;
-      z-index: 100;
+      width: 240px; background: var(--ink); display: flex; flex-direction: column;
+      padding: 28px 0; position: fixed; height: 100vh; z-index: 100;
     }
-
     .logo {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.3rem;
-      font-weight: 700;
-      color: #fff;
-      padding: 0 24px 28px;
-      border-bottom: 1px solid rgba(255,255,255,.1);
-      display: flex;
-      align-items: center;
-      gap: 10px;
+      font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; font-weight: 700;
+      color: #fff; padding: 0 24px 28px; border-bottom: 1px solid rgba(255,255,255,.1);
+      display: flex; align-items: center; gap: 10px;
     }
     .logo-icon {
-      width: 36px; height: 36px;
-      background: var(--blue);
-      border-radius: 10px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.1rem;
+      width: 36px; height: 36px; background: var(--blue); border-radius: 10px;
+      display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
     }
-
     .nav { margin-top: 20px; flex: 1; }
     .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 12px 24px;
-      color: rgba(255,255,255,.55);
-      cursor: pointer;
-      font-size: .92rem;
-      font-weight: 500;
-      transition: all .2s;
-      border-left: 3px solid transparent;
+      display: flex; align-items: center; gap: 12px; padding: 12px 24px;
+      color: rgba(255,255,255,.55); cursor: pointer; font-size: .92rem; font-weight: 500;
+      transition: all .2s; border-left: 3px solid transparent;
     }
     .nav-item:hover { color: #fff; background: rgba(255,255,255,.05); }
-    .nav-item.active {
-      color: #fff;
-      background: rgba(255,255,255,.08);
-      border-left-color: var(--blue);
-    }
+    .nav-item.active { color: #fff; background: rgba(255,255,255,.08); border-left-color: var(--blue); }
     .nav-icon { font-size: 1.1rem; width: 22px; text-align: center; }
+    .sidebar-footer { padding: 20px 24px; border-top: 1px solid rgba(255,255,255,.1); font-size: .8rem; color: rgba(255,255,255,.3); }
 
-    .sidebar-footer {
-      padding: 20px 24px;
-      border-top: 1px solid rgba(255,255,255,.1);
-      font-size: .8rem;
-      color: rgba(255,255,255,.3);
-    }
-
-    /* ── MAIN ───────────────────────────────── */
-    .main {
-      margin-left: 240px;
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-    }
-
+    .main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; }
     .topbar {
-      background: var(--card);
-      border-bottom: 1px solid var(--line);
-      padding: 18px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      z-index: 50;
+      background: var(--card); border-bottom: 1px solid var(--line);
+      padding: 18px 32px; display: flex; align-items: center;
+      justify-content: space-between; position: sticky; top: 0; z-index: 50;
     }
-    .topbar-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.2rem;
-      font-weight: 700;
-    }
+    .topbar-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; font-weight: 700; }
     .topbar-actions { display: flex; gap: 10px; align-items: center; }
 
     .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 9px 18px;
-      border-radius: 8px;
-      font-size: .88rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: none;
-      transition: all .2s;
+      display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px;
+      border-radius: 8px; font-size: .88rem; font-weight: 600; cursor: pointer;
+      border: none; transition: all .2s; font-family: inherit;
     }
     .btn-primary { background: var(--blue); color: #fff; }
     .btn-primary:hover { background: var(--blue2); transform: translateY(-1px); }
@@ -141,304 +100,161 @@
     .btn-danger:hover { background: var(--rose); color: #fff; }
     .btn-sm { padding: 6px 12px; font-size: .8rem; }
 
-    /* ── PAGE CONTENT ───────────────────────── */
     .page { padding: 28px 32px; display: none; }
     .page.active { display: block; }
 
-    /* ── STATS ROW ──────────────────────────── */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-bottom: 28px;
-    }
+    /* ── STATS ── */
+    .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 28px; }
     .stat-card {
-      background: var(--card);
-      border-radius: var(--radius);
-      padding: 20px 22px;
-      box-shadow: var(--shadow);
-      display: flex;
-      align-items: center;
-      gap: 16px;
+      background: var(--card); border-radius: var(--radius); padding: 20px 22px;
+      box-shadow: var(--shadow); display: flex; align-items: center; gap: 16px;
     }
-    .stat-icon {
-      width: 48px; height: 48px;
-      border-radius: 12px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.4rem;
-      flex-shrink: 0;
-    }
-    .stat-info {}
-    .stat-val {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1.8rem;
-      font-weight: 700;
-      line-height: 1;
-    }
+    .stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
+    .stat-val { font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; font-weight: 700; line-height: 1; }
     .stat-label { font-size: .78rem; color: var(--muted); margin-top: 4px; font-weight: 500; }
 
-    /* ── TABLE CARD ─────────────────────────── */
-    .card {
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
+    /* ── CARD / TABLE ── */
+    .card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
     .card-header {
-      padding: 20px 24px;
-      border-bottom: 1px solid var(--line);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 12px;
+      padding: 20px 24px; border-bottom: 1px solid var(--line);
+      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
     }
-    .card-title {
-      font-family: 'Space Grotesk', sans-serif;
-      font-size: 1rem;
-      font-weight: 700;
-    }
-
-    .search-wrap {
-      position: relative;
-      flex: 1;
-      max-width: 280px;
-    }
+    .card-title { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 700; }
+    .search-wrap { position: relative; flex: 1; max-width: 280px; }
     .search-wrap input {
-      width: 100%;
-      padding: 8px 12px 8px 36px;
-      border: 1.5px solid var(--line);
-      border-radius: 8px;
-      font-size: .88rem;
-      font-family: inherit;
-      outline: none;
-      transition: border-color .2s;
+      width: 100%; padding: 8px 12px 8px 36px; border: 1.5px solid var(--line);
+      border-radius: 8px; font-size: .88rem; font-family: inherit; outline: none; transition: border-color .2s;
     }
     .search-wrap input:focus { border-color: var(--blue); }
-    .search-icon {
-      position: absolute;
-      left: 11px; top: 50%;
-      transform: translateY(-50%);
-      color: var(--muted);
-      font-size: .9rem;
-    }
-
+    .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: .9rem; }
     .filter-pills { display: flex; gap: 6px; flex-wrap: wrap; }
     .pill {
-      padding: 5px 12px;
-      border-radius: 20px;
-      font-size: .78rem;
-      font-weight: 600;
-      cursor: pointer;
-      border: 1.5px solid var(--line);
-      background: transparent;
-      color: var(--muted);
-      transition: all .2s;
+      padding: 5px 12px; border-radius: 20px; font-size: .78rem; font-weight: 600;
+      cursor: pointer; border: 1.5px solid var(--line); background: transparent;
+      color: var(--muted); transition: all .2s; font-family: inherit;
     }
     .pill.active, .pill:hover { border-color: var(--blue); color: var(--blue); background: #EFF6FF; }
 
-    /* ── TABLE ──────────────────────────────── */
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; }
     thead tr { background: #F8FAFC; }
-    th {
-      padding: 12px 16px;
-      text-align: left;
-      font-size: .75rem;
-      font-weight: 600;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: .04em;
-      border-bottom: 1px solid var(--line);
-      white-space: nowrap;
-    }
-    td {
-      padding: 14px 16px;
-      font-size: .88rem;
-      border-bottom: 1px solid var(--line);
-      vertical-align: middle;
-    }
+    th { padding: 12px 16px; text-align: left; font-size: .75rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid var(--line); white-space: nowrap; }
+    td { padding: 14px 16px; font-size: .88rem; border-bottom: 1px solid var(--line); vertical-align: middle; }
     tbody tr:last-child td { border-bottom: none; }
     tbody tr:hover { background: #F8FAFC; }
-
-    .ship-id { font-weight: 700; color: var(--blue); font-family: 'Space Grotesk', sans-serif; }
-    .type-badge {
-      display: inline-flex; align-items: center; gap: 4px;
-      padding: 3px 9px; border-radius: 6px;
-      font-size: .76rem; font-weight: 600;
-    }
-
-    /* ── STATUS BADGES ──────────────────────── */
-    .status {
-      display: inline-flex; align-items: center; gap: 5px;
-      padding: 4px 10px; border-radius: 20px;
-      font-size: .76rem; font-weight: 600;
-    }
-    .status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .6; }
-    .s-booked   { background: #FEF3C7; color: #92400E; }
-    .s-transit  { background: #DBEAFE; color: #1E40AF; }
-    .s-arrived  { background: #D1FAE5; color: #065F46; }
-    .s-delayed  { background: #FFE4E6; color: #9F1239; }
-    .s-closed   { background: #F1F5F9; color: #64748B; }
     tr.row-closed td { opacity: .45; }
 
+    .ship-id { font-weight: 700; color: var(--blue); font-family: 'Space Grotesk', sans-serif; }
+    .type-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 6px; font-size: .76rem; font-weight: 600; }
+    .status { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: .76rem; font-weight: 600; }
+    .status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .6; }
+    .s-booked  { background: #FEF3C7; color: #92400E; }
+    .s-transit { background: #DBEAFE; color: #1E40AF; }
+    .s-arrived { background: #D1FAE5; color: #065F46; }
+    .s-delayed { background: #FFE4E6; color: #9F1239; }
+    .s-closed  { background: #F1F5F9; color: #64748B; }
     .action-btns { display: flex; gap: 6px; }
 
-    /* ── EMPTY / LOADING ────────────────────── */
-    .empty {
-      text-align: center;
-      padding: 60px 20px;
-      color: var(--muted);
-    }
+    .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
     .empty-icon { font-size: 3rem; margin-bottom: 12px; }
     .empty h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 6px; color: var(--ink); }
-    .empty p { font-size: .88rem; }
-
-    .spinner-row td {
-      text-align: center;
-      padding: 60px;
-    }
-    .spinner {
-      width: 36px; height: 36px;
-      border: 3px solid var(--line);
-      border-top-color: var(--blue);
-      border-radius: 50%;
-      animation: spin .7s linear infinite;
-      margin: 0 auto;
-    }
+    .spinner-row td { text-align: center; padding: 60px; }
+    .spinner { width: 36px; height: 36px; border: 3px solid var(--line); border-top-color: var(--blue); border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── MODAL ──────────────────────────────── */
-    .overlay {
-      display: none;
-      position: fixed; inset: 0;
-      background: rgba(15,23,42,.5);
-      backdrop-filter: blur(4px);
-      z-index: 200;
-      align-items: center;
-      justify-content: center;
-    }
+    /* ── MODAL ── */
+    .overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,.5); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; }
     .overlay.open { display: flex; }
-    .modal {
-      background: var(--card);
-      border-radius: 18px;
-      width: 90%;
-      max-width: 520px;
-      max-height: 90vh;
-      overflow-y: auto;
-      box-shadow: var(--shadow-lg);
-      animation: pop .2s ease;
-    }
+    .modal { background: var(--card); border-radius: 18px; width: 90%; max-width: 560px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); animation: pop .2s ease; }
     @keyframes pop { from { transform: scale(.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    .modal-head {
-      padding: 22px 24px 18px;
-      border-bottom: 1px solid var(--line);
-      display: flex; align-items: center; justify-content: space-between;
-    }
+    .modal-head { padding: 22px 24px 18px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; }
     .modal-head h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 700; }
-    .close-modal {
-      background: none; border: none; font-size: 1.3rem;
-      cursor: pointer; color: var(--muted); line-height: 1;
-    }
+    .close-modal { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--muted); line-height: 1; }
     .modal-body { padding: 22px 24px; }
-    .modal-foot {
-      padding: 16px 24px;
-      border-top: 1px solid var(--line);
-      display: flex; gap: 10px; justify-content: flex-end;
-    }
+    .modal-foot { padding: 16px 24px; border-top: 1px solid var(--line); display: flex; gap: 10px; justify-content: flex-end; }
 
-    /* ── FORM ───────────────────────────────── */
+    /* ── FORM ── */
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .form-grid .full { grid-column: 1/-1; }
     .field { display: flex; flex-direction: column; gap: 6px; }
     .field label { font-size: .82rem; font-weight: 600; color: var(--ink); }
     .field input, .field select, .field textarea {
-      padding: 9px 12px;
-      border: 1.5px solid var(--line);
-      border-radius: 8px;
-      font-size: .9rem;
-      font-family: inherit;
-      outline: none;
-      transition: border-color .2s;
-      background: #fff;
+      padding: 9px 12px; border: 1.5px solid var(--line); border-radius: 8px;
+      font-size: .9rem; font-family: inherit; outline: none; transition: border-color .2s; background: #fff;
     }
     .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--blue); }
     .field textarea { resize: vertical; min-height: 70px; }
-    .field input[readonly] { background: var(--bg); color: var(--muted); }
 
-    /* ── TOAST ──────────────────────────────── */
-    #toast-wrap {
-      position: fixed;
-      top: 20px; right: 20px;
-      z-index: 9999;
-      display: flex; flex-direction: column; gap: 8px;
+    /* ── SUPPLIER PAGE ── */
+    .supplier-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 28px; }
+    .supplier-card {
+      background: var(--card); border-radius: var(--radius); padding: 22px;
+      box-shadow: var(--shadow); border-left: 4px solid var(--blue);
     }
-    .toast {
-      padding: 12px 18px;
-      border-radius: 10px;
-      font-size: .88rem;
-      font-weight: 500;
-      box-shadow: var(--shadow-lg);
-      display: flex; align-items: center; gap: 8px;
-      animation: slideIn .3s ease;
-      min-width: 260px;
-    }
+    .supplier-name { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 6px; }
+    .supplier-amount { font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--rose); }
+    .supplier-meta { font-size: .78rem; color: var(--muted); margin-top: 4px; }
+    .supplier-paid { border-left-color: var(--green); }
+    .supplier-paid .supplier-amount { color: var(--green); }
+
+    /* ── SETTINGS ── */
+    .settings-grid { display: grid; gap: 20px; max-width: 640px; }
+    .settings-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; }
+    .settings-card h3 { font-family: 'Space Grotesk', sans-serif; font-weight: 700; margin-bottom: 16px; font-size: 1rem; }
+    .info-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: .88rem; }
+    .info-row:last-child { border-bottom: none; }
+    .info-label { color: var(--muted); font-weight: 500; }
+    .info-val { font-weight: 600; }
+    .badge-on { background: #D1FAE5; color: #065F46; padding: 3px 10px; border-radius: 20px; font-size: .75rem; font-weight: 700; }
+
+    /* ── TOAST ── */
+    #toast-wrap { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
+    .toast { padding: 12px 18px; border-radius: 10px; font-size: .88rem; font-weight: 500; box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 8px; animation: slideIn .3s ease; min-width: 260px; }
     @keyframes slideIn { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     .toast-success { background: #ECFDF5; color: #065F46; border-left: 4px solid var(--green); }
     .toast-error   { background: #FFF1F2; color: #9F1239; border-left: 4px solid var(--rose); }
     .toast-info    { background: #EFF6FF; color: #1E40AF; border-left: 4px solid var(--blue); }
 
-    /* ── SETTINGS PAGE ──────────────────────── */
-    .settings-grid { display: grid; gap: 20px; max-width: 640px; }
-    .settings-card {
-      background: var(--card);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      padding: 24px;
-    }
-    .settings-card h3 {
-      font-family: 'Space Grotesk', sans-serif;
-      font-weight: 700;
-      margin-bottom: 16px;
-      font-size: 1rem;
-    }
-    .info-row {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 0; border-bottom: 1px solid var(--line); font-size: .88rem;
-    }
-    .info-row:last-child { border-bottom: none; }
-    .info-label { color: var(--muted); font-weight: 500; }
-    .info-val { font-weight: 600; }
-    .badge-on  { background: #D1FAE5; color: #065F46; padding: 3px 10px; border-radius: 20px; font-size: .75rem; font-weight: 700; }
-
-    /* ── RESPONSIVE ─────────────────────────── */
     @media (max-width: 900px) {
-      .sidebar { width: 200px; }
-      .main { margin-left: 200px; }
+      .sidebar { width: 200px; } .main { margin-left: 200px; }
       .stats-grid { grid-template-columns: 1fr 1fr; }
+      .supplier-grid { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 640px) {
-      .sidebar { display: none; }
-      .main { margin-left: 0; }
-      .page { padding: 16px; }
-      .topbar { padding: 14px 16px; }
+      .sidebar { display: none; } .main { margin-left: 0; }
+      .page { padding: 16px; } .topbar { padding: 14px 16px; }
       .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-      .form-grid { grid-template-columns: 1fr; }
-      .form-grid .full { grid-column: 1; }
+      .supplier-grid { grid-template-columns: 1fr; }
+      .form-grid { grid-template-columns: 1fr; } .form-grid .full { grid-column: 1; }
     }
   </style>
 </head>
 <body>
+
+<!-- ── LOGIN SCREEN ── -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo">📦</div>
+    <div class="login-title">ShipTrack</div>
+    <div class="login-sub">Enter your password to continue</div>
+    <div class="login-field">
+      <input type="password" id="pwd-input" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <div class="login-remember">
+      <input type="checkbox" id="remember-me" checked>
+      <label for="remember-me">Remember me on this device</label>
+    </div>
+    <button class="login-btn" onclick="doLogin()">🔐 Login</button>
+    <div class="login-err" id="login-err"></div>
+  </div>
+</div>
 
 <div id="toast-wrap"></div>
 
 <div class="layout">
   <!-- SIDEBAR -->
   <aside class="sidebar">
-    <div class="logo">
-      <div class="logo-icon">📦</div>
-      ShipTrack
-    </div>
+    <div class="logo"><div class="logo-icon">📦</div>ShipTrack</div>
     <nav class="nav">
       <div class="nav-item active" data-page="dashboard" onclick="showPage('dashboard',this)">
         <span class="nav-icon">📊</span> Dashboard
@@ -446,11 +262,14 @@
       <div class="nav-item" data-page="add" onclick="showPage('add',this)">
         <span class="nav-icon">➕</span> Add Shipment
       </div>
+      <div class="nav-item" data-page="suppliers" onclick="showPage('suppliers',this)">
+        <span class="nav-icon">💰</span> Supplier Outstanding
+      </div>
       <div class="nav-item" data-page="settings" onclick="showPage('settings',this)">
         <span class="nav-icon">⚙️</span> Settings
       </div>
     </nav>
-    <div class="sidebar-footer">ShipTrack v2.0</div>
+    <div class="sidebar-footer">ShipTrack v3.0</div>
   </aside>
 
   <!-- MAIN -->
@@ -459,51 +278,36 @@
       <div class="topbar-title" id="topbar-title">Dashboard</div>
       <div class="topbar-actions">
         <button class="btn btn-ghost btn-sm" onclick="loadShipments()">🔄 Refresh</button>
-        <button class="btn btn-primary btn-sm" onclick="showPage('add', document.querySelector('[data-page=add]'))">+ Add Shipment</button>
+        <button class="btn btn-primary btn-sm" onclick="showPage('add',document.querySelector('[data-page=add]'))">+ Add Shipment</button>
       </div>
     </div>
 
-    <!-- DASHBOARD PAGE -->
+    <!-- DASHBOARD -->
     <div class="page active" id="page-dashboard">
-      <!-- Stats -->
       <div class="stats-grid">
         <div class="stat-card">
           <div class="stat-icon" style="background:#EFF6FF">📦</div>
-          <div class="stat-info">
-            <div class="stat-val" id="stat-total">—</div>
-            <div class="stat-label">Active Shipments</div>
-          </div>
+          <div><div class="stat-val" id="stat-total">—</div><div class="stat-label">Active Shipments</div></div>
         </div>
         <div class="stat-card">
           <div class="stat-icon" style="background:#DBEAFE">🚚</div>
-          <div class="stat-info">
-            <div class="stat-val" id="stat-transit">—</div>
-            <div class="stat-label">In Transit</div>
-          </div>
+          <div><div class="stat-val" id="stat-transit">—</div><div class="stat-label">In Transit</div></div>
         </div>
         <div class="stat-card">
           <div class="stat-icon" style="background:#D1FAE5">✅</div>
-          <div class="stat-info">
-            <div class="stat-val" id="stat-arrived">—</div>
-            <div class="stat-label">Arrived</div>
-          </div>
+          <div><div class="stat-val" id="stat-arrived">—</div><div class="stat-label">Arrived</div></div>
         </div>
         <div class="stat-card">
           <div class="stat-icon" style="background:#FFE4E6">⚠️</div>
-          <div class="stat-info">
-            <div class="stat-val" id="stat-delayed">—</div>
-            <div class="stat-label">Delayed</div>
-          </div>
+          <div><div class="stat-val" id="stat-delayed">—</div><div class="stat-label">Delayed</div></div>
         </div>
       </div>
-
-      <!-- Table -->
       <div class="card">
         <div class="card-header">
           <div class="card-title">All Shipments</div>
           <div class="search-wrap">
             <span class="search-icon">🔍</span>
-            <input type="text" id="search" placeholder="Search by ID or origin…" oninput="renderTable()">
+            <input type="text" id="search" placeholder="Search ID, origin, supplier…" oninput="renderTable()">
           </div>
           <div class="filter-pills">
             <button class="pill active" onclick="setFilter('active',this)">🟢 Active</button>
@@ -519,19 +323,13 @@
           <table>
             <thead>
               <tr>
-                <th>Shipment ID</th>
-                <th>Type</th>
-                <th>Origin</th>
-                <th>Destination</th>
-                <th>ETD</th>
-                <th>ETA</th>
-                <th>Status</th>
-                <th>Notes</th>
-                <th>Actions</th>
+                <th>Shipment ID</th><th>Type</th><th>Origin</th><th>Destination</th>
+                <th>Supplier</th><th>Cost</th><th>ETD</th><th>ETA</th>
+                <th>Status</th><th>Notes</th><th>Actions</th>
               </tr>
             </thead>
             <tbody id="tbody">
-              <tr class="spinner-row"><td colspan="9"><div class="spinner"></div></td></tr>
+              <tr class="spinner-row"><td colspan="11"><div class="spinner"></div></td></tr>
             </tbody>
           </table>
         </div>
@@ -543,26 +341,21 @@
       </div>
     </div>
 
-    <!-- ADD SHIPMENT PAGE -->
+    <!-- ADD SHIPMENT -->
     <div class="page" id="page-add">
-      <div class="card" style="max-width:640px">
-        <div class="card-header">
-          <div class="card-title">➕ New Shipment</div>
-        </div>
+      <div class="card" style="max-width:660px">
+        <div class="card-header"><div class="card-title">➕ New Shipment</div></div>
         <div class="modal-body">
           <div class="form-grid">
             <div class="field">
               <label>Shipment ID *</label>
-              <input type="text" id="a-id" placeholder="e.g. SHIP-001" required>
+              <input type="text" id="a-id" placeholder="e.g. SHIP-001">
             </div>
             <div class="field">
               <label>Type *</label>
               <select id="a-type">
                 <option value="">Select…</option>
-                <option>Air</option>
-                <option>Sea</option>
-                <option>Road</option>
-                <option>Cross-border</option>
+                <option>Air</option><option>Sea</option><option>Road</option><option>Cross-border</option>
               </select>
             </div>
             <div class="field">
@@ -572,6 +365,14 @@
             <div class="field">
               <label>Destination *</label>
               <input type="text" id="a-dest" placeholder="e.g. London">
+            </div>
+            <div class="field">
+              <label>Supplier Name</label>
+              <input type="text" id="a-supplier" placeholder="e.g. ABC Logistics">
+            </div>
+            <div class="field">
+              <label>Shipment Cost (AED)</label>
+              <input type="number" id="a-cost" placeholder="e.g. 5000" min="0">
             </div>
             <div class="field">
               <label>ETD (Departure) *</label>
@@ -584,11 +385,8 @@
             <div class="field">
               <label>Status</label>
               <select id="a-status">
-                <option>Booked</option>
-                <option>In Transit</option>
-                <option>Arrived</option>
-                <option>Delayed</option>
-                <option>Closed</option>
+                <option>Booked</option><option>In Transit</option>
+                <option>Arrived</option><option>Delayed</option><option>Closed</option>
               </select>
             </div>
             <div class="field full">
@@ -596,7 +394,7 @@
               <textarea id="a-notes" placeholder="Optional notes…"></textarea>
             </div>
           </div>
-          <div style="margin-top:20px; display:flex; gap:10px">
+          <div style="margin-top:20px;display:flex;gap:10px">
             <button class="btn btn-primary" onclick="addShipment()">✅ Add Shipment</button>
             <button class="btn btn-ghost" onclick="clearAddForm()">Clear</button>
           </div>
@@ -604,11 +402,42 @@
       </div>
     </div>
 
-    <!-- SETTINGS PAGE -->
+    <!-- SUPPLIER OUTSTANDING -->
+    <div class="page" id="page-suppliers">
+      <div class="card" style="margin-bottom:24px">
+        <div class="card-header">
+          <div class="card-title">💰 Supplier Outstanding Payments</div>
+          <div style="font-size:.85rem;color:var(--muted)">Auto-calculated from all shipments</div>
+        </div>
+        <div class="modal-body">
+          <div class="supplier-grid" id="supplier-grid">
+            <div class="empty"><div class="spinner"></div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">📋 Shipments by Supplier</div>
+          <div class="search-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="sup-search" placeholder="Filter by supplier…" oninput="renderSupplierTable()">
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Shipment ID</th><th>Supplier</th><th>Route</th><th>Cost (AED)</th><th>Status</th><th>ETA</th></tr>
+            </thead>
+            <tbody id="sup-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
     <div class="page" id="page-settings">
       <div class="settings-grid">
         <div class="settings-card">
-          <h3>🔗 Google Apps Script</h3>
+          <h3>🔗 Google Apps Script URL</h3>
           <div class="field" style="margin-bottom:14px">
             <label>Web App URL</label>
             <input type="text" id="cfg-url" placeholder="https://script.google.com/macros/s/…/exec">
@@ -616,39 +445,32 @@
           <button class="btn btn-primary" onclick="saveConfig()">💾 Save URL</button>
         </div>
         <div class="settings-card">
-          <h3>📱 Telegram Notifications</h3>
-          <div class="info-row">
-            <span class="info-label">Status</span>
-            <span class="badge-on">✅ Active</span>
+          <h3>🔐 Change Password</h3>
+          <div class="field" style="margin-bottom:10px">
+            <label>Current Password</label>
+            <input type="password" id="pwd-current" placeholder="Current password">
           </div>
-          <div class="info-row">
-            <span class="info-label">ETD Alert</span>
-            <span class="info-val">On departure day</span>
+          <div class="field" style="margin-bottom:10px">
+            <label>New Password</label>
+            <input type="password" id="pwd-new" placeholder="New password">
           </div>
-          <div class="info-row">
-            <span class="info-label">ETA Alert</span>
-            <span class="info-val">1 day before arrival</span>
+          <div class="field" style="margin-bottom:14px">
+            <label>Confirm New Password</label>
+            <input type="password" id="pwd-confirm" placeholder="Confirm new password">
           </div>
-          <div class="info-row">
-            <span class="info-label">Schedule</span>
-            <span class="info-val">Daily at 6:00 AM</span>
-          </div>
+          <button class="btn btn-primary" onclick="changePassword()">🔐 Update Password</button>
         </div>
         <div class="settings-card">
-          <h3>ℹ️ Connection Info</h3>
-          <div class="info-row">
-            <span class="info-label">Script URL</span>
-            <span class="info-val" id="cfg-display" style="font-size:.78rem;word-break:break-all">Not set</span>
-          </div>
-          <div class="info-row">
-            <span class="info-label">Sheet</span>
-            <span class="info-val">Shipments</span>
-          </div>
+          <h3>📱 Telegram Notifications</h3>
+          <div class="info-row"><span class="info-label">Status</span><span class="badge-on">✅ Active</span></div>
+          <div class="info-row"><span class="info-label">ETD Alert</span><span class="info-val">On departure day</span></div>
+          <div class="info-row"><span class="info-label">ETA Alert</span><span class="info-val">1 day before arrival</span></div>
+          <div class="info-row"><span class="info-label">Overdue Alert</span><span class="info-val">Daily until Arrived/Closed</span></div>
         </div>
       </div>
     </div>
-  </div><!-- .main -->
-</div><!-- .layout -->
+  </div>
+</div>
 
 <!-- EDIT MODAL -->
 <div class="overlay" id="edit-overlay" onclick="closeEdit(event)">
@@ -661,17 +483,14 @@
       <div class="form-grid">
         <div class="field">
           <label>Shipment ID</label>
-          <input type="text" id="e-id" placeholder="Shipment ID">
+          <input type="text" id="e-id">
           <input type="hidden" id="e-original-id">
         </div>
         <div class="field">
           <label>Type</label>
           <select id="e-type">
             <option value="">Select…</option>
-            <option>Air</option>
-            <option>Sea</option>
-            <option>Road</option>
-            <option>Cross-border</option>
+            <option>Air</option><option>Sea</option><option>Road</option><option>Cross-border</option>
           </select>
         </div>
         <div class="field">
@@ -681,6 +500,14 @@
         <div class="field">
           <label>Destination</label>
           <input type="text" id="e-dest" placeholder="e.g. London">
+        </div>
+        <div class="field">
+          <label>Supplier Name</label>
+          <input type="text" id="e-supplier" placeholder="e.g. ABC Logistics">
+        </div>
+        <div class="field">
+          <label>Shipment Cost (AED)</label>
+          <input type="number" id="e-cost" placeholder="e.g. 5000" min="0">
         </div>
         <div class="field">
           <label>ETD (Departure)</label>
@@ -693,11 +520,8 @@
         <div class="field full">
           <label>Status</label>
           <select id="e-status">
-            <option>Booked</option>
-            <option>In Transit</option>
-            <option>Arrived</option>
-            <option>Delayed</option>
-            <option>Closed</option>
+            <option>Booked</option><option>In Transit</option>
+            <option>Arrived</option><option>Delayed</option><option>Closed</option>
           </select>
         </div>
         <div class="field full">
@@ -713,7 +537,7 @@
   </div>
 </div>
 
-<!-- DELETE CONFIRM MODAL -->
+<!-- DELETE MODAL -->
 <div class="overlay" id="del-overlay" onclick="closeDelete(event)">
   <div class="modal" style="max-width:380px">
     <div class="modal-head">
@@ -732,9 +556,56 @@
 
 <script>
 // ═══════════════════════════════════════════
+// PASSWORD
+// ═══════════════════════════════════════════
+const DEFAULT_PASSWORD = 'ShipTrack2025';
+
+function getStoredPassword() {
+  return localStorage.getItem('shiptrack_password') || DEFAULT_PASSWORD;
+}
+
+function checkLogin() {
+  const remembered = localStorage.getItem('shiptrack_authed');
+  if (remembered === 'yes') {
+    document.getElementById('login-screen').classList.add('hidden');
+    return;
+  }
+  // show login
+}
+
+function doLogin() {
+  const pwd = document.getElementById('pwd-input').value;
+  const remember = document.getElementById('remember-me').checked;
+  const err = document.getElementById('login-err');
+  if (pwd === getStoredPassword()) {
+    if (remember) localStorage.setItem('shiptrack_authed', 'yes');
+    document.getElementById('login-screen').classList.add('hidden');
+    loadShipments();
+    err.textContent = '';
+  } else {
+    err.textContent = '❌ Incorrect password. Please try again.';
+    document.getElementById('pwd-input').value = '';
+    document.getElementById('pwd-input').focus();
+  }
+}
+
+function changePassword() {
+  const current = document.getElementById('pwd-current').value;
+  const newPwd  = document.getElementById('pwd-new').value;
+  const confirm = document.getElementById('pwd-confirm').value;
+  if (current !== getStoredPassword()) { toast('❌ Current password is wrong.', 'error'); return; }
+  if (!newPwd) { toast('❌ New password cannot be empty.', 'error'); return; }
+  if (newPwd !== confirm) { toast('❌ Passwords do not match.', 'error'); return; }
+  localStorage.setItem('shiptrack_password', newPwd);
+  localStorage.setItem('shiptrack_authed', 'yes');
+  toast('✅ Password updated!', 'success');
+  ['pwd-current','pwd-new','pwd-confirm'].forEach(id => document.getElementById(id).value = '');
+}
+
+// ═══════════════════════════════════════════
 // CONFIG
 // ═══════════════════════════════════════════
-let SCRIPT_URL = localStorage.getItem('shiptrack_url') || 
+let SCRIPT_URL = localStorage.getItem('shiptrack_url') ||
   'https://script.google.com/macros/s/AKfycbwqr9UmQ6gYz5hrOdGLABD-byStlt2SMx23cgs3WYee7qynOwyMct2Ukf3vu66XwYwp/exec';
 
 let allShipments = [];
@@ -745,9 +616,10 @@ let pendingDeleteID = null;
 // INIT
 // ═══════════════════════════════════════════
 window.addEventListener('load', () => {
+  checkLogin();
   document.getElementById('cfg-url').value = SCRIPT_URL;
-  updateCfgDisplay();
-  loadShipments();
+  // Only load if already authenticated
+  if (localStorage.getItem('shiptrack_authed') === 'yes') loadShipments();
 });
 
 // ═══════════════════════════════════════════
@@ -758,25 +630,21 @@ function showPage(name, el) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   if (el) el.classList.add('active');
-  const titles = { dashboard: 'Dashboard', add: 'Add Shipment', settings: 'Settings' };
+  const titles = { dashboard:'Dashboard', add:'Add Shipment', suppliers:'Supplier Outstanding', settings:'Settings' };
   document.getElementById('topbar-title').textContent = titles[name] || '';
   if (name === 'dashboard') loadShipments();
+  if (name === 'suppliers') renderSupplierPage();
 }
 
 // ═══════════════════════════════════════════
-// API CALLS — uses no-cors POST + GET fetch
+// API
 // ═══════════════════════════════════════════
 async function apiFetch(method, body) {
   if (!SCRIPT_URL) { toast('Script URL not set. Go to Settings.', 'error'); return null; }
-
   try {
     let res;
     if (method === 'GET') {
-      // GET with redirect follow — works when ContentService is used in Apps Script
-      res = await fetch(SCRIPT_URL + '?action=getShipments', {
-        method: 'GET',
-        redirect: 'follow'
-      });
+      res = await fetch(SCRIPT_URL + '?action=getShipments', { method:'GET', redirect:'follow' });
     } else {
       res = await fetch(SCRIPT_URL, {
         method: 'POST',
@@ -787,24 +655,20 @@ async function apiFetch(method, body) {
     }
     return await res.json();
   } catch (err) {
-    console.error(err);
     toast('Network error: ' + err.message, 'error');
     return null;
   }
 }
 
 // ═══════════════════════════════════════════
-// LOAD SHIPMENTS
+// LOAD
 // ═══════════════════════════════════════════
 async function loadShipments() {
-  document.getElementById('tbody').innerHTML =
-    '<tr class="spinner-row"><td colspan="9"><div class="spinner"></div></td></tr>';
+  document.getElementById('tbody').innerHTML = '<tr class="spinner-row"><td colspan="11"><div class="spinner"></div></td></tr>';
   document.getElementById('empty-state').style.display = 'none';
-
   const data = await apiFetch('GET');
   if (!data) { showEmptyState(); return; }
   if (!data.success) { toast('Error: ' + data.error, 'error'); showEmptyState(); return; }
-
   allShipments = data.shipments || [];
   updateStats();
   renderTable();
@@ -823,7 +687,7 @@ function updateStats() {
   document.getElementById('stat-total').textContent   = active.length;
   document.getElementById('stat-transit').textContent = active.filter(s => s.Status === 'In Transit').length;
   document.getElementById('stat-arrived').textContent = active.filter(s => s.Status === 'Arrived').length;
-  document.getElementById('stat-delayed').textContent  = active.filter(s => s.Status === 'Delayed').length;
+  document.getElementById('stat-delayed').textContent = active.filter(s => s.Status === 'Delayed').length;
 }
 
 // ═══════════════════════════════════════════
@@ -831,79 +695,65 @@ function updateStats() {
 // ═══════════════════════════════════════════
 function renderTable() {
   const q = (document.getElementById('search').value || '').toLowerCase();
-  const ACTIVE_STATUSES = ['Booked', 'In Transit', 'Delayed', 'Arrived'];
-
+  const ACTIVE = ['Booked','In Transit','Delayed','Arrived'];
   let list = allShipments.filter(s => {
-    const matchFilter =
-      currentFilter === 'all'    ? true :
-      currentFilter === 'active' ? ACTIVE_STATUSES.includes(s.Status) :
-      s.Status === currentFilter;
-    const matchSearch = !q ||
-      String(s.ID).toLowerCase().includes(q) ||
-      String(s.Origin).toLowerCase().includes(q) ||
-      String(s.Destination).toLowerCase().includes(q);
-    return matchFilter && matchSearch;
+    const mf = currentFilter === 'all' ? true : currentFilter === 'active' ? ACTIVE.includes(s.Status) : s.Status === currentFilter;
+    const ms = !q || String(s.ID).toLowerCase().includes(q) || String(s.Origin).toLowerCase().includes(q)
+      || String(s.Destination).toLowerCase().includes(q) || String(s.Supplier||'').toLowerCase().includes(q);
+    return mf && ms;
   });
-
-  // ── SORT: Air first, then by nearest ETA ──
-  const typeOrder = { Air: 0, Road: 1, Sea: 2, 'Cross-border': 3 };
-  list.sort((a, b) => {
-    const tA = typeOrder[a.ShipmentType] ?? 9;
-    const tB = typeOrder[b.ShipmentType] ?? 9;
-    if (tA !== tB) return tA - tB;
-    return new Date(a.ETA) - new Date(b.ETA);
+  const typeOrder = { Air:0, Road:1, Sea:2, 'Cross-border':3 };
+  list.sort((a,b) => {
+    const t = (typeOrder[a.ShipmentType]??9) - (typeOrder[b.ShipmentType]??9);
+    return t !== 0 ? t : new Date(a.ETA) - new Date(b.ETA);
   });
-
   const tbody = document.getElementById('tbody');
   const empty = document.getElementById('empty-state');
-
-  if (list.length === 0) {
-    tbody.innerHTML = '';
-    empty.style.display = 'block';
-    return;
-  }
+  if (list.length === 0) { tbody.innerHTML=''; empty.style.display='block'; return; }
   empty.style.display = 'none';
-
-  const typeEmoji = { Air:'✈️', Sea:'🚢', Road:'🚚', 'Cross-border':'🌍' };
-  const typeColor = { Air:'#EFF6FF', Sea:'#F0FDFA', Road:'#FFF7ED', 'Cross-border':'#FAF5FF' };
-
+  const tEmoji = { Air:'✈️', Sea:'🚢', Road:'🚚', 'Cross-border':'🌍' };
+  const tColor = { Air:'#EFF6FF', Sea:'#F0FDFA', Road:'#FFF7ED', 'Cross-border':'#FAF5FF' };
   tbody.innerHTML = list.map(s => `
-    <tr class="${s.Status === 'Closed' ? 'row-closed' : ''}">
+    <tr class="${s.Status==='Closed'?'row-closed':''}">
       <td><span class="ship-id">${s.ID}</span></td>
-      <td>
-        <span class="type-badge" style="background:${typeColor[s.ShipmentType]||'#F8FAFC'}">
-          ${typeEmoji[s.ShipmentType]||'📦'} ${s.ShipmentType}
-        </span>
-      </td>
-      <td>${s.Origin}</td>
-      <td>${s.Destination}</td>
+      <td><span class="type-badge" style="background:${tColor[s.ShipmentType]||'#F8FAFC'}">${tEmoji[s.ShipmentType]||'📦'} ${s.ShipmentType}</span></td>
+      <td>${s.Origin||'—'}</td>
+      <td>${s.Destination||'—'}</td>
+      <td>${s.Supplier||'—'}</td>
+      <td>${s.Cost ? 'AED '+Number(s.Cost).toLocaleString() : '—'}</td>
       <td>${formatDate(s.ETD)}</td>
       <td>${formatDate(s.ETA)}</td>
       <td>${statusBadge(s.Status)}</td>
-      <td style="color:var(--muted);max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.Notes||'—'}</td>
-      <td>
-        <div class="action-btns">
-          <button class="btn btn-ghost btn-sm" onclick="openEdit('${s.ID}')">Edit</button>
-          <button class="btn btn-danger btn-sm" onclick="openDeleteModal('${s.ID}')">Delete</button>
-        </div>
-      </td>
-    </tr>
-  `).join('');
+      <td style="color:var(--muted);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.Notes||'—'}</td>
+      <td><div class="action-btns">
+        <button class="btn btn-ghost btn-sm" onclick="openEdit('${s.ID}')">Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="openDeleteModal('${s.ID}')">Delete</button>
+      </div></td>
+    </tr>`).join('');
 }
 
 function formatDate(d) {
   if (!d) return '—';
-  try { return new Date(d).toLocaleDateString('en-GB', {day:'2-digit',month:'short',year:'numeric'}); }
+  try { return new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); }
   catch { return d; }
+}
+
+function toInputDate(val) {
+  if (!val) return '';
+  try {
+    const d = new Date(val);
+    if (isNaN(d.getTime())) return '';
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  } catch { return ''; }
 }
 
 function statusBadge(s) {
   const map = {
-    'Booked':     '<span class="status s-booked">Booked</span>',
-    'In Transit': '<span class="status s-transit">In Transit</span>',
-    'Arrived':    '<span class="status s-arrived">Arrived</span>',
-    'Delayed':    '<span class="status s-delayed">Delayed</span>',
-    'Closed':     '<span class="status s-closed">🔒 Closed</span>',
+    'Booked':    '<span class="status s-booked">Booked</span>',
+    'In Transit':'<span class="status s-transit">In Transit</span>',
+    'Arrived':   '<span class="status s-arrived">Arrived</span>',
+    'Delayed':   '<span class="status s-delayed">Delayed</span>',
+    'Closed':    '<span class="status s-closed">🔒 Closed</span>',
   };
   return map[s] || `<span class="status">${s}</span>`;
 }
@@ -919,78 +769,57 @@ function setFilter(f, el) {
 // ADD SHIPMENT
 // ═══════════════════════════════════════════
 async function addShipment() {
-  const id     = document.getElementById('a-id').value.trim();
-  const type   = document.getElementById('a-type').value;
-  const origin = document.getElementById('a-origin').value.trim();
-  const dest   = document.getElementById('a-dest').value.trim();
-  const etd    = document.getElementById('a-etd').value;
-  const eta    = document.getElementById('a-eta').value;
-  const status = document.getElementById('a-status').value;
-  const notes  = document.getElementById('a-notes').value.trim();
+  const id       = document.getElementById('a-id').value.trim();
+  const type     = document.getElementById('a-type').value;
+  const origin   = document.getElementById('a-origin').value.trim();
+  const dest     = document.getElementById('a-dest').value.trim();
+  const supplier = document.getElementById('a-supplier').value.trim();
+  const cost     = document.getElementById('a-cost').value;
+  const etd      = document.getElementById('a-etd').value;
+  const eta      = document.getElementById('a-eta').value;
+  const status   = document.getElementById('a-status').value;
+  const notes    = document.getElementById('a-notes').value.trim();
 
-  if (!id)     { toast('❌ Shipment ID is required.', 'error'); document.getElementById('a-id').focus(); return; }
-  if (!type)   { toast('❌ Please select a shipment type.', 'error'); document.getElementById('a-type').focus(); return; }
-  if (!origin) { toast('❌ Origin is required.', 'error'); document.getElementById('a-origin').focus(); return; }
-  if (!dest)   { toast('❌ Destination is required.', 'error'); document.getElementById('a-dest').focus(); return; }
-  if (!etd)    { toast('❌ Departure date (ETD) is required.', 'error'); document.getElementById('a-etd').focus(); return; }
-  if (!eta)    { toast('❌ Arrival date (ETA) is required.', 'error'); document.getElementById('a-eta').focus(); return; }
+  if (!id)     { toast('❌ Shipment ID is required.','error'); document.getElementById('a-id').focus(); return; }
+  if (!type)   { toast('❌ Please select a type.','error'); return; }
+  if (!origin) { toast('❌ Origin is required.','error'); return; }
+  if (!dest)   { toast('❌ Destination is required.','error'); return; }
+  if (!etd)    { toast('❌ Departure date is required.','error'); return; }
+  if (!eta)    { toast('❌ Arrival date is required.','error'); return; }
+  const etdD = new Date(etd), etaD = new Date(eta);
+  if (isNaN(etdD.getTime())) { toast('❌ Invalid departure date.','error'); return; }
+  if (isNaN(etaD.getTime())) { toast('❌ Invalid arrival date.','error'); return; }
+  if (etaD < etdD) { toast('❌ Arrival must be after departure.','error'); return; }
 
-  // Validate dates are real dates
-  const etdDate = new Date(etd);
-  const etaDate = new Date(eta);
-  if (isNaN(etdDate.getTime())) { toast('❌ Departure date is invalid (e.g. June has only 30 days).', 'error'); document.getElementById('a-etd').focus(); return; }
-  if (isNaN(etaDate.getTime())) { toast('❌ Arrival date is invalid (e.g. June has only 30 days).', 'error'); document.getElementById('a-eta').focus(); return; }
-  if (etaDate < etdDate)        { toast('❌ Arrival date must be after departure date.', 'error'); document.getElementById('a-eta').focus(); return; }
-
-  const btn = event.target;
-  btn.textContent = 'Saving…'; btn.disabled = true;
-
-  const res = await apiFetch('POST', { action:'addShipment', ID:id, ShipmentType:type, Origin:origin, Destination:dest, ETD:etd, ETA:eta, Status:status, Notes:notes });
-
-  btn.textContent = '✅ Add Shipment'; btn.disabled = false;
-
+  const btn = event.target; btn.textContent='Saving…'; btn.disabled=true;
+  const res = await apiFetch('POST',{action:'addShipment',ID:id,ShipmentType:type,Origin:origin,Destination:dest,Supplier:supplier,Cost:cost,ETD:etd,ETA:eta,Status:status,Notes:notes});
+  btn.textContent='✅ Add Shipment'; btn.disabled=false;
   if (res && res.success) {
-    toast(`Shipment ${id} added!`, 'success');
+    toast(`Shipment ${id} added!`,'success');
     clearAddForm();
-    showPage('dashboard', document.querySelector('[data-page=dashboard]'));
-  } else if (res) {
-    toast('Error: ' + res.error, 'error');
-  }
+    showPage('dashboard',document.querySelector('[data-page=dashboard]'));
+  } else if (res) { toast('Error: '+res.error,'error'); }
 }
 
 function clearAddForm() {
-  ['a-id','a-origin','a-dest','a-etd','a-eta','a-notes'].forEach(id => document.getElementById(id).value = '');
-  document.getElementById('a-type').value = '';
-  document.getElementById('a-status').value = 'Booked';
+  ['a-id','a-origin','a-dest','a-supplier','a-cost','a-etd','a-eta','a-notes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('a-type').value='';
+  document.getElementById('a-status').value='Booked';
 }
 
 // ═══════════════════════════════════════════
 // EDIT SHIPMENT
 // ═══════════════════════════════════════════
-
-// Converts any date format to YYYY-MM-DD for date input fields
-function toInputDate(val) {
-  if (!val) return '';
-  try {
-    const d = new Date(val);
-    if (isNaN(d.getTime())) return '';
-    // Format as YYYY-MM-DD
-    const yyyy = d.getFullYear();
-    const mm   = String(d.getMonth() + 1).padStart(2, '0');
-    const dd   = String(d.getDate()).padStart(2, '0');
-    return `${yyyy}-${mm}-${dd}`;
-  } catch(e) { return ''; }
-}
-
 function openEdit(id) {
   const s = allShipments.find(x => x.ID == id);
   if (!s) return;
-  // Store original ID in hidden field (in case user changes the ID)
   document.getElementById('e-original-id').value = s.ID;
   document.getElementById('e-id').value           = s.ID;
   document.getElementById('e-type').value         = s.ShipmentType || '';
   document.getElementById('e-origin').value       = s.Origin || '';
   document.getElementById('e-dest').value         = s.Destination || '';
+  document.getElementById('e-supplier').value     = s.Supplier || '';
+  document.getElementById('e-cost').value         = s.Cost || '';
   document.getElementById('e-status').value       = s.Status || 'Booked';
   document.getElementById('e-etd').value          = toInputDate(s.ETD);
   document.getElementById('e-eta').value          = toInputDate(s.ETA);
@@ -998,60 +827,107 @@ function openEdit(id) {
   document.getElementById('edit-overlay').classList.add('open');
 }
 function closeEditModal() { document.getElementById('edit-overlay').classList.remove('open'); }
-function closeEdit(e) { if (e.target === document.getElementById('edit-overlay')) closeEditModal(); }
+function closeEdit(e) { if(e.target===document.getElementById('edit-overlay')) closeEditModal(); }
 
 async function updateShipment() {
   const originalID = document.getElementById('e-original-id').value;
   const data = {
-    action:       'updateShipment',
-    ID:           originalID,
+    action:'updateShipment', ID:originalID,
     NewID:        document.getElementById('e-id').value.trim(),
     ShipmentType: document.getElementById('e-type').value,
     Origin:       document.getElementById('e-origin').value.trim(),
     Destination:  document.getElementById('e-dest').value.trim(),
+    Supplier:     document.getElementById('e-supplier').value.trim(),
+    Cost:         document.getElementById('e-cost').value,
     Status:       document.getElementById('e-status').value,
     ETD:          document.getElementById('e-etd').value,
     ETA:          document.getElementById('e-eta').value,
     Notes:        document.getElementById('e-notes').value,
   };
-  if (!data.NewID) { toast('❌ Shipment ID cannot be empty.', 'error'); return; }
-  const btn = event.target;
-  btn.textContent = 'Saving…'; btn.disabled = true;
+  if (!data.NewID) { toast('❌ Shipment ID cannot be empty.','error'); return; }
+  const btn = event.target; btn.textContent='Saving…'; btn.disabled=true;
   const res = await apiFetch('POST', data);
-  btn.textContent = '💾 Save Changes'; btn.disabled = false;
-  if (res && res.success) {
-    toast('Shipment updated!', 'success');
-    closeEditModal();
-    loadShipments();
-  } else if (res) {
-    toast('Error: ' + res.error, 'error');
-  }
+  btn.textContent='💾 Save Changes'; btn.disabled=false;
+  if (res && res.success) { toast('Shipment updated!','success'); closeEditModal(); loadShipments(); }
+  else if (res) { toast('Error: '+res.error,'error'); }
 }
 
 // ═══════════════════════════════════════════
-// DELETE SHIPMENT
+// DELETE
 // ═══════════════════════════════════════════
 function openDeleteModal(id) {
   pendingDeleteID = id;
   document.getElementById('del-id-label').textContent = id;
   document.getElementById('del-overlay').classList.add('open');
 }
-function closeDeleteModal() { document.getElementById('del-overlay').classList.remove('open'); pendingDeleteID = null; }
-function closeDelete(e) { if (e.target === document.getElementById('del-overlay')) closeDeleteModal(); }
-
+function closeDeleteModal() { document.getElementById('del-overlay').classList.remove('open'); pendingDeleteID=null; }
+function closeDelete(e) { if(e.target===document.getElementById('del-overlay')) closeDeleteModal(); }
 async function confirmDelete() {
   if (!pendingDeleteID) return;
-  const btn = event.target;
-  btn.textContent = 'Deleting…'; btn.disabled = true;
-  const res = await apiFetch('POST', { action:'deleteShipment', ID: pendingDeleteID });
-  btn.textContent = 'Delete'; btn.disabled = false;
-  if (res && res.success) {
-    toast('Shipment deleted.', 'success');
-    closeDeleteModal();
-    loadShipments();
-  } else if (res) {
-    toast('Error: ' + res.error, 'error');
+  const btn = event.target; btn.textContent='Deleting…'; btn.disabled=true;
+  const res = await apiFetch('POST',{action:'deleteShipment',ID:pendingDeleteID});
+  btn.textContent='Delete'; btn.disabled=false;
+  if (res && res.success) { toast('Shipment deleted.','success'); closeDeleteModal(); loadShipments(); }
+  else if (res) { toast('Error: '+res.error,'error'); }
+}
+
+// ═══════════════════════════════════════════
+// SUPPLIER PAGE
+// ═══════════════════════════════════════════
+function renderSupplierPage() {
+  // Build supplier totals
+  const map = {};
+  allShipments.forEach(s => {
+    if (!s.Supplier || s.Supplier === '—' || !s.Supplier.trim()) return;
+    const name = s.Supplier.trim();
+    if (!map[name]) map[name] = { total:0, count:0, shipments:[] };
+    const cost = parseFloat(s.Cost) || 0;
+    map[name].total += cost;
+    map[name].count++;
+    map[name].shipments.push(s);
+  });
+
+  const grid = document.getElementById('supplier-grid');
+  const names = Object.keys(map);
+  if (names.length === 0) {
+    grid.innerHTML = '<div class="empty"><div class="empty-icon">🏭</div><h3>No suppliers yet</h3><p>Add supplier names when creating shipments.</p></div>';
+    return;
   }
+  // Sort by total descending
+  names.sort((a,b) => map[b].total - map[a].total);
+  const grandTotal = names.reduce((s,n)=>s+map[n].total,0);
+
+  grid.innerHTML = `
+    <div class="supplier-card" style="border-left-color:var(--amber)">
+      <div class="supplier-name">📊 Grand Total</div>
+      <div class="supplier-amount" style="color:var(--amber)">AED ${grandTotal.toLocaleString()}</div>
+      <div class="supplier-meta">${allShipments.filter(s=>s.Supplier&&s.Cost).length} shipments with cost</div>
+    </div>
+    ${names.map(n=>`
+      <div class="supplier-card">
+        <div class="supplier-name">🏭 ${n}</div>
+        <div class="supplier-amount">AED ${map[n].total.toLocaleString()}</div>
+        <div class="supplier-meta">${map[n].count} shipment${map[n].count>1?'s':''}</div>
+      </div>`).join('')}
+  `;
+  renderSupplierTable();
+}
+
+function renderSupplierTable() {
+  const q = (document.getElementById('sup-search').value||'').toLowerCase();
+  const list = allShipments.filter(s=>s.Supplier && (!q || s.Supplier.toLowerCase().includes(q)));
+  list.sort((a,b)=>(a.Supplier||'').localeCompare(b.Supplier||''));
+  document.getElementById('sup-tbody').innerHTML = list.length === 0
+    ? `<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--muted)">No supplier shipments found</td></tr>`
+    : list.map(s=>`
+      <tr>
+        <td><span class="ship-id">${s.ID}</span></td>
+        <td><strong>${s.Supplier||'—'}</strong></td>
+        <td>${s.Origin||'—'} → ${s.Destination||'—'}</td>
+        <td><strong>${s.Cost?'AED '+Number(s.Cost).toLocaleString():'—'}</strong></td>
+        <td>${statusBadge(s.Status)}</td>
+        <td>${formatDate(s.ETA)}</td>
+      </tr>`).join('');
 }
 
 // ═══════════════════════════════════════════
@@ -1059,30 +935,23 @@ async function confirmDelete() {
 // ═══════════════════════════════════════════
 function saveConfig() {
   const url = document.getElementById('cfg-url').value.trim();
-  if (!url) { toast('Please enter a URL.', 'error'); return; }
+  if (!url) { toast('Please enter a URL.','error'); return; }
   SCRIPT_URL = url;
-  try { localStorage.setItem('shiptrack_url', url); } catch(e) {}
-  updateCfgDisplay();
-  toast('URL saved! Reloading data…', 'success');
+  try { localStorage.setItem('shiptrack_url',url); } catch(e) {}
+  toast('URL saved! Reloading data…','success');
   loadShipments();
-}
-
-function updateCfgDisplay() {
-  const el = document.getElementById('cfg-display');
-  if (el) el.textContent = SCRIPT_URL || 'Not set';
 }
 
 // ═══════════════════════════════════════════
 // TOAST
 // ═══════════════════════════════════════════
-function toast(msg, type = 'info') {
+function toast(msg, type='info') {
   const wrap = document.getElementById('toast-wrap');
   const el = document.createElement('div');
   el.className = `toast toast-${type}`;
-  const icons = { success:'✅', error:'❌', info:'ℹ️' };
-  el.innerHTML = `<span>${icons[type]||''}</span> ${msg}`;
+  el.innerHTML = `<span>${{success:'✅',error:'❌',info:'ℹ️'}[type]||''}</span> ${msg}`;
   wrap.appendChild(el);
-  setTimeout(() => el.remove(), 4000);
+  setTimeout(()=>el.remove(), 4000);
 }
 </script>
 </body>
