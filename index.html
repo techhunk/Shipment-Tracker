@@ -400,7 +400,7 @@
             </div>
           </div>
           <div style="margin-top:20px;display:flex;gap:10px">
-            <button class="btn btn-primary" onclick="addShipment()">✅ Add Shipment</button>
+            <button id="add-btn" class="btn btn-primary" onclick="addShipment()">✅ Add Shipment</button>
             <button class="btn btn-ghost" onclick="clearAddForm()">Clear</button>
           </div>
         </div>
@@ -542,7 +542,7 @@
     </div>
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="closeEditModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="updateShipment()">💾 Save Changes</button>
+      <button id="save-btn" class="btn btn-primary" onclick="updateShipment()">💾 Save Changes</button>
     </div>
   </div>
 </div>
@@ -810,9 +810,10 @@ async function addShipment() {
   if (isNaN(etaD.getTime())) { toast('❌ Invalid arrival date.','error'); return; }
   if (etaD < etdD) { toast('❌ Arrival must be after departure.','error'); return; }
 
-  const btn = event.target; btn.textContent='Saving…'; btn.disabled=true;
+  const addBtn = document.getElementById('add-btn');
+  addBtn.textContent='Saving…'; addBtn.disabled=true;
   const res = await apiFetch('POST',{action:'addShipment',ID:id,ShipmentType:type,Origin:origin,Destination:dest,Supplier:supplier,Cost:cost,Currency:currency,ETD:etd,ETA:eta,Status:status,Notes:notes});
-  btn.textContent='✅ Add Shipment'; btn.disabled=false;
+  addBtn.textContent='✅ Add Shipment'; addBtn.disabled=false;
   if (res && res.success) {
     toast(`Shipment ${id} added!`,'success');
     clearAddForm();
@@ -852,26 +853,46 @@ function closeEdit(e) { if(e.target===document.getElementById('edit-overlay')) c
 
 async function updateShipment() {
   const originalID = document.getElementById('e-original-id').value;
+  const costVal    = document.getElementById('e-cost').value;
+  const curVal     = document.getElementById('e-currency').value;
+  const supVal     = document.getElementById('e-supplier').value.trim();
+
   const data = {
-    action:'updateShipment', ID:originalID,
+    action:       'updateShipment',
+    ID:           originalID,
     NewID:        document.getElementById('e-id').value.trim(),
     ShipmentType: document.getElementById('e-type').value,
     Origin:       document.getElementById('e-origin').value.trim(),
     Destination:  document.getElementById('e-dest').value.trim(),
-    Supplier:     document.getElementById('e-supplier').value.trim(),
-    Cost:         document.getElementById('e-cost').value,
-    Currency:     document.getElementById('e-currency').value,
+    Supplier:     supVal,
+    Cost:         costVal,
+    Currency:     curVal,
     Status:       document.getElementById('e-status').value,
     ETD:          document.getElementById('e-etd').value,
     ETA:          document.getElementById('e-eta').value,
     Notes:        document.getElementById('e-notes').value,
   };
+
+  console.log('Saving shipment:', JSON.stringify(data));
+
   if (!data.NewID) { toast('❌ Shipment ID cannot be empty.','error'); return; }
-  const btn = event.target; btn.textContent='Saving…'; btn.disabled=true;
+
+  const saveBtn = document.getElementById('save-btn');
+  saveBtn.textContent = 'Saving…';
+  saveBtn.disabled = true;
+
   const res = await apiFetch('POST', data);
-  btn.textContent='💾 Save Changes'; btn.disabled=false;
-  if (res && res.success) { toast('Shipment updated!','success'); closeEditModal(); loadShipments(); }
-  else if (res) { toast('Error: '+res.error,'error'); }
+
+  saveBtn.textContent = '💾 Save Changes';
+  saveBtn.disabled = false;
+
+  if (res && res.success) {
+    toast('Shipment updated!', 'success');
+    closeEditModal();
+    loadShipments();
+  } else if (res) {
+    toast('Error: ' + res.error, 'error');
+  }
 }
 
 // ═══════════════════════════════════════════
