@@ -371,8 +371,13 @@
               <input type="text" id="a-supplier" placeholder="e.g. ABC Logistics">
             </div>
             <div class="field">
-              <label>Shipment Cost (AED)</label>
-              <input type="number" id="a-cost" placeholder="e.g. 5000" min="0">
+              <label>Shipment Cost</label>
+              <div style="display:flex;gap:8px">
+                <select id="a-currency" style="width:90px;padding:9px 8px;border:1.5px solid var(--line);border-radius:8px;font-family:inherit;font-size:.9rem;outline:none;background:#fff">
+                  <option>AED</option><option>USD</option><option>GBP</option><option>EUR</option>
+                </select>
+                <input type="number" id="a-cost" placeholder="e.g. 5000" min="0" style="flex:1">
+              </div>
             </div>
             <div class="field">
               <label>ETD (Departure) *</label>
@@ -506,8 +511,13 @@
           <input type="text" id="e-supplier" placeholder="e.g. ABC Logistics">
         </div>
         <div class="field">
-          <label>Shipment Cost (AED)</label>
-          <input type="number" id="e-cost" placeholder="e.g. 5000" min="0">
+          <label>Shipment Cost</label>
+          <div style="display:flex;gap:8px">
+            <select id="e-currency" style="width:90px;padding:9px 8px;border:1.5px solid var(--line);border-radius:8px;font-family:inherit;font-size:.9rem;outline:none;background:#fff">
+              <option>AED</option><option>USD</option><option>GBP</option><option>EUR</option>
+            </select>
+            <input type="number" id="e-cost" placeholder="e.g. 5000" min="0" style="flex:1">
+          </div>
         </div>
         <div class="field">
           <label>ETD (Departure)</label>
@@ -720,7 +730,7 @@ function renderTable() {
       <td>${s.Origin||'—'}</td>
       <td>${s.Destination||'—'}</td>
       <td>${s.Supplier||'—'}</td>
-      <td>${s.Cost ? 'AED '+Number(s.Cost).toLocaleString() : '—'}</td>
+      <td>${formatCost(s.Cost, s.Currency)}</td>
       <td>${formatDate(s.ETD)}</td>
       <td>${formatDate(s.ETA)}</td>
       <td>${statusBadge(s.Status)}</td>
@@ -736,6 +746,14 @@ function formatDate(d) {
   if (!d) return '—';
   try { return new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); }
   catch { return d; }
+}
+
+function formatCost(cost, currency) {
+  if (cost === '' || cost === undefined || cost === null) return '—';
+  const num = Number(cost);
+  if (isNaN(num)) return '—';
+  const cur = currency || 'AED';
+  return `${cur} ${num.toLocaleString()}`;
 }
 
 function toInputDate(val) {
@@ -774,6 +792,7 @@ async function addShipment() {
   const origin   = document.getElementById('a-origin').value.trim();
   const dest     = document.getElementById('a-dest').value.trim();
   const supplier = document.getElementById('a-supplier').value.trim();
+  const currency = document.getElementById('a-currency').value;
   const cost     = document.getElementById('a-cost').value;
   const etd      = document.getElementById('a-etd').value;
   const eta      = document.getElementById('a-eta').value;
@@ -792,7 +811,7 @@ async function addShipment() {
   if (etaD < etdD) { toast('❌ Arrival must be after departure.','error'); return; }
 
   const btn = event.target; btn.textContent='Saving…'; btn.disabled=true;
-  const res = await apiFetch('POST',{action:'addShipment',ID:id,ShipmentType:type,Origin:origin,Destination:dest,Supplier:supplier,Cost:cost,ETD:etd,ETA:eta,Status:status,Notes:notes});
+  const res = await apiFetch('POST',{action:'addShipment',ID:id,ShipmentType:type,Origin:origin,Destination:dest,Supplier:supplier,Cost:cost,Currency:currency,ETD:etd,ETA:eta,Status:status,Notes:notes});
   btn.textContent='✅ Add Shipment'; btn.disabled=false;
   if (res && res.success) {
     toast(`Shipment ${id} added!`,'success');
@@ -804,6 +823,7 @@ async function addShipment() {
 function clearAddForm() {
   ['a-id','a-origin','a-dest','a-supplier','a-cost','a-etd','a-eta','a-notes'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('a-type').value='';
+  document.getElementById('a-currency').value='AED';
   document.getElementById('a-status').value='Booked';
 }
 
@@ -819,7 +839,8 @@ function openEdit(id) {
   document.getElementById('e-origin').value       = s.Origin || '';
   document.getElementById('e-dest').value         = s.Destination || '';
   document.getElementById('e-supplier').value     = s.Supplier || '';
-  document.getElementById('e-cost').value         = s.Cost || '';
+  document.getElementById('e-currency').value     = s.Currency || 'AED';
+  document.getElementById('e-cost').value         = (s.Cost !== undefined && s.Cost !== '' && !isNaN(Number(s.Cost))) ? Number(s.Cost) : '';
   document.getElementById('e-status').value       = s.Status || 'Booked';
   document.getElementById('e-etd').value          = toInputDate(s.ETD);
   document.getElementById('e-eta').value          = toInputDate(s.ETA);
@@ -839,6 +860,7 @@ async function updateShipment() {
     Destination:  document.getElementById('e-dest').value.trim(),
     Supplier:     document.getElementById('e-supplier').value.trim(),
     Cost:         document.getElementById('e-cost').value,
+    Currency:     document.getElementById('e-currency').value,
     Status:       document.getElementById('e-status').value,
     ETD:          document.getElementById('e-etd').value,
     ETA:          document.getElementById('e-eta').value,
@@ -875,16 +897,18 @@ async function confirmDelete() {
 // SUPPLIER PAGE
 // ═══════════════════════════════════════════
 function renderSupplierPage() {
-  // Build supplier totals
   const map = {};
   allShipments.forEach(s => {
-    if (!s.Supplier || s.Supplier === '—' || !s.Supplier.trim()) return;
+    if (!s.Supplier || !s.Supplier.trim()) return;
     const name = s.Supplier.trim();
-    if (!map[name]) map[name] = { total:0, count:0, shipments:[] };
-    const cost = parseFloat(s.Cost) || 0;
-    map[name].total += cost;
+    const cost = parseFloat(s.Cost);
+    const cur  = s.Currency || 'AED';
+    if (!map[name]) map[name] = { byCurrency:{}, count:0 };
     map[name].count++;
-    map[name].shipments.push(s);
+    if (!isNaN(cost) && cost > 0) {
+      if (!map[name].byCurrency[cur]) map[name].byCurrency[cur] = 0;
+      map[name].byCurrency[cur] += cost;
+    }
   });
 
   const grid = document.getElementById('supplier-grid');
@@ -893,22 +917,35 @@ function renderSupplierPage() {
     grid.innerHTML = '<div class="empty"><div class="empty-icon">🏭</div><h3>No suppliers yet</h3><p>Add supplier names when creating shipments.</p></div>';
     return;
   }
-  // Sort by total descending
-  names.sort((a,b) => map[b].total - map[a].total);
-  const grandTotal = names.reduce((s,n)=>s+map[n].total,0);
+  names.sort((a,b) => {
+    const totA = Object.values(map[a].byCurrency).reduce((s,v)=>s+v,0);
+    const totB = Object.values(map[b].byCurrency).reduce((s,v)=>s+v,0);
+    return totB - totA;
+  });
+
+  // Grand total per currency
+  const grandTotals = {};
+  names.forEach(n => {
+    Object.entries(map[n].byCurrency).forEach(([cur,amt]) => {
+      grandTotals[cur] = (grandTotals[cur]||0) + amt;
+    });
+  });
+  const grandStr = Object.entries(grandTotals).map(([cur,amt])=>`${cur} ${amt.toLocaleString()}`).join(' + ') || 'AED 0';
 
   grid.innerHTML = `
     <div class="supplier-card" style="border-left-color:var(--amber)">
       <div class="supplier-name">📊 Grand Total</div>
-      <div class="supplier-amount" style="color:var(--amber)">AED ${grandTotal.toLocaleString()}</div>
-      <div class="supplier-meta">${allShipments.filter(s=>s.Supplier&&s.Cost).length} shipments with cost</div>
+      <div class="supplier-amount" style="color:var(--amber);font-size:1.2rem">${grandStr}</div>
+      <div class="supplier-meta">${allShipments.filter(s=>s.Supplier&&s.Cost&&!isNaN(Number(s.Cost))).length} shipments with cost</div>
     </div>
-    ${names.map(n=>`
-      <div class="supplier-card">
+    ${names.map(n=>{
+      const amtStr = Object.entries(map[n].byCurrency).map(([cur,amt])=>`${cur} ${amt.toLocaleString()}`).join('<br>') || '—';
+      return `<div class="supplier-card">
         <div class="supplier-name">🏭 ${n}</div>
-        <div class="supplier-amount">AED ${map[n].total.toLocaleString()}</div>
+        <div class="supplier-amount" style="font-size:1.1rem">${amtStr}</div>
         <div class="supplier-meta">${map[n].count} shipment${map[n].count>1?'s':''}</div>
-      </div>`).join('')}
+      </div>`;
+    }).join('')}
   `;
   renderSupplierTable();
 }
@@ -924,7 +961,7 @@ function renderSupplierTable() {
         <td><span class="ship-id">${s.ID}</span></td>
         <td><strong>${s.Supplier||'—'}</strong></td>
         <td>${s.Origin||'—'} → ${s.Destination||'—'}</td>
-        <td><strong>${s.Cost?'AED '+Number(s.Cost).toLocaleString():'—'}</strong></td>
+        <td><strong>${formatCost(s.Cost, s.Currency)}</strong></td>
         <td>${statusBadge(s.Status)}</td>
         <td>${formatDate(s.ETA)}</td>
       </tr>`).join('');
