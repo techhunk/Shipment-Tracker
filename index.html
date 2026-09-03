@@ -162,6 +162,16 @@
     .spinner { width: 36px; height: 36px; border: 3px solid var(--line); border-top-color: var(--blue); border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto; }
     @keyframes spin { to { transform: rotate(360deg); } }
 
+    /* ── SKELETON ── */
+    .skeleton-row td { padding: 14px 16px; }
+    .skel {
+      height: 14px; border-radius: 6px;
+      background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
+      background-size: 200% 100%;
+      animation: shimmer 1.2s infinite;
+    }
+    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
     /* ── MODAL ── */
     .overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,.5); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; }
     .overlay.open { display: flex; }
@@ -319,10 +329,23 @@
             <button class="pill" onclick="setFilter('Closed',this)">🔒 Closed</button>
           </div>
         </div>
+
+        <!-- BULK ACTION BAR -->
+        <div id="bulk-bar" style="display:none;align-items:center;gap:12px;padding:10px 20px;background:#EFF6FF;border-bottom:1px solid #BFDBFE">
+          <span style="font-size:.88rem;font-weight:600;color:var(--blue)">
+            <span id="bulk-count">0</span> selected
+          </span>
+          <button id="bulk-close-btn" class="btn btn-primary btn-sm" onclick="bulkClose()">🔒 Close Selected</button>
+          <button class="btn btn-ghost btn-sm" onclick="document.querySelectorAll('.row-check').forEach(c=>c.checked=false);updateBulkBar()">✕ Clear</button>
+        </div>
+
         <div class="table-wrap">
           <table>
             <thead>
               <tr>
+                <th style="width:36px;text-align:center">
+                  <input type="checkbox" title="Select all" onchange="toggleSelectAll(this)" style="width:16px;height:16px;cursor:pointer;accent-color:var(--blue)">
+                </th>
                 <th>Shipment ID</th><th>Type</th><th>Origin</th><th>Destination</th>
                 <th>Supplier</th><th>Cost</th><th>ETD</th><th>ETA</th>
                 <th>Status</th><th>Notes</th><th>Actions</th>
@@ -671,17 +694,70 @@ async function apiFetch(method, body) {
 }
 
 // ═══════════════════════════════════════════
-// LOAD
+// LOAD — skeleton first, then real data
 // ═══════════════════════════════════════════
 async function loadShipments() {
-  document.getElementById('tbody').innerHTML = '<tr class="spinner-row"><td colspan="11"><div class="spinner"></div></td></tr>';
+  // Show skeleton rows immediately so UI feels instant
+  showSkeleton();
+
+  // Try local browser cache first (< 60s old)
+  const LOCAL_KEY = 'shiptrack_local_cache';
+  try {
+    const cached = localStorage.getItem(LOCAL_KEY);
+    if (cached) {
+      const { ts, data } = JSON.parse(cached);
+      if (Date.now() - ts < 60000) {
+        allShipments = data;
+        updateStats();
+        renderTable();
+        renderSupplierPage();
+        // Still refresh in background silently
+        refreshInBackground(LOCAL_KEY);
+        return;
+      }
+    }
+  } catch(e) {}
+
+  // No cache — fetch normally
+  await fetchAndRender(LOCAL_KEY);
+}
+
+function showSkeleton() {
+  const cols = 12;
+  document.getElementById('tbody').innerHTML = Array(5).fill(0).map(() => `
+    <tr class="skeleton-row">${Array(cols).fill(0).map(() =>
+      `<td><div class="skel" style="width:${50+Math.random()*40}%"></div></td>`
+    ).join('')}</tr>
+  `).join('');
   document.getElementById('empty-state').style.display = 'none';
+}
+
+async function fetchAndRender(LOCAL_KEY) {
   const data = await apiFetch('GET');
   if (!data) { showEmptyState(); return; }
   if (!data.success) { toast('Error: ' + data.error, 'error'); showEmptyState(); return; }
   allShipments = data.shipments || [];
+  // Save to local browser cache
+  try { localStorage.setItem(LOCAL_KEY, JSON.stringify({ ts: Date.now(), data: allShipments })); } catch(e) {}
   updateStats();
   renderTable();
+  renderSupplierPage();
+}
+
+async function refreshInBackground(LOCAL_KEY) {
+  try {
+    const data = await apiFetch('GET');
+    if (!data || !data.success) return;
+    const fresh = data.shipments || [];
+    // Only re-render if data actually changed
+    if (JSON.stringify(fresh) !== JSON.stringify(allShipments)) {
+      allShipments = fresh;
+      try { localStorage.setItem(LOCAL_KEY, JSON.stringify({ ts: Date.now(), data: allShipments })); } catch(e) {}
+      updateStats();
+      renderTable();
+      renderSupplierPage();
+    }
+  } catch(e) {}
 }
 
 function showEmptyState() {
@@ -712,19 +788,38 @@ function renderTable() {
       || String(s.Destination).toLowerCase().includes(q) || String(s.Supplier||'').toLowerCase().includes(q);
     return mf && ms;
   });
+
+  // ── SORT: active = Air first + nearest ETA; closed = most recently closed first
   const typeOrder = { Air:0, Road:1, Sea:2, 'Cross-border':3 };
   list.sort((a,b) => {
+    const aActive = a.Status !== 'Closed';
+    const bActive = b.Status !== 'Closed';
+    if (aActive && !bActive) return -1;
+    if (!aActive && bActive) return 1;
+    if (!aActive && !bActive) {
+      // both closed — sort by LastUpdated descending (most recently closed first)
+      const tA = a.LastUpdated ? new Date(a.LastUpdated).getTime() : 0;
+      const tB = b.LastUpdated ? new Date(b.LastUpdated).getTime() : 0;
+      return tB - tA;
+    }
+    // both active — Air first, then nearest ETA
     const t = (typeOrder[a.ShipmentType]??9) - (typeOrder[b.ShipmentType]??9);
     return t !== 0 ? t : new Date(a.ETA) - new Date(b.ETA);
   });
+
   const tbody = document.getElementById('tbody');
   const empty = document.getElementById('empty-state');
-  if (list.length === 0) { tbody.innerHTML=''; empty.style.display='block'; return; }
+  if (list.length === 0) { tbody.innerHTML=''; empty.style.display='block'; updateBulkBar(); return; }
   empty.style.display = 'none';
+
   const tEmoji = { Air:'✈️', Sea:'🚢', Road:'🚚', 'Cross-border':'🌍' };
   const tColor = { Air:'#EFF6FF', Sea:'#F0FDFA', Road:'#FFF7ED', 'Cross-border':'#FAF5FF' };
+
   tbody.innerHTML = list.map(s => `
-    <tr class="${s.Status==='Closed'?'row-closed':''}">
+    <tr class="${s.Status==='Closed'?'row-closed':''}" data-id="${s.ID}">
+      <td style="width:36px;text-align:center">
+        ${s.Status !== 'Closed' ? `<input type="checkbox" class="row-check" onchange="updateBulkBar()" data-id="${s.ID}" style="width:16px;height:16px;cursor:pointer;accent-color:var(--blue)">` : '<span style="color:var(--muted);font-size:.7rem">🔒</span>'}
+      </td>
       <td><span class="ship-id">${s.ID}</span></td>
       <td><span class="type-badge" style="background:${tColor[s.ShipmentType]||'#F8FAFC'}">${tEmoji[s.ShipmentType]||'📦'} ${s.ShipmentType}</span></td>
       <td>${s.Origin||'—'}</td>
@@ -740,6 +835,67 @@ function renderTable() {
         <button class="btn btn-danger btn-sm" onclick="openDeleteModal('${s.ID}')">Delete</button>
       </div></td>
     </tr>`).join('');
+
+  updateBulkBar();
+}
+
+// ── BULK CLOSE ──────────────────────────────
+function getCheckedIDs() {
+  return Array.from(document.querySelectorAll('.row-check:checked')).map(cb => cb.dataset.id);
+}
+
+function updateBulkBar() {
+  const ids = getCheckedIDs();
+  const bar = document.getElementById('bulk-bar');
+  const cnt = document.getElementById('bulk-count');
+  if (ids.length > 0) {
+    bar.style.display = 'flex';
+    cnt.textContent = ids.length;
+  } else {
+    bar.style.display = 'none';
+  }
+}
+
+function toggleSelectAll(cb) {
+  document.querySelectorAll('.row-check').forEach(c => c.checked = cb.checked);
+  updateBulkBar();
+}
+
+async function bulkClose() {
+  const ids = getCheckedIDs();
+  if (!ids.length) return;
+  const btn = document.getElementById('bulk-close-btn');
+  btn.textContent = `Closing ${ids.length}…`;
+  btn.disabled = true;
+
+  let done = 0;
+  for (const id of ids) {
+    const res = await apiFetch('POST', {
+      action:'updateShipment', ID:id, NewID:id,
+      Status:'Closed',
+      // preserve existing fields
+      ...(() => {
+        const s = allShipments.find(x => x.ID == id) || {};
+        return {
+          ShipmentType: s.ShipmentType, Origin: s.Origin, Destination: s.Destination,
+          Supplier: s.Supplier, Cost: s.Cost, Currency: s.Currency,
+          ETD: toInputDate(s.ETD), ETA: toInputDate(s.ETA), Notes: s.Notes
+        };
+      })()
+    });
+    if (res && res.success) {
+      // update local state immediately
+      const s = allShipments.find(x => x.ID == id);
+      if (s) { s.Status = 'Closed'; s.LastUpdated = new Date().toISOString(); }
+      done++;
+    }
+  }
+
+  btn.textContent = '🔒 Close Selected';
+  btn.disabled = false;
+  toast(`✅ ${done} shipment${done>1?'s':''} closed!`, 'success');
+  updateStats();
+  renderTable();
 }
 
 function formatDate(d) {
@@ -889,7 +1045,28 @@ async function updateShipment() {
   if (res && res.success) {
     toast('Shipment updated!', 'success');
     closeEditModal();
-    loadShipments();
+    // ── Update only the changed row in local state (no full page reload) ──
+    const idx = allShipments.findIndex(x => x.ID == originalID);
+    if (idx !== -1) {
+      allShipments[idx] = {
+        ...allShipments[idx],
+        ID:           data.NewID,
+        ShipmentType: data.ShipmentType,
+        Origin:       data.Origin,
+        Destination:  data.Destination,
+        Supplier:     data.Supplier,
+        Cost:         data.Cost,
+        Currency:     data.Currency,
+        Status:       data.Status,
+        ETD:          data.ETD,
+        ETA:          data.ETA,
+        Notes:        data.Notes,
+        LastUpdated:  new Date().toISOString()
+      };
+    }
+    updateStats();
+    renderTable();
+    renderSupplierPage();
   } else if (res) {
     toast('Error: ' + res.error, 'error');
   }
