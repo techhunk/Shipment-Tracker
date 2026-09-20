@@ -347,12 +347,12 @@
                   <input type="checkbox" title="Select all" onchange="toggleSelectAll(this)" style="width:16px;height:16px;cursor:pointer;accent-color:var(--blue)">
                 </th>
                 <th>Shipment ID</th><th>Type</th><th>Origin</th><th>Destination</th>
-                <th>Supplier</th><th>Cost</th><th>ETD</th><th>ETA</th>
+                <th>Client</th><th>Supplier</th><th>Buy Cost</th><th>Sell Rate</th><th>ETD</th><th>ETA</th>
                 <th>Status</th><th>Notes</th><th>Actions</th>
               </tr>
             </thead>
             <tbody id="tbody">
-              <tr class="spinner-row"><td colspan="11"><div class="spinner"></div></td></tr>
+              <tr class="spinner-row"><td colspan="14"><div class="spinner"></div></td></tr>
             </tbody>
           </table>
         </div>
@@ -390,16 +390,41 @@
               <input type="text" id="a-dest" placeholder="e.g. London">
             </div>
             <div class="field">
+              <label>Client Name (for Invoice)</label>
+              <select id="a-client">
+                <option value="">Select client…</option>
+                <option>FUTURE POWER STAR TRADING L.L.C</option>
+                <option>Gulfroute Global Trading LLC</option>
+                <option>Mogli Labs General Trading LTD – ABU DHABI.</option>
+                <option>ELTEC TRADING</option>
+                <option>ACQUIRE HARDWARE TRADING LLC</option>
+                <option>FG TECHNICAL SERVICES LLC</option>
+                <option>FLORIDA GLOBAL TECHNICAL SERVICES L.L.C</option>
+                <option>Ismail Gheewala General Trading LLC</option>
+                <option>VALENTIA ME FZ LLE</option>
+                <option>Rebecca Foodstuff Trading LLC</option>
+              </select>
+            </div>
+            <div class="field">
               <label>Supplier Name</label>
               <input type="text" id="a-supplier" placeholder="e.g. ABC Logistics">
             </div>
             <div class="field">
-              <label>Shipment Cost</label>
+              <label>Shipment Cost (Buy Rate)</label>
               <div style="display:flex;gap:8px">
                 <select id="a-currency" style="width:90px;padding:9px 8px;border:1.5px solid var(--line);border-radius:8px;font-family:inherit;font-size:.9rem;outline:none;background:#fff">
                   <option>AED</option><option>USD</option><option>GBP</option><option>EUR</option>
                 </select>
-                <input type="number" id="a-cost" placeholder="e.g. 5000" min="0" style="flex:1">
+                <input type="number" id="a-cost" placeholder="Buy rate" min="0" style="flex:1">
+              </div>
+            </div>
+            <div class="field">
+              <label>Selling Rate (Invoice Amount)</label>
+              <div style="display:flex;gap:8px">
+                <select id="a-sell-currency" style="width:90px;padding:9px 8px;border:1.5px solid var(--line);border-radius:8px;font-family:inherit;font-size:.9rem;outline:none;background:#fff">
+                  <option>AED</option><option>USD</option><option>GBP</option><option>EUR</option>
+                </select>
+                <input type="number" id="a-sell-rate" placeholder="Sell rate" min="0" style="flex:1">
               </div>
             </div>
             <div class="field">
@@ -530,16 +555,41 @@
           <input type="text" id="e-dest" placeholder="e.g. London">
         </div>
         <div class="field">
+          <label>Client Name (for Invoice)</label>
+          <select id="e-client">
+            <option value="">Select client…</option>
+            <option>FUTURE POWER STAR TRADING L.L.C</option>
+            <option>Gulfroute Global Trading LLC</option>
+            <option>Mogli Labs General Trading LTD – ABU DHABI.</option>
+            <option>ELTEC TRADING</option>
+            <option>ACQUIRE HARDWARE TRADING LLC</option>
+            <option>FG TECHNICAL SERVICES LLC</option>
+            <option>FLORIDA GLOBAL TECHNICAL SERVICES L.L.C</option>
+            <option>Ismail Gheewala General Trading LLC</option>
+            <option>VALENTIA ME FZ LLE</option>
+            <option>Rebecca Foodstuff Trading LLC</option>
+          </select>
+        </div>
+        <div class="field">
           <label>Supplier Name</label>
           <input type="text" id="e-supplier" placeholder="e.g. ABC Logistics">
         </div>
         <div class="field">
-          <label>Shipment Cost</label>
+          <label>Shipment Cost (Buy Rate)</label>
           <div style="display:flex;gap:8px">
             <select id="e-currency" style="width:90px;padding:9px 8px;border:1.5px solid var(--line);border-radius:8px;font-family:inherit;font-size:.9rem;outline:none;background:#fff">
               <option>AED</option><option>USD</option><option>GBP</option><option>EUR</option>
             </select>
-            <input type="number" id="e-cost" placeholder="e.g. 5000" min="0" style="flex:1">
+            <input type="number" id="e-cost" placeholder="Buy rate" min="0" style="flex:1">
+          </div>
+        </div>
+        <div class="field">
+          <label>Selling Rate (Invoice Amount)</label>
+          <div style="display:flex;gap:8px">
+            <select id="e-sell-currency" style="width:90px;padding:9px 8px;border:1.5px solid var(--line);border-radius:8px;font-family:inherit;font-size:.9rem;outline:none;background:#fff">
+              <option>AED</option><option>USD</option><option>GBP</option><option>EUR</option>
+            </select>
+            <input type="number" id="e-sell-rate" placeholder="Sell rate" min="0" style="flex:1">
           </div>
         </div>
         <div class="field">
@@ -824,8 +874,10 @@ function renderTable() {
       <td><span class="type-badge" style="background:${tColor[s.ShipmentType]||'#F8FAFC'}">${tEmoji[s.ShipmentType]||'📦'} ${s.ShipmentType}</span></td>
       <td>${s.Origin||'—'}</td>
       <td>${s.Destination||'—'}</td>
+      <td style="font-size:.8rem;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.Client||'—'}</td>
       <td>${s.Supplier||'—'}</td>
       <td>${formatCost(s.Cost, s.Currency)}</td>
+      <td style="color:var(--green);font-weight:600">${formatCost(s.SellRate, s.SellCurrency)}</td>
       <td>${formatDate(s.ETD)}</td>
       <td>${formatDate(s.ETA)}</td>
       <td>${statusBadge(s.Status)}</td>
@@ -947,9 +999,12 @@ async function addShipment() {
   const type     = document.getElementById('a-type').value;
   const origin   = document.getElementById('a-origin').value.trim();
   const dest     = document.getElementById('a-dest').value.trim();
-  const supplier = document.getElementById('a-supplier').value.trim();
-  const currency = document.getElementById('a-currency').value;
-  const cost     = document.getElementById('a-cost').value;
+  const supplier   = document.getElementById('a-supplier').value.trim();
+  const client     = document.getElementById('a-client').value;
+  const currency   = document.getElementById('a-currency').value;
+  const cost       = document.getElementById('a-cost').value;
+  const sellCur    = document.getElementById('a-sell-currency').value;
+  const sellRate   = document.getElementById('a-sell-rate').value;
   const etd      = document.getElementById('a-etd').value;
   const eta      = document.getElementById('a-eta').value;
   const status   = document.getElementById('a-status').value;
@@ -968,7 +1023,7 @@ async function addShipment() {
 
   const addBtn = document.getElementById('add-btn');
   addBtn.textContent='Saving…'; addBtn.disabled=true;
-  const res = await apiFetch('POST',{action:'addShipment',ID:id,ShipmentType:type,Origin:origin,Destination:dest,Supplier:supplier,Cost:cost,Currency:currency,ETD:etd,ETA:eta,Status:status,Notes:notes});
+  const res = await apiFetch('POST',{action:'addShipment',ID:id,ShipmentType:type,Origin:origin,Destination:dest,Supplier:supplier,Client:client,Cost:cost,Currency:currency,SellRate:sellRate,SellCurrency:sellCur,ETD:etd,ETA:eta,Status:status,Notes:notes});
   addBtn.textContent='✅ Add Shipment'; addBtn.disabled=false;
   if (res && res.success) {
     toast(`Shipment ${id} added!`,'success');
@@ -978,9 +1033,11 @@ async function addShipment() {
 }
 
 function clearAddForm() {
-  ['a-id','a-origin','a-dest','a-supplier','a-cost','a-etd','a-eta','a-notes'].forEach(id=>document.getElementById(id).value='');
+  ['a-id','a-origin','a-dest','a-supplier','a-cost','a-sell-rate','a-etd','a-eta','a-notes'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('a-type').value='';
+  document.getElementById('a-client').value='';
   document.getElementById('a-currency').value='AED';
+  document.getElementById('a-sell-currency').value='AED';
   document.getElementById('a-status').value='Booked';
 }
 
@@ -995,9 +1052,12 @@ function openEdit(id) {
   document.getElementById('e-type').value         = s.ShipmentType || '';
   document.getElementById('e-origin').value       = s.Origin || '';
   document.getElementById('e-dest').value         = s.Destination || '';
+  document.getElementById('e-client').value       = s.Client || '';
   document.getElementById('e-supplier').value     = s.Supplier || '';
   document.getElementById('e-currency').value     = s.Currency || 'AED';
   document.getElementById('e-cost').value         = (s.Cost !== undefined && s.Cost !== '' && !isNaN(Number(s.Cost))) ? Number(s.Cost) : '';
+  document.getElementById('e-sell-currency').value = s.SellCurrency || 'AED';
+  document.getElementById('e-sell-rate').value    = (s.SellRate !== undefined && s.SellRate !== '' && !isNaN(Number(s.SellRate))) ? Number(s.SellRate) : '';
   document.getElementById('e-status').value       = s.Status || 'Booked';
   document.getElementById('e-etd').value          = toInputDate(s.ETD);
   document.getElementById('e-eta').value          = toInputDate(s.ETA);
@@ -1012,6 +1072,9 @@ async function updateShipment() {
   const costVal    = document.getElementById('e-cost').value;
   const curVal     = document.getElementById('e-currency').value;
   const supVal     = document.getElementById('e-supplier').value.trim();
+  const clientVal  = document.getElementById('e-client').value;
+  const sellRate   = document.getElementById('e-sell-rate').value;
+  const sellCur    = document.getElementById('e-sell-currency').value;
 
   const data = {
     action:       'updateShipment',
@@ -1020,9 +1083,12 @@ async function updateShipment() {
     ShipmentType: document.getElementById('e-type').value,
     Origin:       document.getElementById('e-origin').value.trim(),
     Destination:  document.getElementById('e-dest').value.trim(),
+    Client:       clientVal,
     Supplier:     supVal,
     Cost:         costVal,
     Currency:     curVal,
+    SellRate:     sellRate,
+    SellCurrency: sellCur,
     Status:       document.getElementById('e-status').value,
     ETD:          document.getElementById('e-etd').value,
     ETA:          document.getElementById('e-eta').value,
@@ -1054,9 +1120,12 @@ async function updateShipment() {
         ShipmentType: data.ShipmentType,
         Origin:       data.Origin,
         Destination:  data.Destination,
+        Client:       data.Client,
         Supplier:     data.Supplier,
         Cost:         data.Cost,
         Currency:     data.Currency,
+        SellRate:     data.SellRate,
+        SellCurrency: data.SellCurrency,
         Status:       data.Status,
         ETD:          data.ETD,
         ETA:          data.ETA,
