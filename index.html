@@ -366,9 +366,12 @@
 
     <!-- ADD SHIPMENT -->
     <div class="page" id="page-add">
-      <div class="card" style="max-width:660px">
+      <div class="card" style="max-width:720px">
         <div class="card-header"><div class="card-title">➕ New Shipment</div></div>
         <div class="modal-body">
+
+          <!-- SECTION: Shipment Details -->
+          <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid var(--line)">📦 Shipment Details</div>
           <div class="form-grid">
             <div class="field">
               <label>Shipment ID *</label>
@@ -376,56 +379,18 @@
             </div>
             <div class="field">
               <label>Type *</label>
-              <select id="a-type">
+              <select id="a-type" onchange="autoFillSubject()">
                 <option value="">Select…</option>
                 <option>Air</option><option>Sea</option><option>Road</option><option>Cross-border</option>
               </select>
             </div>
             <div class="field">
               <label>Origin *</label>
-              <input type="text" id="a-origin" placeholder="e.g. Dubai">
+              <input type="text" id="a-origin" placeholder="e.g. USA" oninput="autoFillPolPod()">
             </div>
             <div class="field">
               <label>Destination *</label>
-              <input type="text" id="a-dest" placeholder="e.g. London">
-            </div>
-            <div class="field">
-              <label>Client Name (for Invoice)</label>
-              <select id="a-client">
-                <option value="">Select client…</option>
-                <option>FUTURE POWER STAR TRADING L.L.C</option>
-                <option>Gulfroute Global Trading LLC</option>
-                <option>Mogli Labs General Trading LTD – ABU DHABI.</option>
-                <option>ELTEC TRADING</option>
-                <option>ACQUIRE HARDWARE TRADING LLC</option>
-                <option>FG TECHNICAL SERVICES LLC</option>
-                <option>FLORIDA GLOBAL TECHNICAL SERVICES L.L.C</option>
-                <option>Ismail Gheewala General Trading LLC</option>
-                <option>VALENTIA ME FZ LLE</option>
-                <option>Rebecca Foodstuff Trading LLC</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Supplier Name</label>
-              <input type="text" id="a-supplier" placeholder="e.g. ABC Logistics">
-            </div>
-            <div class="field">
-              <label>Shipment Cost (Buy Rate)</label>
-              <div style="display:flex;gap:8px">
-                <select id="a-currency" style="width:90px;padding:9px 8px;border:1.5px solid var(--line);border-radius:8px;font-family:inherit;font-size:.9rem;outline:none;background:#fff">
-                  <option>AED</option><option>USD</option><option>GBP</option><option>EUR</option>
-                </select>
-                <input type="number" id="a-cost" placeholder="Buy rate" min="0" style="flex:1">
-              </div>
-            </div>
-            <div class="field">
-              <label>Selling Rate (Invoice Amount)</label>
-              <div style="display:flex;gap:8px">
-                <select id="a-sell-currency" style="width:90px;padding:9px 8px;border:1.5px solid var(--line);border-radius:8px;font-family:inherit;font-size:.9rem;outline:none;background:#fff">
-                  <option>AED</option><option>USD</option><option>GBP</option><option>EUR</option>
-                </select>
-                <input type="number" id="a-sell-rate" placeholder="Sell rate" min="0" style="flex:1">
-              </div>
+              <input type="text" id="a-dest" placeholder="e.g. DXB" oninput="autoFillPolPod()">
             </div>
             <div class="field">
               <label>ETD (Departure) *</label>
@@ -442,11 +407,90 @@
                 <option>Arrived</option><option>Delayed</option><option>Closed</option>
               </select>
             </div>
+            <div class="field">
+              <label>Supplier Name</label>
+              <input type="text" id="a-supplier" placeholder="e.g. ABC Logistics">
+            </div>
+            <div class="field">
+              <label>Shipment Cost (Buy Rate)</label>
+              <div style="display:flex;gap:8px">
+                <select id="a-currency" style="width:90px;padding:9px 8px;border:1.5px solid var(--line);border-radius:8px;font-family:inherit;font-size:.9rem;outline:none;background:#fff">
+                  <option>AED</option><option>USD</option><option>GBP</option><option>EUR</option>
+                </select>
+                <input type="number" id="a-cost" placeholder="Buy rate" min="0" style="flex:1">
+              </div>
+            </div>
             <div class="field full">
               <label>Notes</label>
-              <textarea id="a-notes" placeholder="Optional notes…"></textarea>
+              <textarea id="a-notes" placeholder="Optional internal notes…" rows="2"></textarea>
             </div>
           </div>
+
+          <!-- SECTION: Invoice Details -->
+          <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:20px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--blue);border-bottom-color:#BFDBFE">🧾 Invoice Details (Zoho Auto-Fill)</div>
+          <div class="form-grid">
+            <div class="field">
+              <label>Client Name *</label>
+              <select id="a-client">
+                <option value="">Select client…</option>
+                <option>FUTURE POWER STAR TRADING L.L.C</option>
+                <option>Gulfroute Global Trading LLC</option>
+                <option>Mogli Labs General Trading LTD – ABU DHABI.</option>
+                <option>ELTEC TRADING</option>
+                <option>ACQUIRE HARDWARE TRADING LLC</option>
+                <option>FG TECHNICAL SERVICES LLC</option>
+                <option>FLORIDA GLOBAL TECHNICAL SERVICES L.L.C</option>
+                <option>Ismail Gheewala General Trading LLC</option>
+                <option>VALENTIA ME FZ LLE</option>
+                <option>Rebecca Foodstuff Trading LLC</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>BL / AWB #</label>
+              <input type="text" id="a-blawb" placeholder="e.g. 7661704584">
+            </div>
+            <div class="field">
+              <label>Weight / Vol</label>
+              <input type="text" id="a-weight" placeholder="e.g. 24kg">
+            </div>
+            <div class="field">
+              <label>POL/POD <span style="color:var(--muted);font-weight:400">(auto-filled)</span></label>
+              <input type="text" id="a-polpod" placeholder="e.g. USA/DXB">
+            </div>
+            <div class="field">
+              <label>Subject / Job Type <span style="color:var(--muted);font-weight:400">(auto-filled)</span></label>
+              <input type="text" id="a-subject" placeholder="e.g. Air Freight">
+            </div>
+            <div class="field">
+              <label>Invoice Currency</label>
+              <select id="a-sell-currency" style="padding:9px 12px;border:1.5px solid var(--line);border-radius:8px;font-family:inherit;font-size:.9rem;outline:none;background:#fff;width:100%">
+                <option>AED</option><option>USD</option><option>GBP</option><option>EUR</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- LINE ITEMS -->
+          <div style="margin-top:16px">
+            <div style="font-size:.82rem;font-weight:600;margin-bottom:8px;color:var(--ink)">Invoice Line Items</div>
+            <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:8px">
+              <div class="field" style="margin:0">
+                <input type="text" id="a-item1-desc" placeholder="Description e.g. Door to Door by air" style="width:100%">
+              </div>
+              <div class="field" style="margin:0;width:130px">
+                <input type="number" id="a-item1-rate" placeholder="Rate (AED)" min="0">
+              </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:4px">
+              <div class="field" style="margin:0">
+                <input type="text" id="a-item2-desc" placeholder="Extra line (optional) e.g. Customs Duty" style="width:100%">
+              </div>
+              <div class="field" style="margin:0;width:130px">
+                <input type="number" id="a-item2-rate" placeholder="Rate (AED)" min="0">
+              </div>
+            </div>
+            <div style="font-size:.75rem;color:var(--muted);margin-top:4px">💡 These line items will appear exactly in the Zoho draft invoice</div>
+          </div>
+
           <div style="margin-top:20px;display:flex;gap:10px">
             <button id="add-btn" class="btn btn-primary" onclick="addShipment()">✅ Add Shipment</button>
             <button class="btn btn-ghost" onclick="clearAddForm()">Clear</button>
@@ -527,12 +571,15 @@
 
 <!-- EDIT MODAL -->
 <div class="overlay" id="edit-overlay" onclick="closeEdit(event)">
-  <div class="modal">
+  <div class="modal" style="max-width:640px">
     <div class="modal-head">
       <h2>✏️ Edit Shipment</h2>
       <button class="close-modal" onclick="closeEditModal()">×</button>
     </div>
     <div class="modal-body">
+
+      <!-- Shipment Details -->
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px;padding-bottom:5px;border-bottom:2px solid var(--line)">📦 Shipment Details</div>
       <div class="form-grid">
         <div class="field">
           <label>Shipment ID</label>
@@ -548,14 +595,51 @@
         </div>
         <div class="field">
           <label>Origin</label>
-          <input type="text" id="e-origin" placeholder="e.g. Dubai">
+          <input type="text" id="e-origin" placeholder="e.g. USA">
         </div>
         <div class="field">
           <label>Destination</label>
-          <input type="text" id="e-dest" placeholder="e.g. London">
+          <input type="text" id="e-dest" placeholder="e.g. DXB">
         </div>
         <div class="field">
-          <label>Client Name (for Invoice)</label>
+          <label>ETD (Departure)</label>
+          <input type="date" id="e-etd">
+        </div>
+        <div class="field">
+          <label>ETA (Arrival)</label>
+          <input type="date" id="e-eta">
+        </div>
+        <div class="field">
+          <label>Supplier Name</label>
+          <input type="text" id="e-supplier" placeholder="e.g. ABC Logistics">
+        </div>
+        <div class="field">
+          <label>Shipment Cost (Buy Rate)</label>
+          <div style="display:flex;gap:8px">
+            <select id="e-currency" style="width:90px;padding:9px 8px;border:1.5px solid var(--line);border-radius:8px;font-family:inherit;font-size:.9rem;outline:none;background:#fff">
+              <option>AED</option><option>USD</option><option>GBP</option><option>EUR</option>
+            </select>
+            <input type="number" id="e-cost" placeholder="Buy rate" min="0" style="flex:1">
+          </div>
+        </div>
+        <div class="field full">
+          <label>Status</label>
+          <select id="e-status">
+            <option>Booked</option><option>In Transit</option>
+            <option>Arrived</option><option>Delayed</option><option>Closed</option>
+          </select>
+        </div>
+        <div class="field full">
+          <label>Notes</label>
+          <textarea id="e-notes" placeholder="Optional notes…" rows="2"></textarea>
+        </div>
+      </div>
+
+      <!-- Invoice Details -->
+      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:16px 0 10px;padding-bottom:5px;border-bottom:2px solid #BFDBFE">🧾 Invoice Details</div>
+      <div class="form-grid">
+        <div class="field">
+          <label>Client Name</label>
           <select id="e-client">
             <option value="">Select client…</option>
             <option>FUTURE POWER STAR TRADING L.L.C</option>
@@ -571,47 +655,41 @@
           </select>
         </div>
         <div class="field">
-          <label>Supplier Name</label>
-          <input type="text" id="e-supplier" placeholder="e.g. ABC Logistics">
+          <label>BL / AWB #</label>
+          <input type="text" id="e-blawb" placeholder="e.g. 7661704584">
         </div>
         <div class="field">
-          <label>Shipment Cost (Buy Rate)</label>
-          <div style="display:flex;gap:8px">
-            <select id="e-currency" style="width:90px;padding:9px 8px;border:1.5px solid var(--line);border-radius:8px;font-family:inherit;font-size:.9rem;outline:none;background:#fff">
-              <option>AED</option><option>USD</option><option>GBP</option><option>EUR</option>
-            </select>
-            <input type="number" id="e-cost" placeholder="Buy rate" min="0" style="flex:1">
-          </div>
+          <label>Weight / Vol</label>
+          <input type="text" id="e-weight" placeholder="e.g. 24kg">
         </div>
         <div class="field">
-          <label>Selling Rate (Invoice Amount)</label>
-          <div style="display:flex;gap:8px">
-            <select id="e-sell-currency" style="width:90px;padding:9px 8px;border:1.5px solid var(--line);border-radius:8px;font-family:inherit;font-size:.9rem;outline:none;background:#fff">
-              <option>AED</option><option>USD</option><option>GBP</option><option>EUR</option>
-            </select>
-            <input type="number" id="e-sell-rate" placeholder="Sell rate" min="0" style="flex:1">
-          </div>
+          <label>POL/POD</label>
+          <input type="text" id="e-polpod" placeholder="e.g. USA/DXB">
         </div>
         <div class="field">
-          <label>ETD (Departure)</label>
-          <input type="date" id="e-etd">
+          <label>Subject / Job Type</label>
+          <input type="text" id="e-subject" placeholder="e.g. Air Freight">
         </div>
         <div class="field">
-          <label>ETA (Arrival)</label>
-          <input type="date" id="e-eta">
-        </div>
-        <div class="field full">
-          <label>Status</label>
-          <select id="e-status">
-            <option>Booked</option><option>In Transit</option>
-            <option>Arrived</option><option>Delayed</option><option>Closed</option>
+          <label>Invoice Currency</label>
+          <select id="e-sell-currency" style="padding:9px 12px;border:1.5px solid var(--line);border-radius:8px;font-family:inherit;font-size:.9rem;outline:none;background:#fff;width:100%">
+            <option>AED</option><option>USD</option><option>GBP</option><option>EUR</option>
           </select>
         </div>
-        <div class="field full">
-          <label>Notes</label>
-          <textarea id="e-notes" placeholder="Optional notes…"></textarea>
-        </div>
       </div>
+      <div style="margin-top:12px">
+        <div style="font-size:.82rem;font-weight:600;margin-bottom:8px">Invoice Line Items</div>
+        <div style="display:grid;grid-template-columns:1fr 130px;gap:8px;margin-bottom:8px">
+          <input type="text" id="e-item1-desc" placeholder="e.g. Door to Door by air">
+          <input type="number" id="e-item1-rate" placeholder="Rate" min="0">
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 130px;gap:8px">
+          <input type="text" id="e-item2-desc" placeholder="Extra line e.g. Customs Duty">
+          <input type="number" id="e-item2-rate" placeholder="Rate" min="0">
+        </div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:6px">💡 Total sell rate = sum of both line items</div>
+      </div>
+
     </div>
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="closeEditModal()">Cancel</button>
@@ -991,24 +1069,45 @@ function setFilter(f, el) {
   renderTable();
 }
 
+// Auto-fill helpers
+function autoFillPolPod() {
+  const o = document.getElementById('a-origin').value.trim().toUpperCase();
+  const d = document.getElementById('a-dest').value.trim().toUpperCase();
+  if (o && d) document.getElementById('a-polpod').value = o + '/' + d;
+}
+function autoFillSubject() {
+  const t = document.getElementById('a-type').value;
+  const map = { Air:'Air Freight', Sea:'Sea Freight', Road:'Road Freight', 'Cross-border':'Cross-border Freight' };
+  if (map[t]) document.getElementById('a-subject').value = map[t];
+}
+
 // ═══════════════════════════════════════════
 // ADD SHIPMENT
 // ═══════════════════════════════════════════
 async function addShipment() {
-  const id       = document.getElementById('a-id').value.trim();
-  const type     = document.getElementById('a-type').value;
-  const origin   = document.getElementById('a-origin').value.trim();
-  const dest     = document.getElementById('a-dest').value.trim();
+  const id         = document.getElementById('a-id').value.trim();
+  const type       = document.getElementById('a-type').value;
+  const origin     = document.getElementById('a-origin').value.trim();
+  const dest       = document.getElementById('a-dest').value.trim();
+  const etd        = document.getElementById('a-etd').value;
+  const eta        = document.getElementById('a-eta').value;
+  const status     = document.getElementById('a-status').value;
   const supplier   = document.getElementById('a-supplier').value.trim();
-  const client     = document.getElementById('a-client').value;
   const currency   = document.getElementById('a-currency').value;
   const cost       = document.getElementById('a-cost').value;
+  const notes      = document.getElementById('a-notes').value.trim();
+  const client     = document.getElementById('a-client').value;
+  const blawb      = document.getElementById('a-blawb').value.trim();
+  const weight     = document.getElementById('a-weight').value.trim();
+  const polpod     = document.getElementById('a-polpod').value.trim();
+  const subject    = document.getElementById('a-subject').value.trim();
   const sellCur    = document.getElementById('a-sell-currency').value;
-  const sellRate   = document.getElementById('a-sell-rate').value;
-  const etd      = document.getElementById('a-etd').value;
-  const eta      = document.getElementById('a-eta').value;
-  const status   = document.getElementById('a-status').value;
-  const notes    = document.getElementById('a-notes').value.trim();
+  const item1Desc  = document.getElementById('a-item1-desc').value.trim();
+  const item1Rate  = document.getElementById('a-item1-rate').value;
+  const item2Desc  = document.getElementById('a-item2-desc').value.trim();
+  const item2Rate  = document.getElementById('a-item2-rate').value;
+  // SellRate = sum of line items
+  const sellRate   = (parseFloat(item1Rate)||0) + (parseFloat(item2Rate)||0);
 
   if (!id)     { toast('❌ Shipment ID is required.','error'); document.getElementById('a-id').focus(); return; }
   if (!type)   { toast('❌ Please select a type.','error'); return; }
@@ -1023,7 +1122,13 @@ async function addShipment() {
 
   const addBtn = document.getElementById('add-btn');
   addBtn.textContent='Saving…'; addBtn.disabled=true;
-  const res = await apiFetch('POST',{action:'addShipment',ID:id,ShipmentType:type,Origin:origin,Destination:dest,Supplier:supplier,Client:client,Cost:cost,Currency:currency,SellRate:sellRate,SellCurrency:sellCur,ETD:etd,ETA:eta,Status:status,Notes:notes});
+  const res = await apiFetch('POST',{
+    action:'addShipment', ID:id, ShipmentType:type, Origin:origin, Destination:dest,
+    ETD:etd, ETA:eta, Status:status, Supplier:supplier, Cost:cost, Currency:currency, Notes:notes,
+    Client:client, BLAWB:blawb, Weight:weight, POLPOD:polpod, Subject:subject,
+    SellRate:String(sellRate), SellCurrency:sellCur,
+    Item1Desc:item1Desc, Item1Rate:item1Rate, Item2Desc:item2Desc, Item2Rate:item2Rate
+  });
   addBtn.textContent='✅ Add Shipment'; addBtn.disabled=false;
   if (res && res.success) {
     toast(`Shipment ${id} added!`,'success');
@@ -1033,7 +1138,9 @@ async function addShipment() {
 }
 
 function clearAddForm() {
-  ['a-id','a-origin','a-dest','a-supplier','a-cost','a-sell-rate','a-etd','a-eta','a-notes'].forEach(id=>document.getElementById(id).value='');
+  ['a-id','a-origin','a-dest','a-supplier','a-cost','a-etd','a-eta','a-notes',
+   'a-blawb','a-weight','a-polpod','a-subject','a-item1-desc','a-item1-rate','a-item2-desc','a-item2-rate'
+  ].forEach(id => document.getElementById(id).value='');
   document.getElementById('a-type').value='';
   document.getElementById('a-client').value='';
   document.getElementById('a-currency').value='AED';
@@ -1047,34 +1154,38 @@ function clearAddForm() {
 function openEdit(id) {
   const s = allShipments.find(x => x.ID == id);
   if (!s) return;
-  document.getElementById('e-original-id').value = s.ID;
-  document.getElementById('e-id').value           = s.ID;
-  document.getElementById('e-type').value         = s.ShipmentType || '';
-  document.getElementById('e-origin').value       = s.Origin || '';
-  document.getElementById('e-dest').value         = s.Destination || '';
-  document.getElementById('e-client').value       = s.Client || '';
-  document.getElementById('e-supplier').value     = s.Supplier || '';
-  document.getElementById('e-currency').value     = s.Currency || 'AED';
-  document.getElementById('e-cost').value         = (s.Cost !== undefined && s.Cost !== '' && !isNaN(Number(s.Cost))) ? Number(s.Cost) : '';
+  document.getElementById('e-original-id').value  = s.ID;
+  document.getElementById('e-id').value            = s.ID;
+  document.getElementById('e-type').value          = s.ShipmentType || '';
+  document.getElementById('e-origin').value        = s.Origin || '';
+  document.getElementById('e-dest').value          = s.Destination || '';
+  document.getElementById('e-supplier').value      = s.Supplier || '';
+  document.getElementById('e-currency').value      = s.Currency || 'AED';
+  document.getElementById('e-cost').value          = (s.Cost !== undefined && s.Cost !== '' && !isNaN(Number(s.Cost))) ? Number(s.Cost) : '';
+  document.getElementById('e-status').value        = s.Status || 'Booked';
+  document.getElementById('e-etd').value           = toInputDate(s.ETD);
+  document.getElementById('e-eta').value           = toInputDate(s.ETA);
+  document.getElementById('e-notes').value         = s.Notes || '';
+  document.getElementById('e-client').value        = s.Client || '';
+  document.getElementById('e-blawb').value         = s.BLAWB || '';
+  document.getElementById('e-weight').value        = s.Weight || '';
+  document.getElementById('e-polpod').value        = s.POLPOD || (s.Origin && s.Destination ? s.Origin.toUpperCase()+'/'+s.Destination.toUpperCase() : '');
+  document.getElementById('e-subject').value       = s.Subject || '';
   document.getElementById('e-sell-currency').value = s.SellCurrency || 'AED';
-  document.getElementById('e-sell-rate').value    = (s.SellRate !== undefined && s.SellRate !== '' && !isNaN(Number(s.SellRate))) ? Number(s.SellRate) : '';
-  document.getElementById('e-status').value       = s.Status || 'Booked';
-  document.getElementById('e-etd').value          = toInputDate(s.ETD);
-  document.getElementById('e-eta').value          = toInputDate(s.ETA);
-  document.getElementById('e-notes').value        = s.Notes || '';
+  document.getElementById('e-item1-desc').value    = s.Item1Desc || '';
+  document.getElementById('e-item1-rate').value    = (s.Item1Rate && !isNaN(Number(s.Item1Rate))) ? Number(s.Item1Rate) : '';
+  document.getElementById('e-item2-desc').value    = s.Item2Desc || '';
+  document.getElementById('e-item2-rate').value    = (s.Item2Rate && !isNaN(Number(s.Item2Rate))) ? Number(s.Item2Rate) : '';
   document.getElementById('edit-overlay').classList.add('open');
 }
 function closeEditModal() { document.getElementById('edit-overlay').classList.remove('open'); }
 function closeEdit(e) { if(e.target===document.getElementById('edit-overlay')) closeEditModal(); }
 
 async function updateShipment() {
-  const originalID = document.getElementById('e-original-id').value;
-  const costVal    = document.getElementById('e-cost').value;
-  const curVal     = document.getElementById('e-currency').value;
-  const supVal     = document.getElementById('e-supplier').value.trim();
-  const clientVal  = document.getElementById('e-client').value;
-  const sellRate   = document.getElementById('e-sell-rate').value;
-  const sellCur    = document.getElementById('e-sell-currency').value;
+  const originalID  = document.getElementById('e-original-id').value;
+  const item1Rate   = parseFloat(document.getElementById('e-item1-rate').value)||0;
+  const item2Rate   = parseFloat(document.getElementById('e-item2-rate').value)||0;
+  const sellRate    = String(item1Rate + item2Rate);
 
   const data = {
     action:       'updateShipment',
@@ -1083,16 +1194,24 @@ async function updateShipment() {
     ShipmentType: document.getElementById('e-type').value,
     Origin:       document.getElementById('e-origin').value.trim(),
     Destination:  document.getElementById('e-dest').value.trim(),
-    Client:       clientVal,
-    Supplier:     supVal,
-    Cost:         costVal,
-    Currency:     curVal,
-    SellRate:     sellRate,
-    SellCurrency: sellCur,
+    Supplier:     document.getElementById('e-supplier').value.trim(),
+    Cost:         document.getElementById('e-cost').value,
+    Currency:     document.getElementById('e-currency').value,
     Status:       document.getElementById('e-status').value,
     ETD:          document.getElementById('e-etd').value,
     ETA:          document.getElementById('e-eta').value,
     Notes:        document.getElementById('e-notes').value,
+    Client:       document.getElementById('e-client').value,
+    BLAWB:        document.getElementById('e-blawb').value.trim(),
+    Weight:       document.getElementById('e-weight').value.trim(),
+    POLPOD:       document.getElementById('e-polpod').value.trim(),
+    Subject:      document.getElementById('e-subject').value.trim(),
+    SellRate:     sellRate,
+    SellCurrency: document.getElementById('e-sell-currency').value,
+    Item1Desc:    document.getElementById('e-item1-desc').value.trim(),
+    Item1Rate:    String(item1Rate),
+    Item2Desc:    document.getElementById('e-item2-desc').value.trim(),
+    Item2Rate:    String(item2Rate),
   };
 
   console.log('Saving shipment:', JSON.stringify(data));
@@ -1126,6 +1245,14 @@ async function updateShipment() {
         Currency:     data.Currency,
         SellRate:     data.SellRate,
         SellCurrency: data.SellCurrency,
+        BLAWB:        data.BLAWB,
+        Weight:       data.Weight,
+        POLPOD:       data.POLPOD,
+        Subject:      data.Subject,
+        Item1Desc:    data.Item1Desc,
+        Item1Rate:    data.Item1Rate,
+        Item2Desc:    data.Item2Desc,
+        Item2Rate:    data.Item2Rate,
         Status:       data.Status,
         ETD:          data.ETD,
         ETA:          data.ETA,
