@@ -427,22 +427,25 @@
           </div>
 
           <!-- SECTION: Invoice Details -->
-          <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:20px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--blue);border-bottom-color:#BFDBFE">🧾 Invoice Details (Zoho Auto-Fill)</div>
+          <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:20px 0 12px;padding-bottom:6px;border-bottom:2px solid #BFDBFE">🧾 Invoice Details (Zoho Auto-Fill)</div>
           <div class="form-grid">
+            <div class="field full">
+              <label>Invoicing Company</label>
+              <div style="display:flex;gap:10px">
+                <label style="display:flex;align-items:center;gap:8px;padding:10px 16px;border:2px solid var(--blue);border-radius:10px;cursor:pointer;background:#EFF6FF;font-weight:600;color:var(--blue);font-size:.9rem;margin:0">
+                  <input type="radio" name="a-company" id="a-company-sn" value="SN Global" onchange="updateClientList('a-client')" checked style="width:auto">
+                  🏢 SN Global Shipping
+                </label>
+                <label style="display:flex;align-items:center;gap:8px;padding:10px 16px;border:2px solid var(--line);border-radius:10px;cursor:pointer;font-size:.9rem;margin:0" id="a-company-cadence-label">
+                  <input type="radio" name="a-company" id="a-company-cadence" value="Cadence" onchange="updateClientList('a-client')" style="width:auto">
+                  🚢 Cadence Freight
+                </label>
+              </div>
+            </div>
             <div class="field">
               <label>Client Name *</label>
               <select id="a-client">
                 <option value="">Select client…</option>
-                <option>FUTURE POWER STAR TRADING L.L.C</option>
-                <option>Gulfroute Global Trading LLC</option>
-                <option>Mogli Labs General Trading LTD – ABU DHABI.</option>
-                <option>ELTEC TRADING</option>
-                <option>ACQUIRE HARDWARE TRADING LLC</option>
-                <option>FG TECHNICAL SERVICES LLC</option>
-                <option>FLORIDA GLOBAL TECHNICAL SERVICES L.L.C</option>
-                <option>Ismail Gheewala General Trading LLC</option>
-                <option>VALENTIA ME FZ LLE</option>
-                <option>Rebecca Foodstuff Trading LLC</option>
               </select>
             </div>
             <div class="field">
@@ -472,23 +475,22 @@
           <!-- LINE ITEMS -->
           <div style="margin-top:16px">
             <div style="font-size:.82rem;font-weight:600;margin-bottom:8px;color:var(--ink)">Invoice Line Items</div>
-            <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:8px">
-              <div class="field" style="margin:0">
-                <input type="text" id="a-item1-desc" placeholder="Description e.g. Door to Door by air" style="width:100%">
-              </div>
-              <div class="field" style="margin:0;width:130px">
-                <input type="number" id="a-item1-rate" placeholder="Rate (AED)" min="0">
-              </div>
+            <div style="display:grid;grid-template-columns:1fr 80px 110px;gap:8px;margin-bottom:4px">
+              <div style="font-size:.75rem;color:var(--muted);font-weight:600">DESCRIPTION</div>
+              <div style="font-size:.75rem;color:var(--muted);font-weight:600">QTY</div>
+              <div style="font-size:.75rem;color:var(--muted);font-weight:600">RATE</div>
             </div>
-            <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:4px">
-              <div class="field" style="margin:0">
-                <input type="text" id="a-item2-desc" placeholder="Extra line (optional) e.g. Customs Duty" style="width:100%">
-              </div>
-              <div class="field" style="margin:0;width:130px">
-                <input type="number" id="a-item2-rate" placeholder="Rate (AED)" min="0">
-              </div>
+            <div style="display:grid;grid-template-columns:1fr 80px 110px;gap:8px;margin-bottom:8px">
+              <input type="text" id="a-item1-desc" placeholder="e.g. Door to Door by air">
+              <input type="number" id="a-item1-qty" placeholder="1" min="0" step="any" value="1">
+              <input type="number" id="a-item1-rate" placeholder="Rate" min="0" step="any">
             </div>
-            <div style="font-size:.75rem;color:var(--muted);margin-top:4px">💡 These line items will appear exactly in the Zoho draft invoice</div>
+            <div style="display:grid;grid-template-columns:1fr 80px 110px;gap:8px;margin-bottom:4px">
+              <input type="text" id="a-item2-desc" placeholder="Extra line e.g. Customs Duty">
+              <input type="number" id="a-item2-qty" placeholder="1" min="0" step="any" value="1">
+              <input type="number" id="a-item2-rate" placeholder="Rate" min="0" step="any">
+            </div>
+            <div style="font-size:.75rem;color:var(--muted);margin-top:4px">💡 For Cadence: use Qty × Rate = Amount (e.g. 724 kg × 3.685 = 2,667.94)</div>
           </div>
 
           <div style="margin-top:20px;display:flex;gap:10px">
@@ -638,20 +640,23 @@
       <!-- Invoice Details -->
       <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:16px 0 10px;padding-bottom:5px;border-bottom:2px solid #BFDBFE">🧾 Invoice Details</div>
       <div class="form-grid">
+        <div class="field full">
+          <label>Invoicing Company</label>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <label style="display:flex;align-items:center;gap:8px;padding:9px 14px;border:2px solid var(--blue);border-radius:10px;cursor:pointer;background:#EFF6FF;font-weight:600;color:var(--blue);font-size:.88rem;margin:0">
+              <input type="radio" name="e-company" id="e-company-sn" value="SN Global" onchange="updateClientList('e-client')" checked style="width:auto">
+              🏢 SN Global Shipping
+            </label>
+            <label style="display:flex;align-items:center;gap:8px;padding:9px 14px;border:2px solid var(--line);border-radius:10px;cursor:pointer;font-size:.88rem;margin:0">
+              <input type="radio" name="e-company" id="e-company-cadence" value="Cadence" onchange="updateClientList('e-client')" style="width:auto">
+              🚢 Cadence Freight
+            </label>
+          </div>
+        </div>
         <div class="field">
           <label>Client Name</label>
           <select id="e-client">
             <option value="">Select client…</option>
-            <option>FUTURE POWER STAR TRADING L.L.C</option>
-            <option>Gulfroute Global Trading LLC</option>
-            <option>Mogli Labs General Trading LTD – ABU DHABI.</option>
-            <option>ELTEC TRADING</option>
-            <option>ACQUIRE HARDWARE TRADING LLC</option>
-            <option>FG TECHNICAL SERVICES LLC</option>
-            <option>FLORIDA GLOBAL TECHNICAL SERVICES L.L.C</option>
-            <option>Ismail Gheewala General Trading LLC</option>
-            <option>VALENTIA ME FZ LLE</option>
-            <option>Rebecca Foodstuff Trading LLC</option>
           </select>
         </div>
         <div class="field">
@@ -679,15 +684,22 @@
       </div>
       <div style="margin-top:12px">
         <div style="font-size:.82rem;font-weight:600;margin-bottom:8px">Invoice Line Items</div>
-        <div style="display:grid;grid-template-columns:1fr 130px;gap:8px;margin-bottom:8px">
+        <div style="display:grid;grid-template-columns:1fr 80px 110px;gap:8px;margin-bottom:4px">
+          <div style="font-size:.75rem;color:var(--muted);font-weight:600">DESCRIPTION</div>
+          <div style="font-size:.75rem;color:var(--muted);font-weight:600">QTY</div>
+          <div style="font-size:.75rem;color:var(--muted);font-weight:600">RATE</div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 80px 110px;gap:8px;margin-bottom:8px">
           <input type="text" id="e-item1-desc" placeholder="e.g. Door to Door by air">
-          <input type="number" id="e-item1-rate" placeholder="Rate" min="0">
+          <input type="number" id="e-item1-qty" placeholder="1" min="0" step="any" value="1">
+          <input type="number" id="e-item1-rate" placeholder="Rate" min="0" step="any">
         </div>
-        <div style="display:grid;grid-template-columns:1fr 130px;gap:8px">
+        <div style="display:grid;grid-template-columns:1fr 80px 110px;gap:8px">
           <input type="text" id="e-item2-desc" placeholder="Extra line e.g. Customs Duty">
-          <input type="number" id="e-item2-rate" placeholder="Rate" min="0">
+          <input type="number" id="e-item2-qty" placeholder="1" min="0" step="any" value="1">
+          <input type="number" id="e-item2-rate" placeholder="Rate" min="0" step="any">
         </div>
-        <div style="font-size:.72rem;color:var(--muted);margin-top:6px">💡 Total sell rate = sum of both line items</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:6px">💡 Total = Qty × Rate per line</div>
       </div>
 
     </div>
@@ -779,7 +791,9 @@ let pendingDeleteID = null;
 window.addEventListener('load', () => {
   checkLogin();
   document.getElementById('cfg-url').value = SCRIPT_URL;
-  // Only load if already authenticated
+  // Populate client dropdowns on load
+  updateClientList('a-client');
+  updateClientList('e-client');
   if (localStorage.getItem('shiptrack_authed') === 'yes') loadShipments();
 });
 
@@ -1069,6 +1083,54 @@ function setFilter(f, el) {
   renderTable();
 }
 
+// ═══════════════════════════════════════════
+// CLIENT DATA — per company
+// ═══════════════════════════════════════════
+const CLIENTS = {
+  'SN Global': [
+    'FUTURE POWER STAR TRADING L.L.C',
+    'Gulfroute Global Trading LLC',
+    'Mogli Labs General Trading LTD – ABU DHABI.',
+    'ELTEC TRADING',
+    'ACQUIRE HARDWARE TRADING LLC',
+    'FG TECHNICAL SERVICES LLC',
+    'FLORIDA GLOBAL TECHNICAL SERVICES L.L.C',
+    'Ismail Gheewala General Trading LLC',
+    'VALENTIA ME FZ LLE',
+    'Rebecca Foodstuff Trading LLC'
+  ],
+  'Cadence': [
+    'ELTEC TRADING',
+    'FG TECHNICAL SERVICES L.L.C',
+    'FLORIDA GLOBAL TECHNICAL SERVICES LLC',
+    'Ismail Gheewala General Trading LLC',
+    'Schemes LLC'
+  ]
+};
+
+function updateClientList(selectId) {
+  const formPrefix = selectId === 'a-client' ? 'a' : 'e';
+  const company = document.querySelector(`input[name="${formPrefix}-company"]:checked`)?.value || 'SN Global';
+  const sel = document.getElementById(selectId);
+  const current = sel.value;
+  const clients = CLIENTS[company] || [];
+  sel.innerHTML = '<option value="">Select client…</option>' +
+    clients.map(c => `<option${c === current ? ' selected' : ''}>${c}</option>`).join('');
+
+  // Update radio label borders to show selected
+  const prefix = selectId === 'a-client' ? 'a' : 'e';
+  ['sn','cadence'].forEach(co => {
+    const lbl = document.getElementById(`${prefix}-company-${co}`)?.parentElement;
+    const isSelected = document.getElementById(`${prefix}-company-${co}`)?.checked;
+    if (lbl) {
+      lbl.style.borderColor = isSelected ? 'var(--blue)' : 'var(--line)';
+      lbl.style.background  = isSelected ? '#EFF6FF' : '';
+      lbl.style.color       = isSelected ? 'var(--blue)' : '';
+      lbl.style.fontWeight  = isSelected ? '600' : '400';
+    }
+  });
+}
+
 // Auto-fill helpers
 function autoFillPolPod() {
   const o = document.getElementById('a-origin').value.trim().toUpperCase();
@@ -1097,17 +1159,20 @@ async function addShipment() {
   const cost       = document.getElementById('a-cost').value;
   const notes      = document.getElementById('a-notes').value.trim();
   const client     = document.getElementById('a-client').value;
+  const company    = document.querySelector('input[name="a-company"]:checked')?.value || 'SN Global';
   const blawb      = document.getElementById('a-blawb').value.trim();
   const weight     = document.getElementById('a-weight').value.trim();
   const polpod     = document.getElementById('a-polpod').value.trim();
   const subject    = document.getElementById('a-subject').value.trim();
   const sellCur    = document.getElementById('a-sell-currency').value;
   const item1Desc  = document.getElementById('a-item1-desc').value.trim();
+  const item1Qty   = document.getElementById('a-item1-qty').value || '1';
   const item1Rate  = document.getElementById('a-item1-rate').value;
   const item2Desc  = document.getElementById('a-item2-desc').value.trim();
+  const item2Qty   = document.getElementById('a-item2-qty').value || '1';
   const item2Rate  = document.getElementById('a-item2-rate').value;
-  // SellRate = sum of line items
-  const sellRate   = (parseFloat(item1Rate)||0) + (parseFloat(item2Rate)||0);
+  // SellRate = sum of (qty × rate) for both lines
+  const sellRate   = (parseFloat(item1Qty)||1)*(parseFloat(item1Rate)||0) + (parseFloat(item2Qty)||1)*(parseFloat(item2Rate)||0);
 
   if (!id)     { toast('❌ Shipment ID is required.','error'); document.getElementById('a-id').focus(); return; }
   if (!type)   { toast('❌ Please select a type.','error'); return; }
@@ -1125,9 +1190,10 @@ async function addShipment() {
   const res = await apiFetch('POST',{
     action:'addShipment', ID:id, ShipmentType:type, Origin:origin, Destination:dest,
     ETD:etd, ETA:eta, Status:status, Supplier:supplier, Cost:cost, Currency:currency, Notes:notes,
-    Client:client, BLAWB:blawb, Weight:weight, POLPOD:polpod, Subject:subject,
+    Client:client, Company:company, BLAWB:blawb, Weight:weight, POLPOD:polpod, Subject:subject,
     SellRate:String(sellRate), SellCurrency:sellCur,
-    Item1Desc:item1Desc, Item1Rate:item1Rate, Item2Desc:item2Desc, Item2Rate:item2Rate
+    Item1Desc:item1Desc, Item1Qty:item1Qty, Item1Rate:item1Rate,
+    Item2Desc:item2Desc, Item2Qty:item2Qty, Item2Rate:item2Rate
   });
   addBtn.textContent='✅ Add Shipment'; addBtn.disabled=false;
   if (res && res.success) {
@@ -1141,11 +1207,14 @@ function clearAddForm() {
   ['a-id','a-origin','a-dest','a-supplier','a-cost','a-etd','a-eta','a-notes',
    'a-blawb','a-weight','a-polpod','a-subject','a-item1-desc','a-item1-rate','a-item2-desc','a-item2-rate'
   ].forEach(id => document.getElementById(id).value='');
+  document.getElementById('a-item1-qty').value = '1';
+  document.getElementById('a-item2-qty').value = '1';
   document.getElementById('a-type').value='';
-  document.getElementById('a-client').value='';
   document.getElementById('a-currency').value='AED';
   document.getElementById('a-sell-currency').value='AED';
   document.getElementById('a-status').value='Booked';
+  document.getElementById('a-company-sn').checked = true;
+  updateClientList('a-client');
 }
 
 // ═══════════════════════════════════════════
@@ -1166,15 +1235,24 @@ function openEdit(id) {
   document.getElementById('e-etd').value           = toInputDate(s.ETD);
   document.getElementById('e-eta').value           = toInputDate(s.ETA);
   document.getElementById('e-notes').value         = s.Notes || '';
-  document.getElementById('e-client').value        = s.Client || '';
-  document.getElementById('e-blawb').value         = s.BLAWB || '';
+  // Set company radio first, then populate client list
+  const company = s.Company || 'SN Global';
+  const isCadence = company === 'Cadence';
+  document.getElementById('e-company-sn').checked      = !isCadence;
+  document.getElementById('e-company-cadence').checked  = isCadence;
+  updateClientList('e-client');
+  // Now set the client value
+  document.getElementById('e-client').value            = s.Client || '';
+  document.getElementById('e-blawb').value             = s.BLAWB || '';
   document.getElementById('e-weight').value        = s.Weight || '';
   document.getElementById('e-polpod').value        = s.POLPOD || (s.Origin && s.Destination ? s.Origin.toUpperCase()+'/'+s.Destination.toUpperCase() : '');
   document.getElementById('e-subject').value       = s.Subject || '';
   document.getElementById('e-sell-currency').value = s.SellCurrency || 'AED';
   document.getElementById('e-item1-desc').value    = s.Item1Desc || '';
+  document.getElementById('e-item1-qty').value     = (s.Item1Qty && !isNaN(Number(s.Item1Qty))) ? Number(s.Item1Qty) : 1;
   document.getElementById('e-item1-rate').value    = (s.Item1Rate && !isNaN(Number(s.Item1Rate))) ? Number(s.Item1Rate) : '';
   document.getElementById('e-item2-desc').value    = s.Item2Desc || '';
+  document.getElementById('e-item2-qty').value     = (s.Item2Qty && !isNaN(Number(s.Item2Qty))) ? Number(s.Item2Qty) : 1;
   document.getElementById('e-item2-rate').value    = (s.Item2Rate && !isNaN(Number(s.Item2Rate))) ? Number(s.Item2Rate) : '';
   document.getElementById('edit-overlay').classList.add('open');
 }
@@ -1184,8 +1262,10 @@ function closeEdit(e) { if(e.target===document.getElementById('edit-overlay')) c
 async function updateShipment() {
   const originalID  = document.getElementById('e-original-id').value;
   const item1Rate   = parseFloat(document.getElementById('e-item1-rate').value)||0;
+  const item1Qty    = parseFloat(document.getElementById('e-item1-qty').value)||1;
   const item2Rate   = parseFloat(document.getElementById('e-item2-rate').value)||0;
-  const sellRate    = String(item1Rate + item2Rate);
+  const item2Qty    = parseFloat(document.getElementById('e-item2-qty').value)||1;
+  const sellRate    = String((item1Qty * item1Rate) + (item2Qty * item2Rate));
 
   const data = {
     action:       'updateShipment',
@@ -1202,6 +1282,7 @@ async function updateShipment() {
     ETA:          document.getElementById('e-eta').value,
     Notes:        document.getElementById('e-notes').value,
     Client:       document.getElementById('e-client').value,
+    Company:      document.querySelector('input[name="e-company"]:checked')?.value || 'SN Global',
     BLAWB:        document.getElementById('e-blawb').value.trim(),
     Weight:       document.getElementById('e-weight').value.trim(),
     POLPOD:       document.getElementById('e-polpod').value.trim(),
@@ -1209,8 +1290,10 @@ async function updateShipment() {
     SellRate:     sellRate,
     SellCurrency: document.getElementById('e-sell-currency').value,
     Item1Desc:    document.getElementById('e-item1-desc').value.trim(),
+    Item1Qty:     String(item1Qty),
     Item1Rate:    String(item1Rate),
     Item2Desc:    document.getElementById('e-item2-desc').value.trim(),
+    Item2Qty:     String(item2Qty),
     Item2Rate:    String(item2Rate),
   };
 
@@ -1240,6 +1323,7 @@ async function updateShipment() {
         Origin:       data.Origin,
         Destination:  data.Destination,
         Client:       data.Client,
+        Company:      data.Company,
         Supplier:     data.Supplier,
         Cost:         data.Cost,
         Currency:     data.Currency,
