@@ -207,7 +207,7 @@
     .supplier-paid { border-left-color: var(--green); }
     .supplier-paid .supplier-amount { color: var(--green); }
 
-    /* ── SETTINGS ─ */
+    /* ── SETTINGS ── */
     .settings-grid { display: grid; gap: 20px; max-width: 640px; }
     .settings-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; }
     .settings-card h3 { font-family: 'Space Grotesk', sans-serif; font-weight: 700; margin-bottom: 16px; font-size: 1rem; }
@@ -279,7 +279,7 @@
         <span class="nav-icon">⚙️</span> Settings
       </div>
     </nav>
-    <div class="sidebar-footer">ShipTrack v3.2</div>
+    <div class="sidebar-footer">ShipTrack v3.3</div>
   </aside>
 
   <!-- MAIN -->
@@ -346,13 +346,13 @@
                 <th style="width:36px;text-align:center">
                   <input type="checkbox" title="Select all" onchange="toggleSelectAll(this)" style="width:16px;height:16px;cursor:pointer;accent-color:var(--blue)">
                 </th>
-                <th>Shipment ID</th><th>Type</th><th>Origin</th><th>Destination</th>
+                <th>Shipment ID</th><th>Opened</th><th>Type</th><th>Origin</th><th>Destination</th>
                 <th>Client</th><th>Supplier</th><th>Buy Cost</th><th>Sell Rate</th><th>ETD</th><th>ETA</th>
                 <th>Status</th><th>Notes</th><th>Actions</th>
               </tr>
             </thead>
             <tbody id="tbody">
-              <tr class="spinner-row"><td colspan="14"><div class="spinner"></div></td></tr>
+              <tr class="spinner-row"><td colspan="15"><div class="spinner"></div></td></tr>
             </tbody>
           </table>
         </div>
@@ -376,6 +376,10 @@
             <div class="field">
               <label>Shipment ID *</label>
               <input type="text" id="a-id" placeholder="e.g. SHIP-001">
+            </div>
+            <div class="field">
+              <label>Job Opening Date (auto = today)</label>
+              <input type="date" id="a-opened">
             </div>
             <div class="field">
               <label>Type *</label>
@@ -544,7 +548,7 @@
           <div style="padding:14px 24px;background:#F8FAFC;font-size:.88rem" id="ledger-sums"></div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Shipment</th><th>Route</th><th>Cost</th><th>Paid</th><th>Balance</th><th>Pay Status</th><th></th></tr></thead>
+              <thead><tr><th>Shipment</th><th>Opened</th><th>Route</th><th>Cost</th><th>Paid</th><th>Balance</th><th>Pay Status</th><th></th></tr></thead>
               <tbody id="ledger-tbody"></tbody>
             </table>
           </div>
@@ -616,6 +620,10 @@
           <label>Shipment ID</label>
           <input type="text" id="e-id">
           <input type="hidden" id="e-original-id">
+        </div>
+        <div class="field">
+          <label>Job Opening Date</label>
+          <input type="date" id="e-opened">
         </div>
         <div class="field">
           <label>Type</label>
@@ -828,6 +836,7 @@ let pendingDeleteID = null;
 window.addEventListener('load', () => {
   checkLogin();
   document.getElementById('cfg-url').value = SCRIPT_URL;
+  document.getElementById('a-opened').value = new Date().toISOString().slice(0,10);
   if (localStorage.getItem('shiptrack_authed') === 'yes') loadShipments();
 });
 
@@ -843,6 +852,7 @@ function showPage(name, el) {
   document.getElementById('topbar-title').textContent = titles[name] || '';
   if (name === 'dashboard') loadShipments();
   if (name === 'suppliers') renderSupplierPage();
+  if (name === 'add') document.getElementById('a-opened').value = document.getElementById('a-opened').value || new Date().toISOString().slice(0,10);
 }
 
 // ═══════════════════════════════════════════
@@ -895,7 +905,7 @@ async function loadShipments() {
 }
 
 function showSkeleton() {
-  const cols = 12;
+  const cols = 15;
   document.getElementById('tbody').innerHTML = Array(5).fill(0).map(() => `
     <tr class="skeleton-row">${Array(cols).fill(0).map(() =>
       `<td><div class="skel" style="width:${50+Math.random()*40}%"></div></td>`
@@ -988,6 +998,7 @@ function renderTable() {
         ${s.Status !== 'Closed' ? `<input type="checkbox" class="row-check" onchange="updateBulkBar()" data-id="${s.ID}" style="width:16px;height:16px;cursor:pointer;accent-color:var(--blue)">` : '<span style="color:var(--muted);font-size:.7rem">🔒</span>'}
       </td>
       <td><span class="ship-id">${s.ID}</span></td>
+      <td style="color:var(--muted);font-size:.8rem;white-space:nowrap">${formatDate(s.CreatedAt)}</td>
       <td><span class="type-badge" style="background:${tColor[s.ShipmentType]||'#F8FAFC'}">${tEmoji[s.ShipmentType]||'📦'} ${s.ShipmentType}</span></td>
       <td>${s.Origin||'—'}</td>
       <td>${s.Destination||'—'}</td>
@@ -1095,6 +1106,12 @@ function statusBadge(s) {
   return map[s] || `<span class="status">${s}</span>`;
 }
 
+function jobBadge(s) {
+  return s.Status === 'Closed'
+    ? '<span class="status s-closed" style="margin-right:6px">🔒 Job Closed</span>'
+    : '<span class="status s-arrived" style="margin-right:6px">🟢 Open</span>';
+}
+
 function setFilter(f, el) {
   currentFilter = f;
   document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
@@ -1119,6 +1136,7 @@ function autoFillSubject() {
 // ═══════════════════════════════════════════
 async function addShipment() {
   const id         = document.getElementById('a-id').value.trim();
+  const opened     = document.getElementById('a-opened').value;
   const type       = document.getElementById('a-type').value;
   const origin     = document.getElementById('a-origin').value.trim();
   const dest       = document.getElementById('a-dest').value.trim();
@@ -1155,7 +1173,7 @@ async function addShipment() {
   const addBtn = document.getElementById('add-btn');
   addBtn.textContent='Saving…'; addBtn.disabled=true;
   const res = await apiFetch('POST',{
-    action:'addShipment', ID:id, ShipmentType:type, Origin:origin, Destination:dest,
+    action:'addShipment', ID:id, OpenedAt:opened, ShipmentType:type, Origin:origin, Destination:dest,
     ETD:etd, ETA:eta, Status:status, Supplier:supplier, Cost:cost, Currency:currency, Notes:notes,
     Client:client, BLAWB:blawb, Weight:weight, POLPOD:polpod, Subject:subject,
     SellRate:String(sellRate), SellCurrency:sellCur,
@@ -1178,6 +1196,7 @@ function clearAddForm() {
   document.getElementById('a-currency').value='AED';
   document.getElementById('a-sell-currency').value='AED';
   document.getElementById('a-status').value='Booked';
+  document.getElementById('a-opened').value=new Date().toISOString().slice(0,10);
 }
 
 // ═══════════════════════════════════════════
@@ -1188,6 +1207,7 @@ function openEdit(id) {
   if (!s) return;
   document.getElementById('e-original-id').value  = s.ID;
   document.getElementById('e-id').value            = s.ID;
+  document.getElementById('e-opened').value        = toInputDate(s.CreatedAt);
   document.getElementById('e-type').value          = s.ShipmentType || '';
   document.getElementById('e-origin').value        = s.Origin || '';
   document.getElementById('e-dest').value          = s.Destination || '';
@@ -1223,6 +1243,7 @@ async function updateShipment() {
     action:       'updateShipment',
     ID:           originalID,
     NewID:        document.getElementById('e-id').value.trim(),
+    OpenedAt:     document.getElementById('e-opened').value,
     ShipmentType: document.getElementById('e-type').value,
     Origin:       document.getElementById('e-origin').value.trim(),
     Destination:  document.getElementById('e-dest').value.trim(),
@@ -1265,6 +1286,7 @@ async function updateShipment() {
       allShipments[idx] = {
         ...allShipments[idx],
         ID:           data.NewID,
+        CreatedAt:    data.OpenedAt || allShipments[idx].CreatedAt,
         ShipmentType: data.ShipmentType,
         Origin:       data.Origin,
         Destination:  data.Destination,
@@ -1349,8 +1371,9 @@ async function renderSupplierPage(){
   allShipments.forEach(s=>{
     if(!s.Supplier||!s.Supplier.trim()) return;
     const k=supKey(s.Supplier);
-    if(!map[k]) map[k]={name:s.Supplier.trim(), byCur:{}, count:0};
+    if(!map[k]) map[k]={name:s.Supplier.trim(), byCur:{}, count:0, open:0};
     map[k].count++;
+    if(s.Status !== 'Closed') map[k].open++;
     const cost=parseFloat(s.Cost), cur=s.Currency||'AED';
     if(!isNaN(cost)&&cost>0) map[k].byCur[cur]=(map[k].byCur[cur]||0)+cost;
   });
@@ -1389,7 +1412,7 @@ async function renderSupplierPage(){
         <div style="font-size:.8rem;color:var(--muted);margin-top:6px">Billed: <b>${curStr(map[k].byCur)}</b></div>
         <div style="font-size:.8rem;color:var(--green);margin-top:2px">Paid: <b>${curStr(paid)}</b></div>
         <div class="supplier-amount" style="font-size:1.1rem;margin-top:4px">Due: ${curStr(due)}</div>
-        <div class="supplier-meta">${map[k].count} shipment${map[k].count>1?'s':''} · tap for ledger →</div>
+        <div class="supplier-meta">${map[k].count} shipment${map[k].count>1?'s':''} · ${map[k].open} open · tap for ledger →</div>
       </div>`;
     }).join('')}`;
   renderSupplierTable();
@@ -1439,17 +1462,20 @@ function renderLedger(){
   pays.forEach(p=>{const c=p.Currency||'AED';pd[c]=(pd[c]||0)+(parseFloat(p.Amount)||0);});
   Object.entries(b).forEach(([c,a])=>du[c]=(du[c]||0)+a-(pd[c]||0));
   Object.entries(pd).forEach(([c,a])=>{if(du[c]===undefined)du[c]=-a;});
+  const openCount=ships.filter(s=>s.Status!=='Closed').length;
+  const closedCount=ships.length-openCount;
   document.getElementById('ledger-sums').innerHTML=
-    `Billed: <b>${curStr(b)}</b> &nbsp;·&nbsp; Paid: <b style="color:var(--green)">${curStr(pd)}</b> &nbsp;·&nbsp; <span style="color:var(--rose);font-weight:700">OUTSTANDING: ${curStr(du)}</span>`;
+    `Billed: <b>${curStr(b)}</b> &nbsp;·&nbsp; Paid: <b style="color:var(--green)">${curStr(pd)}</b> &nbsp;·&nbsp; <span style="color:var(--rose);font-weight:700">OUTSTANDING: ${curStr(du)}</span> &nbsp;·&nbsp; Jobs: <b>${openCount} open / ${closedCount} closed</b>`;
   document.getElementById('ledger-tbody').innerHTML = ships.length===0
-    ? `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted)">No shipments for this supplier</td></tr>`
+    ? `<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--muted)">No shipments for this supplier</td></tr>`
     : ships.map(s=>{
       const c=s.Currency||'AED'; const cost=parseFloat(s.Cost)||0;
       const paid=(paidByShip(s.ID)[c])||0; const bal=cost-paid;
       const st = cost>0 && bal<=0.009 ? '<span class="status s-arrived">Paid</span>' : paid>0 ? '<span class="status s-booked">Partial</span>' : '<span class="status s-delayed">Unpaid</span>';
       const last=pays.filter(p=>String(p.ShipmentID||'').trim()===String(s.ID).trim()).sort((x,y)=>(y.AddedAt||0)-(x.AddedAt||0))[0];
       return `<tr>
-        <td><span class="ship-id">${s.ID}</span></td>
+        <td>${jobBadge(s)}<span class="ship-id">${s.ID}</span>${s.Status==='Closed'&&s.LastUpdated?`<div style="font-size:.7rem;color:var(--muted);margin-top:3px">closed ${formatDate(s.LastUpdated)}</div>`:''}</td>
+        <td style="color:var(--muted);font-size:.8rem;white-space:nowrap">${formatDate(s.CreatedAt)}</td>
         <td>${s.Origin||'—'} → ${s.Destination||'—'}</td>
         <td>${formatCost(s.Cost,c)}</td>
         <td style="color:var(--green)">${paid>0?c+' '+paid.toLocaleString():'—'}</td>
