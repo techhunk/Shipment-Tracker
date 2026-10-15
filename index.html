@@ -6,283 +6,123 @@
   <title>ShipTrack — Shipment Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --blue:  #2563EB; --blue2: #1D4ED8;
-      --rose:  #F43F5E; --green: #10B981; --amber: #F59E0B; --teal: #0D9488;
-      --ink:   #0F172A; --muted: #64748B; --line:  #E2E8F0;
-      --card:  #FFFFFF; --bg:    #F1F5F9;
-      --radius: 14px;
-      --shadow: 0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06);
-      --shadow-lg: 0 8px 32px rgba(0,0,0,.14);
-    }
+    :root { --blue:#2563EB; --blue2:#1D4ED8; --rose:#F43F5E; --green:#10B981; --amber:#F59E0B; --teal:#0D9488; --ink:#0F172A; --muted:#64748B; --line:#E2E8F0; --card:#FFFFFF; --bg:#F1F5F9; --radius:14px; --shadow:0 1px 3px rgba(0,0,0,.08), 0 4px 16px rgba(0,0,0,.06); --shadow-lg:0 8px 32px rgba(0,0,0,.14); }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--ink); min-height: 100vh; }
-
-    /* ── LOGIN SCREEN ── */
-    #login-screen {
-      position: fixed; inset: 0; background: var(--ink);
-      display: flex; align-items: center; justify-content: center; z-index: 9999;
-    }
+    #login-screen { position: fixed; inset: 0; background: var(--ink); display: flex; align-items: center; justify-content: center; z-index: 9999; }
     #login-screen.hidden { display: none; }
-    .login-box {
-      background: #1E293B; border-radius: 20px; padding: 44px 40px;
-      width: 360px; box-shadow: var(--shadow-lg); text-align: center;
-    }
+    .login-box { background: #1E293B; border-radius: 20px; padding: 44px 40px; width: 360px; box-shadow: var(--shadow-lg); text-align: center; }
     .login-logo { font-size: 2.8rem; margin-bottom: 10px; }
     .login-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
     .login-sub { font-size: .85rem; color: rgba(255,255,255,.4); margin-bottom: 28px; }
     .login-field { position: relative; margin-bottom: 14px; }
-    .login-field input {
-      width: 100%; padding: 13px 16px; background: rgba(255,255,255,.07);
-      border: 1.5px solid rgba(255,255,255,.1); border-radius: 10px;
-      color: #fff; font-size: .95rem; font-family: inherit; outline: none;
-      transition: border-color .2s;
-    }
-    .login-field input:focus { border-color: var(--blue); }
-    .login-field input::placeholder { color: rgba(255,255,255,.3); }
-    .login-btn {
-      width: 100%; padding: 13px; background: var(--blue); color: #fff;
-      border: none; border-radius: 10px; font-size: .95rem; font-weight: 700;
-      cursor: pointer; margin-top: 6px; transition: background .2s;
-      font-family: inherit;
-    }
-    .login-btn:hover { background: var(--blue2); }
+    .login-field input { width: 100%; padding: 13px 16px; background: rgba(255,255,255,.07); border: 1.5px solid rgba(255,255,255,.1); border-radius: 10px; color: #fff; font-size: .95rem; font-family: inherit; outline: none; }
+    .login-btn { width: 100%; padding: 13px; background: var(--blue); color: #fff; border: none; border-radius: 10px; font-size: .95rem; font-weight: 700; cursor: pointer; margin-top: 6px; font-family: inherit; }
     .login-err { color: #F87171; font-size: .82rem; margin-top: 10px; min-height: 20px; }
-    .login-remember { display: flex; align-items: center; gap: 8px; margin: 10px 0 4px; text-align: left; }
-    .login-remember input { width: auto; }
-    .login-remember label { font-size: .82rem; color: rgba(255,255,255,.5); cursor: pointer; }
-
-    /* ── LAYOUT ── */
     .layout { display: flex; min-height: 100vh; }
-    .sidebar {
-      width: 240px; background: var(--ink); display: flex; flex-direction: column;
-      padding: 28px 0; position: fixed; height: 100vh; z-index: 100;
-    }
-    .logo {
-      font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; font-weight: 700;
-      color: #fff; padding: 0 24px 28px; border-bottom: 1px solid rgba(255,255,255,.1);
-      display: flex; align-items: center; gap: 10px;
-    }
-    .logo-icon {
-      width: 36px; height: 36px; background: var(--blue); border-radius: 10px;
-      display: flex; align-items: center; justify-content: center; font-size: 1.1rem;
-    }
+    .sidebar { width: 240px; background: var(--ink); display: flex; flex-direction: column; padding: 28px 0; position: fixed; height: 100vh; z-index: 100; }
+    .logo { font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; font-weight: 700; color: #fff; padding: 0 24px 28px; border-bottom: 1px solid rgba(255,255,255,.1); display: flex; align-items: center; gap: 10px; }
+    .logo-icon { width: 36px; height: 36px; background: var(--blue); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; }
     .nav { margin-top: 20px; flex: 1; }
-    .nav-item {
-      display: flex; align-items: center; gap: 12px; padding: 12px 24px;
-      color: rgba(255,255,255,.55); cursor: pointer; font-size: .92rem; font-weight: 500;
-      transition: all .2s; border-left: 3px solid transparent;
-    }
-    .nav-item:hover { color: #fff; background: rgba(255,255,255,.05); }
+    .nav-item { display: flex; align-items: center; gap: 12px; padding: 12px 24px; color: rgba(255,255,255,.55); cursor: pointer; font-size: .92rem; font-weight: 500; border-left: 3px solid transparent; }
     .nav-item.active { color: #fff; background: rgba(255,255,255,.08); border-left-color: var(--blue); }
     .nav-icon { font-size: 1.1rem; width: 22px; text-align: center; }
     .sidebar-footer { padding: 20px 24px; border-top: 1px solid rgba(255,255,255,.1); font-size: .8rem; color: rgba(255,255,255,.3); }
-
     .main { margin-left: 240px; flex: 1; display: flex; flex-direction: column; }
-    .topbar {
-      background: var(--card); border-bottom: 1px solid var(--line);
-      padding: 18px 32px; display: flex; align-items: center;
-      justify-content: space-between; position: sticky; top: 0; z-index: 50;
-    }
+    .topbar { background: var(--card); border-bottom: 1px solid var(--line); padding: 18px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
     .topbar-title { font-family: 'Space Grotesk', sans-serif; font-size: 1.2rem; font-weight: 700; }
-    .topbar-actions { display: flex; gap: 10px; align-items: center; }
-
-    .btn {
-      display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px;
-      border-radius: 8px; font-size: .88rem; font-weight: 600; cursor: pointer;
-      border: none; transition: all .2s; font-family: inherit;
-    }
+    .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; border-radius: 8px; font-size: .88rem; font-weight: 600; cursor: pointer; border: none; font-family: inherit; }
     .btn-primary { background: var(--blue); color: #fff; }
-    .btn-primary:hover { background: var(--blue2); transform: translateY(-1px); }
     .btn-ghost { background: transparent; color: var(--muted); border: 1.5px solid var(--line); }
-    .btn-ghost:hover { border-color: var(--blue); color: var(--blue); }
     .btn-danger { background: #FEE2E2; color: var(--rose); }
-    .btn-danger:hover { background: var(--rose); color: #fff; }
     .btn-sm { padding: 6px 12px; font-size: .8rem; }
-
     .page { padding: 28px 32px; display: none; }
     .page.active { display: block; }
-
-    /* ── STATS ── */
     .stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 16px; margin-bottom: 28px; }
-    .stat-card {
-      background: var(--card); border-radius: var(--radius); padding: 20px 22px;
-      box-shadow: var(--shadow); display: flex; align-items: center; gap: 16px;
-    }
+    .stat-card { background: var(--card); border-radius: var(--radius); padding: 20px 22px; box-shadow: var(--shadow); display: flex; align-items: center; gap: 16px; }
     .stat-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0; }
     .stat-val { font-family: 'Space Grotesk', sans-serif; font-size: 1.8rem; font-weight: 700; line-height: 1; }
     .stat-label { font-size: .78rem; color: var(--muted); margin-top: 4px; font-weight: 500; }
-
-    /* ── CARD / TABLE ── */
     .card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
-    .card-header {
-      padding: 20px 24px; border-bottom: 1px solid var(--line);
-      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
-    }
+    .card-header { padding: 20px 24px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
     .card-title { font-family: 'Space Grotesk', sans-serif; font-size: 1rem; font-weight: 700; }
     .search-wrap { position: relative; flex: 1; max-width: 280px; }
-    .search-wrap input {
-      width: 100%; padding: 8px 12px 8px 36px; border: 1.5px solid var(--line);
-      border-radius: 8px; font-size: .88rem; font-family: inherit; outline: none; transition: border-color .2s;
-    }
-    .search-wrap input:focus { border-color: var(--blue); }
+    .search-wrap input { width: 100%; padding: 8px 12px 8px 36px; border: 1.5px solid var(--line); border-radius: 8px; font-size: .88rem; font-family: inherit; outline: none; }
     .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); font-size: .9rem; }
     .filter-pills { display: flex; gap: 6px; flex-wrap: wrap; }
-    .pill {
-      padding: 5px 12px; border-radius: 20px; font-size: .78rem; font-weight: 600;
-      cursor: pointer; border: 1.5px solid var(--line); background: transparent;
-      color: var(--muted); transition: all .2s; font-family: inherit;
-    }
-    .pill.active, .pill:hover { border-color: var(--blue); color: var(--blue); background: #EFF6FF; }
-
+    .pill { padding: 5px 12px; border-radius: 20px; font-size: .78rem; font-weight: 600; cursor: pointer; border: 1.5px solid var(--line); background: transparent; color: var(--muted); font-family: inherit; }
+    .pill.active { border-color: var(--blue); color: var(--blue); background: #EFF6FF; }
     .table-wrap { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; }
     thead tr { background: #F8FAFC; }
-    th { padding: 12px 16px; text-align: left; font-size: .75rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; border-bottom: 1px solid var(--line); white-space: nowrap; }
+    th { padding: 12px 16px; text-align: left; font-size: .75rem; font-weight: 600; color: var(--muted); text-transform: uppercase; border-bottom: 1px solid var(--line); white-space: nowrap; }
     td { padding: 14px 16px; font-size: .88rem; border-bottom: 1px solid var(--line); vertical-align: middle; }
-    tbody tr:last-child td { border-bottom: none; }
-    tbody tr:hover { background: #F8FAFC; }
     tr.row-closed td { opacity: .45; }
-
     .ship-id { font-weight: 700; color: var(--blue); font-family: 'Space Grotesk', sans-serif; }
     .type-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 9px; border-radius: 6px; font-size: .76rem; font-weight: 600; }
     .status { display: inline-flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 20px; font-size: .76rem; font-weight: 600; }
     .status::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: currentColor; opacity: .6; }
-    .s-booked  { background: #FEF3C7; color: #92400E; }
+    .s-booked { background: #FEF3C7; color: #92400E; }
     .s-transit { background: #DBEAFE; color: #1E40AF; }
     .s-arrived { background: #D1FAE5; color: #065F46; }
     .s-delayed { background: #FFE4E6; color: #9F1239; }
-    .s-closed  { background: #F1F5F9; color: #64748B; }
+    .s-closed { background: #F1F5F9; color: #64748B; }
     .action-btns { display: flex; gap: 6px; }
-
     .empty { text-align: center; padding: 60px 20px; color: var(--muted); }
     .empty-icon { font-size: 3rem; margin-bottom: 12px; }
-    .empty h3 { font-size: 1.1rem; font-weight: 600; margin-bottom: 6px; color: var(--ink); }
-    .spinner-row td { text-align: center; padding: 60px; }
     .spinner { width: 36px; height: 36px; border: 3px solid var(--line); border-top-color: var(--blue); border-radius: 50%; animation: spin .7s linear infinite; margin: 0 auto; }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    /* ── SKELETON ── */
-    .skeleton-row td { padding: 14px 16px; }
-    .skel {
-      height: 14px; border-radius: 6px;
-      background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%);
-      background-size: 200% 100%;
-      animation: shimmer 1.2s infinite;
-    }
-    @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
-
-    /* ── MODAL ── */
     .overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,.5); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; }
     .overlay.open { display: flex; }
-    .modal { background: var(--card); border-radius: 18px; width: 90%; max-width: 560px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); animation: pop .2s ease; }
-    @keyframes pop { from { transform: scale(.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .modal { background: var(--card); border-radius: 18px; width: 90%; max-width: 560px; max-height: 90vh; overflow-y: auto; box-shadow: var(--shadow-lg); }
     .modal-head { padding: 22px 24px 18px; border-bottom: 1px solid var(--line); display: flex; align-items: center; justify-content: space-between; }
     .modal-head h2 { font-family: 'Space Grotesk', sans-serif; font-size: 1.1rem; font-weight: 700; }
-    .close-modal { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--muted); line-height: 1; }
+    .close-modal { background: none; border: none; font-size: 1.3rem; cursor: pointer; color: var(--muted); }
     .modal-body { padding: 22px 24px; }
     .modal-foot { padding: 16px 24px; border-top: 1px solid var(--line); display: flex; gap: 10px; justify-content: flex-end; }
-
-    /* ── FORM ── */
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .form-grid .full { grid-column: 1/-1; }
     .field { display: flex; flex-direction: column; gap: 6px; }
     .field label { font-size: .82rem; font-weight: 600; color: var(--ink); }
-    .field input, .field select, .field textarea {
-      padding: 9px 12px; border: 1.5px solid var(--line); border-radius: 8px;
-      font-size: .9rem; font-family: inherit; outline: none; transition: border-color .2s; background: #fff;
-    }
-    .field input:focus, .field select:focus, .field textarea:focus { border-color: var(--blue); }
+    .field input, .field select, .field textarea { padding: 9px 12px; border: 1.5px solid var(--line); border-radius: 8px; font-size: .9rem; font-family: inherit; outline: none; background: #fff; }
     .field textarea { resize: vertical; min-height: 70px; }
-
-    /* ── SUPPLIER PAGE ── */
     .supplier-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-bottom: 28px; }
-    .supplier-card {
-      background: var(--card); border-radius: var(--radius); padding: 22px;
-      box-shadow: var(--shadow); border-left: 4px solid var(--blue);
-    }
+    .supplier-card { background: var(--card); border-radius: var(--radius); padding: 22px; box-shadow: var(--shadow); border-left: 4px solid var(--blue); cursor: pointer; }
     .supplier-name { font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 1rem; margin-bottom: 6px; }
     .supplier-amount { font-family: 'Space Grotesk', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--rose); }
     .supplier-meta { font-size: .78rem; color: var(--muted); margin-top: 4px; }
-    .supplier-paid { border-left-color: var(--green); }
-    .supplier-paid .supplier-amount { color: var(--green); }
-
-    /* ── SETTINGS ── */
-    .settings-grid { display: grid; gap: 20px; max-width: 640px; }
-    .settings-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; }
-    .settings-card h3 { font-family: 'Space Grotesk', sans-serif; font-weight: 700; margin-bottom: 16px; font-size: 1rem; }
-    .info-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: .88rem; }
-    .info-row:last-child { border-bottom: none; }
-    .info-label { color: var(--muted); font-weight: 500; }
-    .info-val { font-weight: 600; }
-    .badge-on { background: #D1FAE5; color: #065F46; padding: 3px 10px; border-radius: 20px; font-size: .75rem; font-weight: 700; }
-
-    /* ── TOAST ── */
     #toast-wrap { position: fixed; top: 20px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; }
-    .toast { padding: 12px 18px; border-radius: 10px; font-size: .88rem; font-weight: 500; box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 8px; animation: slideIn .3s ease; min-width: 260px; }
-    @keyframes slideIn { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+    .toast { padding: 12px 18px; border-radius: 10px; font-size: .88rem; font-weight: 500; box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 8px; min-width: 260px; }
     .toast-success { background: #ECFDF5; color: #065F46; border-left: 4px solid var(--green); }
-    .toast-error   { background: #FFF1F2; color: #9F1239; border-left: 4px solid var(--rose); }
-    .toast-info    { background: #EFF6FF; color: #1E40AF; border-left: 4px solid var(--blue); }
-
-    @media (max-width: 900px) {
-      .sidebar { width: 200px; } .main { margin-left: 200px; }
-      .stats-grid { grid-template-columns: 1fr 1fr; }
-      .supplier-grid { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 640px) {
-      .sidebar { display: none; } .main { margin-left: 0; }
-      .page { padding: 16px; } .topbar { padding: 14px 16px; }
-      .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-      .supplier-grid { grid-template-columns: 1fr; }
-      .form-grid { grid-template-columns: 1fr; } .form-grid .full { grid-column: 1; }
-    }
+    .toast-error { background: #FFF1F2; color: #9F1239; border-left: 4px solid var(--rose); }
+    .toast-info { background: #EFF6FF; color: #1E40AF; border-left: 4px solid var(--blue); }
+    @media (max-width: 900px) { .sidebar { width: 200px; } .main { margin-left: 200px; } .stats-grid { grid-template-columns: 1fr 1fr; } .supplier-grid { grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 640px) { .sidebar { display: none; } .main { margin-left: 0; } .page { padding: 16px; } .stats-grid { grid-template-columns: 1fr 1fr; } .supplier-grid { grid-template-columns: 1fr; } .form-grid { grid-template-columns: 1fr; } .form-grid .full { grid-column: 1; } }
   </style>
 </head>
 <body>
-
-<!-- ── LOGIN SCREEN ── -->
 <div id="login-screen">
   <div class="login-box">
     <div class="login-logo">📦</div>
     <div class="login-title">ShipTrack</div>
     <div class="login-sub">Enter your password to continue</div>
-    <div class="login-field">
-      <input type="password" id="pwd-input" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()">
-    </div>
-    <div class="login-remember">
-      <input type="checkbox" id="remember-me" checked>
-      <label for="remember-me">Remember me on this device</label>
-    </div>
+    <div class="login-field"><input type="password" id="pwd-input" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()"></div>
     <button class="login-btn" onclick="doLogin()">🔐 Login</button>
     <div class="login-err" id="login-err"></div>
   </div>
 </div>
-
 <div id="toast-wrap"></div>
-
 <div class="layout">
-  <!-- SIDEBAR -->
   <aside class="sidebar">
     <div class="logo"><div class="logo-icon">📦</div>ShipTrack</div>
     <nav class="nav">
-      <div class="nav-item active" data-page="dashboard" onclick="showPage('dashboard',this)">
-        <span class="nav-icon">📊</span> Dashboard
-      </div>
-      <div class="nav-item" data-page="add" onclick="showPage('add',this)">
-        <span class="nav-icon">➕</span> Add Shipment
-      </div>
-      <div class="nav-item" data-page="suppliers" onclick="showPage('suppliers',this)">
-        <span class="nav-icon">💰</span> Supplier Outstanding
-      </div>
-      <div class="nav-item" data-page="settings" onclick="showPage('settings',this)">
-        <span class="nav-icon">⚙️</span> Settings
-      </div>
+      <div class="nav-item active" data-page="dashboard" onclick="showPage('dashboard',this)"><span class="nav-icon">📊</span> Dashboard</div>
+      <div class="nav-item" data-page="add" onclick="showPage('add',this)"><span class="nav-icon">➕</span> Add Shipment</div>
+      <div class="nav-item" data-page="suppliers" onclick="showPage('suppliers',this)"><span class="nav-icon">💰</span> Supplier Outstanding</div>
+      <div class="nav-item" data-page="settings" onclick="showPage('settings',this)"><span class="nav-icon">⚙️</span> Settings</div>
     </nav>
-    <div class="sidebar-footer">ShipTrack v3.3</div>
+    <div class="sidebar-footer">ShipTrack v4.0</div>
   </aside>
-
-  <!-- MAIN -->
   <div class="main">
     <div class="topbar">
       <div class="topbar-title" id="topbar-title">Dashboard</div>
@@ -295,71 +135,26 @@
     <!-- DASHBOARD -->
     <div class="page active" id="page-dashboard">
       <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-icon" style="background:#EFF6FF">📦</div>
-          <div><div class="stat-val" id="stat-total">—</div><div class="stat-label">Active Shipments</div></div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background:#DBEAFE">🚚</div>
-          <div><div class="stat-val" id="stat-transit">—</div><div class="stat-label">In Transit</div></div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background:#D1FAE5">✅</div>
-          <div><div class="stat-val" id="stat-arrived">—</div><div class="stat-label">Arrived</div></div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-icon" style="background:#FFE4E6">⚠️</div>
-          <div><div class="stat-val" id="stat-delayed">—</div><div class="stat-label">Delayed</div></div>
-        </div>
+        <div class="stat-card"><div class="stat-icon" style="background:#EFF6FF">📦</div><div><div class="stat-val" id="stat-total">—</div><div class="stat-label">Active</div></div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:#DBEAFE">🚚</div><div><div class="stat-val" id="stat-transit">—</div><div class="stat-label">In Transit</div></div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:#D1FAE5">✅</div><div><div class="stat-val" id="stat-arrived">—</div><div class="stat-label">Arrived</div></div></div>
+        <div class="stat-card"><div class="stat-icon" style="background:#FFE4E6">⚠️</div><div><div class="stat-val" id="stat-delayed">—</div><div class="stat-label">Delayed</div></div></div>
       </div>
       <div class="card">
         <div class="card-header">
           <div class="card-title">All Shipments</div>
-          <div class="search-wrap">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="search" placeholder="Search ID, origin, supplier…" oninput="renderTable()">
-          </div>
+          <div class="search-wrap"><span class="search-icon">🔍</span><input type="text" id="search" placeholder="Search…" oninput="renderTable()"></div>
           <div class="filter-pills">
-            <button class="pill active" onclick="setFilter('active',this)">🟢 Active</button>
+            <button class="pill active" onclick="setFilter('active',this)">Active</button>
             <button class="pill" onclick="setFilter('all',this)">All</button>
-            <button class="pill" onclick="setFilter('Booked',this)">Booked</button>
-            <button class="pill" onclick="setFilter('In Transit',this)">In Transit</button>
-            <button class="pill" onclick="setFilter('Arrived',this)">Arrived</button>
-            <button class="pill" onclick="setFilter('Delayed',this)">Delayed</button>
-            <button class="pill" onclick="setFilter('Closed',this)">🔒 Closed</button>
+            <button class="pill" onclick="setFilter('Closed',this)">Closed</button>
           </div>
         </div>
-
-        <!-- BULK ACTION BAR -->
-        <div id="bulk-bar" style="display:none;align-items:center;gap:12px;padding:10px 20px;background:#EFF6FF;border-bottom:1px solid #BFDBFE">
-          <span style="font-size:.88rem;font-weight:600;color:var(--blue)">
-            <span id="bulk-count">0</span> selected
-          </span>
-          <button id="bulk-close-btn" class="btn btn-primary btn-sm" onclick="bulkClose()">🔒 Close Selected</button>
-          <button class="btn btn-ghost btn-sm" onclick="document.querySelectorAll('.row-check').forEach(c=>c.checked=false);updateBulkBar()">✕ Clear</button>
-        </div>
-
         <div class="table-wrap">
           <table>
-            <thead>
-              <tr>
-                <th style="width:36px;text-align:center">
-                  <input type="checkbox" title="Select all" onchange="toggleSelectAll(this)" style="width:16px;height:16px;cursor:pointer;accent-color:var(--blue)">
-                </th>
-                <th>Shipment ID</th><th>Opened</th><th>Type</th><th>Origin</th><th>Destination</th>
-                <th>Client</th><th>Supplier</th><th>Buy Cost</th><th>Sell Rate</th><th>ETD</th><th>ETA</th>
-                <th>Status</th><th>Notes</th><th>Actions</th>
-              </tr>
-            </thead>
-            <tbody id="tbody">
-              <tr class="spinner-row"><td colspan="15"><div class="spinner"></div></td></tr>
-            </tbody>
+            <thead><tr><th>ID</th><th>Opened</th><th>Type</th><th>Origin</th><th>Dest</th><th>Client</th><th>Supplier</th><th>Cost</th><th>Sell</th><th>ETD</th><th>ETA</th><th>Status</th><th>Actions</th></tr></thead>
+            <tbody id="tbody"><tr><td colspan="13" style="text-align:center;padding:40px"><div class="spinner"></div></td></tr></tbody>
           </table>
-        </div>
-        <div id="empty-state" class="empty" style="display:none">
-          <div class="empty-icon">📭</div>
-          <h3>No shipments found</h3>
-          <p>Add your first shipment to get started.</p>
         </div>
       </div>
     </div>
@@ -369,132 +164,36 @@
       <div class="card" style="max-width:720px">
         <div class="card-header"><div class="card-title">➕ New Shipment</div></div>
         <div class="modal-body">
-
-          <!-- SECTION: Shipment Details -->
-          <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:12px;padding-bottom:6px;border-bottom:2px solid var(--line)">📦 Shipment Details</div>
           <div class="form-grid">
-            <div class="field">
-              <label>Shipment ID *</label>
-              <input type="text" id="a-id" placeholder="e.g. SHIP-001">
+            <div class="field"><label>Shipment ID *</label><input type="text" id="a-id"></div>
+            <div class="field"><label>Job Opening Date</label><input type="date" id="a-opened"></div>
+            <div class="field"><label>Invoicing Company *</label>
+              <select id="a-company"><option value="SN Global">🏢 SN Global Shipping</option><option value="Cadence">🚢 Cadence Freight</option></select>
             </div>
-            <div class="field">
-              <label>Job Opening Date (auto = today)</label>
-              <input type="date" id="a-opened">
+            <div class="field"><label>Type *</label><select id="a-type"><option value="">Select…</option><option>Air</option><option>Sea</option><option>Road</option></select></div>
+            <div class="field"><label>Origin *</label><input type="text" id="a-origin"></div>
+            <div class="field"><label>Destination *</label><input type="text" id="a-dest"></div>
+            <div class="field"><label>ETD *</label><input type="date" id="a-etd"></div>
+            <div class="field"><label>ETA *</label><input type="date" id="a-eta"></div>
+            <div class="field"><label>Status</label><select id="a-status"><option>Booked</option><option>In Transit</option><option>Arrived</option><option>Delayed</option><option>Closed</option></select></div>
+            <div class="field"><label>Supplier</label><input type="text" id="a-supplier"></div>
+            <div class="field"><label>Buy Cost</label><div style="display:flex;gap:8px"><select id="a-currency" style="width:80px"><option>AED</option><option>USD</option><option>EUR</option></select><input type="number" id="a-cost" style="flex:1"></div></div>
+            <div class="field full"><label>Client Name *</label>
+              <select id="a-client"><option value="">Select…</option><option>FUTURE POWER STAR TRADING L.L.C</option><option>Gulfroute Global Trading LLC</option><option>ELTEC TRADING</option><option>ACQUIRE HARDWARE TRADING LLC</option><option>FG TECHNICAL SERVICES LLC</option><option>FLORIDA GLOBAL TECHNICAL SERVICES L.L.C</option><option>Ismail Gheewala General Trading LLC</option><option>VALENTIA ME FZ LLE</option><option>Rebecca Foodstuff Trading LLC</option></select>
             </div>
-            <div class="field">
-              <label>Type *</label>
-              <select id="a-type" onchange="autoFillSubject()">
-                <option value="">Select…</option>
-                <option>Air</option><option>Sea</option><option>Road</option><option>Cross-border</option>
-              </select>
+            <div class="field"><label>BL / AWB #</label><input type="text" id="a-blawb"></div>
+            <div class="field"><label>Weight</label><input type="text" id="a-weight"></div>
+            <div class="field"><label>POL/POD</label><input type="text" id="a-polpod"></div>
+            <div class="field"><label>Subject</label><input type="text" id="a-subject"></div>
+            <div class="field"><label>Sell Currency</label><select id="a-sell-currency"><option>AED</option><option>USD</option><option>EUR</option></select></div>
+            <div class="field full"><label>Line Item 1 (Desc / Qty / Rate)</label>
+              <div style="display:flex;gap:8px"><input type="text" id="a-item1-desc" placeholder="Description" style="flex:2"><input type="number" id="a-item1-qty" placeholder="Qty" value="1" style="flex:1"><input type="number" id="a-item1-rate" placeholder="Rate" style="flex:1"></div>
             </div>
-            <div class="field">
-              <label>Origin *</label>
-              <input type="text" id="a-origin" placeholder="e.g. USA" oninput="autoFillPolPod()">
+            <div class="field full"><label>Line Item 2 (Optional)</label>
+              <div style="display:flex;gap:8px"><input type="text" id="a-item2-desc" placeholder="Description" style="flex:2"><input type="number" id="a-item2-qty" placeholder="Qty" value="1" style="flex:1"><input type="number" id="a-item2-rate" placeholder="Rate" style="flex:1"></div>
             </div>
-            <div class="field">
-              <label>Destination *</label>
-              <input type="text" id="a-dest" placeholder="e.g. DXB" oninput="autoFillPolPod()">
-            </div>
-            <div class="field">
-              <label>ETD (Departure) *</label>
-              <input type="date" id="a-etd">
-            </div>
-            <div class="field">
-              <label>ETA (Arrival) *</label>
-              <input type="date" id="a-eta">
-            </div>
-            <div class="field">
-              <label>Status</label>
-              <select id="a-status">
-                <option>Booked</option><option>In Transit</option>
-                <option>Arrived</option><option>Delayed</option><option>Closed</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>Supplier Name</label>
-              <input type="text" id="a-supplier" placeholder="e.g. ABC Logistics">
-            </div>
-            <div class="field">
-              <label>Shipment Cost (Buy Rate)</label>
-              <div style="display:flex;gap:8px">
-                <select id="a-currency" style="width:90px;padding:9px 8px;border:1.5px solid var(--line);border-radius:8px;font-family:inherit;font-size:.9rem;outline:none;background:#fff">
-                  <option>AED</option><option>USD</option><option>GBP</option><option>EUR</option>
-                </select>
-                <input type="number" id="a-cost" placeholder="Buy rate" min="0" style="flex:1">
-              </div>
-            </div>
-            <div class="field full">
-              <label>Notes</label>
-              <textarea id="a-notes" placeholder="Optional internal notes…" rows="2"></textarea>
-            </div>
+            <div class="field full"><label>Notes</label><textarea id="a-notes" rows="2"></textarea></div>
           </div>
-
-          <!-- SECTION: Invoice Details -->
-          <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:20px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--blue);border-bottom-color:#BFDBFE">🧾 Invoice Details (Zoho Auto-Fill)</div>
-          <div class="form-grid">
-            <div class="field">
-              <label>Client Name *</label>
-              <select id="a-client">
-                <option value="">Select client…</option>
-                <option>FUTURE POWER STAR TRADING L.L.C</option>
-                <option>Gulfroute Global Trading LLC</option>
-                <option>Mogli Labs General Trading LTD – ABU DHABI.</option>
-                <option>ELTEC TRADING</option>
-                <option>ACQUIRE HARDWARE TRADING LLC</option>
-                <option>FG TECHNICAL SERVICES LLC</option>
-                <option>FLORIDA GLOBAL TECHNICAL SERVICES L.L.C</option>
-                <option>Ismail Gheewala General Trading LLC</option>
-                <option>VALENTIA ME FZ LLE</option>
-                <option>Rebecca Foodstuff Trading LLC</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>BL / AWB #</label>
-              <input type="text" id="a-blawb" placeholder="e.g. 7661704584">
-            </div>
-            <div class="field">
-              <label>Weight / Vol</label>
-              <input type="text" id="a-weight" placeholder="e.g. 24kg">
-            </div>
-            <div class="field">
-              <label>POL/POD <span style="color:var(--muted);font-weight:400">(auto-filled)</span></label>
-              <input type="text" id="a-polpod" placeholder="e.g. USA/DXB">
-            </div>
-            <div class="field">
-              <label>Subject / Job Type <span style="color:var(--muted);font-weight:400">(auto-filled)</span></label>
-              <input type="text" id="a-subject" placeholder="e.g. Air Freight">
-            </div>
-            <div class="field">
-              <label>Invoice Currency</label>
-              <select id="a-sell-currency" style="padding:9px 12px;border:1.5px solid var(--line);border-radius:8px;font-family:inherit;font-size:.9rem;outline:none;background:#fff;width:100%">
-                <option>AED</option><option>USD</option><option>GBP</option><option>EUR</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- LINE ITEMS -->
-          <div style="margin-top:16px">
-            <div style="font-size:.82rem;font-weight:600;margin-bottom:8px;color:var(--ink)">Invoice Line Items</div>
-            <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:8px">
-              <div class="field" style="margin:0">
-                <input type="text" id="a-item1-desc" placeholder="Description e.g. Door to Door by air" style="width:100%">
-              </div>
-              <div class="field" style="margin:0;width:130px">
-                <input type="number" id="a-item1-rate" placeholder="Rate (AED)" min="0">
-              </div>
-            </div>
-            <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:4px">
-              <div class="field" style="margin:0">
-                <input type="text" id="a-item2-desc" placeholder="Extra line (optional) e.g. Customs Duty" style="width:100%">
-              </div>
-              <div class="field" style="margin:0;width:130px">
-                <input type="number" id="a-item2-rate" placeholder="Rate (AED)" min="0">
-              </div>
-            </div>
-            <div style="font-size:.75rem;color:var(--muted);margin-top:4px">💡 These line items will appear exactly in the Zoho draft invoice</div>
-          </div>
-
           <div style="margin-top:20px;display:flex;gap:10px">
             <button id="add-btn" class="btn btn-primary" onclick="addShipment()">✅ Add Shipment</button>
             <button class="btn btn-ghost" onclick="clearAddForm()">Clear</button>
@@ -503,101 +202,37 @@
       </div>
     </div>
 
-    <!-- SUPPLIER OUTSTANDING (LEDGER) -->
+    <!-- SUPPLIER OUTSTANDING -->
     <div class="page" id="page-suppliers">
       <div id="sup-overview">
         <div class="card" style="margin-bottom:24px">
-          <div class="card-header">
-            <div class="card-title">💰 Supplier Outstanding Payments</div>
-            <div style="font-size:.85rem;color:var(--muted)">Billed − Paid = Due · tap a supplier for its ledger</div>
-          </div>
-          <div class="modal-body">
-            <div class="supplier-grid" id="supplier-grid">
-              <div class="empty"><div class="spinner"></div></div>
-            </div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-header"><div class="card-title">📋 Shipments by Supplier</div>
-            <div class="search-wrap">
-              <span class="search-icon">🔍</span>
-              <input type="text" id="sup-search" placeholder="Filter by supplier…" oninput="renderSupplierTable()">
-            </div>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr><th>Shipment ID</th><th>Supplier</th><th>Route</th><th>Cost (AED)</th><th>Status</th><th>ETA</th></tr>
-              </thead>
-              <tbody id="sup-tbody"></tbody>
-            </table>
-          </div>
+          <div class="card-header"><div class="card-title">💰 Supplier Outstanding Payments</div></div>
+          <div class="modal-body"><div class="supplier-grid" id="supplier-grid"><div class="empty"><div class="spinner"></div></div></div></div>
         </div>
       </div>
-
-      <!-- LEDGER VIEW -->
       <div id="sup-ledger" style="display:none">
         <div class="card">
           <div class="card-header">
-            <div style="display:flex;align-items:center;gap:12px">
-              <button class="btn btn-ghost btn-sm" onclick="backToSuppliers()">← Back</button>
-              <div class="card-title" id="ledger-title">Supplier Ledger</div>
-            </div>
+            <div style="display:flex;align-items:center;gap:12px"><button class="btn btn-ghost btn-sm" onclick="backToSuppliers()">← Back</button><div class="card-title" id="ledger-title">Ledger</div></div>
             <button class="btn btn-primary btn-sm" onclick="openPayModal(firstDueID())">＋ Record Payment</button>
           </div>
           <div style="padding:14px 24px;background:#F8FAFC;font-size:.88rem" id="ledger-sums"></div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Shipment</th><th>Opened</th><th>Route</th><th>Cost</th><th>Paid</th><th>Balance</th><th>Pay Status</th><th></th></tr></thead>
-              <tbody id="ledger-tbody"></tbody>
-            </table>
-          </div>
+          <div class="table-wrap"><table><thead><tr><th>Shipment</th><th>Opened</th><th>Route</th><th>Cost</th><th>Paid</th><th>Balance</th><th>Status</th><th></th></tr></thead><tbody id="ledger-tbody"></tbody></table></div>
         </div>
         <div class="card" style="margin-top:24px">
           <div class="card-header"><div class="card-title">💳 Payment History</div></div>
-          <div class="table-wrap">
-            <table>
-              <thead><tr><th>Date</th><th>Shipment</th><th>Amount</th><th>Method</th><th>Reference</th><th></th></tr></thead>
-              <tbody id="payhist-tbody"></tbody>
-            </table>
-          </div>
+          <div class="table-wrap"><table><thead><tr><th>Date</th><th>Shipment</th><th>Amount</th><th>Method</th><th>Ref</th><th></th></tr></thead><tbody id="payhist-tbody"></tbody></table></div>
         </div>
       </div>
     </div>
 
     <!-- SETTINGS -->
     <div class="page" id="page-settings">
-      <div class="settings-grid">
-        <div class="settings-card">
-          <h3>🔗 Google Apps Script URL</h3>
-          <div class="field" style="margin-bottom:14px">
-            <label>Web App URL</label>
-            <input type="text" id="cfg-url" placeholder="https://script.google.com/macros/s/…/exec">
-          </div>
+      <div class="card" style="max-width:600px">
+        <div class="card-header"><div class="card-title">⚙️ Settings</div></div>
+        <div class="modal-body">
+          <div class="field" style="margin-bottom:14px"><label>Script URL</label><input type="text" id="cfg-url"></div>
           <button class="btn btn-primary" onclick="saveConfig()">💾 Save URL</button>
-        </div>
-        <div class="settings-card">
-          <h3>🔐 Change Password</h3>
-          <div class="field" style="margin-bottom:10px">
-            <label>Current Password</label>
-            <input type="password" id="pwd-current" placeholder="Current password">
-          </div>
-          <div class="field" style="margin-bottom:10px">
-            <label>New Password</label>
-            <input type="password" id="pwd-new" placeholder="New password">
-          </div>
-          <div class="field" style="margin-bottom:14px">
-            <label>Confirm New Password</label>
-            <input type="password" id="pwd-confirm" placeholder="Confirm new password">
-          </div>
-          <button class="btn btn-primary" onclick="changePassword()">🔐 Update Password</button>
-        </div>
-        <div class="settings-card">
-          <h3>📱 Telegram Notifications</h3>
-          <div class="info-row"><span class="info-label">Status</span><span class="badge-on">✅ Active</span></div>
-          <div class="info-row"><span class="info-label">ETD Alert</span><span class="info-val">On departure day</span></div>
-          <div class="info-row"><span class="info-label">ETA Alert</span><span class="info-val">1 day before arrival</span></div>
-          <div class="info-row"><span class="info-label">Overdue Alert</span><span class="info-val">Daily until Arrived/Closed</span></div>
         </div>
       </div>
     </div>
@@ -605,965 +240,225 @@
 </div>
 
 <!-- EDIT MODAL -->
-<div class="overlay" id="edit-overlay" onclick="closeEdit(event)">
+<div class="overlay" id="edit-overlay" onclick="if(event.target===this)closeEditModal()">
   <div class="modal" style="max-width:640px">
-    <div class="modal-head">
-      <h2>✏️ Edit Shipment</h2>
-      <button class="close-modal" onclick="closeEditModal()">×</button>
-    </div>
+    <div class="modal-head"><h2>✏️ Edit Shipment</h2><button class="close-modal" onclick="closeEditModal()">×</button></div>
     <div class="modal-body">
-
-      <!-- Shipment Details -->
-      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px;padding-bottom:5px;border-bottom:2px solid var(--line)">📦 Shipment Details</div>
       <div class="form-grid">
-        <div class="field">
-          <label>Shipment ID</label>
-          <input type="text" id="e-id">
-          <input type="hidden" id="e-original-id">
+        <div class="field"><label>Shipment ID</label><input type="text" id="e-id"><input type="hidden" id="e-original-id"></div>
+        <div class="field"><label>Job Opening Date</label><input type="date" id="e-opened"></div>
+        <div class="field"><label>Invoicing Company</label><select id="e-company"><option value="SN Global">🏢 SN Global Shipping</option><option value="Cadence">🚢 Cadence Freight</option></select></div>
+        <div class="field"><label>Type</label><select id="e-type"><option value="">Select…</option><option>Air</option><option>Sea</option><option>Road</option></select></div>
+        <div class="field"><label>Origin</label><input type="text" id="e-origin"></div>
+        <div class="field"><label>Destination</label><input type="text" id="e-dest"></div>
+        <div class="field"><label>ETD</label><input type="date" id="e-etd"></div>
+        <div class="field"><label>ETA</label><input type="date" id="e-eta"></div>
+        <div class="field"><label>Status</label><select id="e-status"><option>Booked</option><option>In Transit</option><option>Arrived</option><option>Delayed</option><option>Closed</option></select></div>
+        <div class="field"><label>Supplier</label><input type="text" id="e-supplier"></div>
+        <div class="field"><label>Buy Cost</label><div style="display:flex;gap:8px"><select id="e-currency" style="width:80px"><option>AED</option><option>USD</option><option>EUR</option></select><input type="number" id="e-cost" style="flex:1"></div></div>
+        <div class="field full"><label>Client Name</label>
+          <select id="e-client"><option value="">Select…</option><option>FUTURE POWER STAR TRADING L.L.C</option><option>Gulfroute Global Trading LLC</option><option>ELTEC TRADING</option><option>ACQUIRE HARDWARE TRADING LLC</option><option>FG TECHNICAL SERVICES LLC</option><option>FLORIDA GLOBAL TECHNICAL SERVICES L.L.C</option><option>Ismail Gheewala General Trading LLC</option><option>VALENTIA ME FZ LLE</option><option>Rebecca Foodstuff Trading LLC</option></select>
         </div>
-        <div class="field">
-          <label>Job Opening Date</label>
-          <input type="date" id="e-opened">
-        </div>
-        <div class="field">
-          <label>Type</label>
-          <select id="e-type">
-            <option value="">Select…</option>
-            <option>Air</option><option>Sea</option><option>Road</option><option>Cross-border</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>Origin</label>
-          <input type="text" id="e-origin" placeholder="e.g. USA">
-        </div>
-        <div class="field">
-          <label>Destination</label>
-          <input type="text" id="e-dest" placeholder="e.g. DXB">
-        </div>
-        <div class="field">
-          <label>ETD (Departure)</label>
-          <input type="date" id="e-etd">
-        </div>
-        <div class="field">
-          <label>ETA (Arrival)</label>
-          <input type="date" id="e-eta">
-        </div>
-        <div class="field">
-          <label>Supplier Name</label>
-          <input type="text" id="e-supplier" placeholder="e.g. ABC Logistics">
-        </div>
-        <div class="field">
-          <label>Shipment Cost (Buy Rate)</label>
-          <div style="display:flex;gap:8px">
-            <select id="e-currency" style="width:90px;padding:9px 8px;border:1.5px solid var(--line);border-radius:8px;font-family:inherit;font-size:.9rem;outline:none;background:#fff">
-              <option>AED</option><option>USD</option><option>GBP</option><option>EUR</option>
-            </select>
-            <input type="number" id="e-cost" placeholder="Buy rate" min="0" style="flex:1">
-          </div>
-        </div>
-        <div class="field full">
-          <label>Status</label>
-          <select id="e-status">
-            <option>Booked</option><option>In Transit</option>
-            <option>Arrived</option><option>Delayed</option><option>Closed</option>
-          </select>
-        </div>
-        <div class="field full">
-          <label>Notes</label>
-          <textarea id="e-notes" placeholder="Optional notes…" rows="2"></textarea>
-        </div>
+        <div class="field"><label>BL / AWB #</label><input type="text" id="e-blawb"></div>
+        <div class="field"><label>Weight</label><input type="text" id="e-weight"></div>
+        <div class="field"><label>POL/POD</label><input type="text" id="e-polpod"></div>
+        <div class="field"><label>Subject</label><input type="text" id="e-subject"></div>
+        <div class="field"><label>Sell Currency</label><select id="e-sell-currency"><option>AED</option><option>USD</option><option>EUR</option></select></div>
+        <div class="field full"><label>Line Item 1</label><div style="display:flex;gap:8px"><input type="text" id="e-item1-desc" style="flex:2"><input type="number" id="e-item1-qty" style="flex:1"><input type="number" id="e-item1-rate" style="flex:1"></div></div>
+        <div class="field full"><label>Line Item 2</label><div style="display:flex;gap:8px"><input type="text" id="e-item2-desc" style="flex:2"><input type="number" id="e-item2-qty" style="flex:1"><input type="number" id="e-item2-rate" style="flex:1"></div></div>
+        <div class="field full"><label>Notes</label><textarea id="e-notes" rows="2"></textarea></div>
       </div>
-
-      <!-- Invoice Details -->
-      <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:16px 0 10px;padding-bottom:5px;border-bottom:2px solid #BFDBFE">🧾 Invoice Details</div>
-      <div class="form-grid">
-        <div class="field">
-          <label>Client Name</label>
-          <select id="e-client">
-            <option value="">Select client…</option>
-            <option>FUTURE POWER STAR TRADING L.L.C</option>
-            <option>Gulfroute Global Trading LLC</option>
-            <option>Mogli Labs General Trading LTD – ABU DHABI.</option>
-            <option>ELTEC TRADING</option>
-            <option>ACQUIRE HARDWARE TRADING LLC</option>
-            <option>FG TECHNICAL SERVICES LLC</option>
-            <option>FLORIDA GLOBAL TECHNICAL SERVICES L.L.C</option>
-            <option>Ismail Gheewala General Trading LLC</option>
-            <option>VALENTIA ME FZ LLE</option>
-            <option>Rebecca Foodstuff Trading LLC</option>
-          </select>
-        </div>
-        <div class="field">
-          <label>BL / AWB #</label>
-          <input type="text" id="e-blawb" placeholder="e.g. 7661704584">
-        </div>
-        <div class="field">
-          <label>Weight / Vol</label>
-          <input type="text" id="e-weight" placeholder="e.g. 24kg">
-        </div>
-        <div class="field">
-          <label>POL/POD</label>
-          <input type="text" id="e-polpod" placeholder="e.g. USA/DXB">
-        </div>
-        <div class="field">
-          <label>Subject / Job Type</label>
-          <input type="text" id="e-subject" placeholder="e.g. Air Freight">
-        </div>
-        <div class="field">
-          <label>Invoice Currency</label>
-          <select id="e-sell-currency" style="padding:9px 12px;border:1.5px solid var(--line);border-radius:8px;font-family:inherit;font-size:.9rem;outline:none;background:#fff;width:100%">
-            <option>AED</option><option>USD</option><option>GBP</option><option>EUR</option>
-          </select>
-        </div>
-      </div>
-      <div style="margin-top:12px">
-        <div style="font-size:.82rem;font-weight:600;margin-bottom:8px">Invoice Line Items</div>
-        <div style="display:grid;grid-template-columns:1fr 130px;gap:8px;margin-bottom:8px">
-          <input type="text" id="e-item1-desc" placeholder="e.g. Door to Door by air">
-          <input type="number" id="e-item1-rate" placeholder="Rate" min="0">
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 130px;gap:8px">
-          <input type="text" id="e-item2-desc" placeholder="Extra line e.g. Customs Duty">
-          <input type="number" id="e-item2-rate" placeholder="Rate" min="0">
-        </div>
-        <div style="font-size:.72rem;color:var(--muted);margin-top:6px">💡 Total sell rate = sum of both line items</div>
-      </div>
-
     </div>
-    <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="closeEditModal()">Cancel</button>
-      <button id="save-btn" class="btn btn-primary" onclick="updateShipment()">💾 Save Changes</button>
-    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeEditModal()">Cancel</button><button id="save-btn" class="btn btn-primary" onclick="updateShipment()">💾 Save</button></div>
   </div>
 </div>
 
 <!-- PAYMENT MODAL -->
-<div class="overlay" id="pay-overlay" onclick="closePay(event)">
+<div class="overlay" id="pay-overlay" onclick="if(event.target===this)closePayModal()">
   <div class="modal" style="max-width:420px">
     <div class="modal-head"><h2>💳 Record Payment</h2><button class="close-modal" onclick="closePayModal()">×</button></div>
     <div class="modal-body">
       <div class="field" style="margin-bottom:12px"><label>Supplier</label><input id="p-sup" readonly></div>
       <div class="field" style="margin-bottom:12px"><label>Shipment</label><select id="p-ship" onchange="prefillPay()"></select></div>
-      <div class="field" style="margin-bottom:12px"><label>Amount</label><input id="p-amt" type="number" step="0.01" min="0"></div>
+      <div class="field" style="margin-bottom:12px"><label>Amount</label><input id="p-amt" type="number" step="0.01"></div>
       <div class="field" style="margin-bottom:12px"><label>Date</label><input id="p-date" type="date"></div>
-      <div class="field" style="margin-bottom:12px"><label>Method</label><select id="p-method"><option>Bank Transfer</option><option>Cash</option><option>Card</option><option>Cheque</option><option>Other</option></select></div>
-      <div class="field"><label>Reference (TRX / cheque #)</label><input id="p-ref" placeholder="Optional"></div>
+      <div class="field" style="margin-bottom:12px"><label>Method</label><select id="p-method"><option>Bank Transfer</option><option>Cash</option><option>Cheque</option></select></div>
+      <div class="field"><label>Reference</label><input id="p-ref"></div>
     </div>
-    <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="closePayModal()">Cancel</button>
-      <button id="pay-save-btn" class="btn btn-primary" onclick="savePayment()">✅ Save Payment</button>
-    </div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closePayModal()">Cancel</button><button id="pay-save-btn" class="btn btn-primary" onclick="savePayment()">✅ Save</button></div>
   </div>
 </div>
 
 <!-- DELETE MODAL -->
-<div class="overlay" id="del-overlay" onclick="closeDelete(event)">
+<div class="overlay" id="del-overlay" onclick="if(event.target===this)closeDeleteModal()">
   <div class="modal" style="max-width:380px">
-    <div class="modal-head">
-      <h2>🗑️ Delete Shipment</h2>
-      <button class="close-modal" onclick="closeDeleteModal()">×</button>
-    </div>
-    <div class="modal-body">
-      <p style="font-size:.92rem;color:var(--muted)">Are you sure you want to delete shipment <strong id="del-id-label"></strong>? This cannot be undone.</p>
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="closeDeleteModal()">Cancel</button>
-      <button class="btn btn-danger" onclick="confirmDelete()">Delete</button>
-    </div>
+    <div class="modal-head"><h2>🗑️ Delete</h2><button class="close-modal" onclick="closeDeleteModal()">×</button></div>
+    <div class="modal-body"><p>Delete <strong id="del-id-label"></strong>?</p></div>
+    <div class="modal-foot"><button class="btn btn-ghost" onclick="closeDeleteModal()">Cancel</button><button class="btn btn-danger" onclick="confirmDelete()">Delete</button></div>
   </div>
 </div>
 
 <script>
-// ═══════════════════════════════════════════
-// PASSWORD
-// ═══════════════════════════════════════════
-const DEFAULT_PASSWORD = 'ShipTrack2025';
-
-function getStoredPassword() {
-  return localStorage.getItem('shiptrack_password') || DEFAULT_PASSWORD;
-}
-
-function checkLogin() {
-  const remembered = localStorage.getItem('shiptrack_authed');
-  if (remembered === 'yes') {
-    document.getElementById('login-screen').classList.add('hidden');
-    return;
-  }
-}
+let SCRIPT_URL = localStorage.getItem('shiptrack_url') || 'https://script.google.com/macros/s/AKfycbwqr9UmQ6gYz5hrOdGLABD-byStlt2SMx23cgs3WYee7qynOwyMct2Ukf3vu66XwYwp/exec';
+let allShipments = [], allPayments = [], currentFilter = 'active', pendingDeleteID = null, ledgerKey = null;
+const supKey = n => String(n||'').trim().toLowerCase();
+const curStr = o => Object.entries(o).map(([c,a])=>`${c} ${a.toLocaleString()}`).join(' + ') || '—';
 
 function doLogin() {
-  const pwd = document.getElementById('pwd-input').value;
-  const remember = document.getElementById('remember-me').checked;
-  const err = document.getElementById('login-err');
-  if (pwd === getStoredPassword()) {
-    if (remember) localStorage.setItem('shiptrack_authed', 'yes');
-    document.getElementById('login-screen').classList.add('hidden');
-    loadShipments();
-    err.textContent = '';
-  } else {
-    err.textContent = '❌ Incorrect password. Please try again.';
-    document.getElementById('pwd-input').value = '';
-    document.getElementById('pwd-input').focus();
-  }
+  if (document.getElementById('pwd-input').value === (localStorage.getItem('shiptrack_password') || 'ShipTrack2025')) {
+    document.getElementById('login-screen').classList.add('hidden'); loadShipments();
+  } else document.getElementById('login-err').textContent = '❌ Wrong password';
 }
-
-function changePassword() {
-  const current = document.getElementById('pwd-current').value;
-  const newPwd  = document.getElementById('pwd-new').value;
-  const confirm = document.getElementById('pwd-confirm').value;
-  if (current !== getStoredPassword()) { toast('❌ Current password is wrong.', 'error'); return; }
-  if (!newPwd) { toast('❌ New password cannot be empty.', 'error'); return; }
-  if (newPwd !== confirm) { toast('❌ Passwords do not match.', 'error'); return; }
-  localStorage.setItem('shiptrack_password', newPwd);
-  localStorage.setItem('shiptrack_authed', 'yes');
-  toast('✅ Password updated!', 'success');
-  ['pwd-current','pwd-new','pwd-confirm'].forEach(id => document.getElementById(id).value = '');
-}
-
-// ═══════════════════════════════════════════
-// CONFIG
-// ═══════════════════════════════════════════
-let SCRIPT_URL = localStorage.getItem('shiptrack_url') ||
-  'https://script.google.com/macros/s/AKfycbwqr9UmQ6gYz5hrOdGLABD-byStlt2SMx23cgs3WYee7qynOwyMct2Ukf3vu66XwYwp/exec';
-
-let allShipments = [];
-let currentFilter = 'active';
-let pendingDeleteID = null;
-
-// ═══════════════════════════════════════════
-// INIT
-// ═══════════════════════════════════════════
-window.addEventListener('load', () => {
-  checkLogin();
-  document.getElementById('cfg-url').value = SCRIPT_URL;
-  document.getElementById('a-opened').value = new Date().toISOString().slice(0,10);
-  if (localStorage.getItem('shiptrack_authed') === 'yes') loadShipments();
-});
-
-// ═══════════════════════════════════════════
-// NAVIGATION
-// ═══════════════════════════════════════════
 function showPage(name, el) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   if (el) el.classList.add('active');
-  const titles = { dashboard:'Dashboard', add:'Add Shipment', suppliers:'Supplier Outstanding', settings:'Settings' };
-  document.getElementById('topbar-title').textContent = titles[name] || '';
+  document.getElementById('topbar-title').textContent = {dashboard:'Dashboard',add:'Add Shipment',suppliers:'Supplier Outstanding',settings:'Settings'}[name];
   if (name === 'dashboard') loadShipments();
   if (name === 'suppliers') renderSupplierPage();
-  if (name === 'add') document.getElementById('a-opened').value = document.getElementById('a-opened').value || new Date().toISOString().slice(0,10);
+  if (name === 'add') document.getElementById('a-opened').value = new Date().toISOString().slice(0,10);
 }
-
-// ═══════════════════════════════════════════
-// API
-// ═══════════════════════════════════════════
 async function apiFetch(method, body) {
-  if (!SCRIPT_URL) { toast('Script URL not set. Go to Settings.', 'error'); return null; }
   try {
-    let res;
-    if (method === 'GET') {
-      res = await fetch(SCRIPT_URL + '?action=getShipments', { method:'GET', redirect:'follow' });
-    } else {
-      res = await fetch(SCRIPT_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify(body),
-        redirect: 'follow'
-      });
-    }
+    const res = method === 'GET' ? await fetch(SCRIPT_URL + '?action=getShipments') : await fetch(SCRIPT_URL, { method:'POST', headers:{'Content-Type':'text/plain;charset=utf-8'}, body:JSON.stringify(body) });
     return await res.json();
-  } catch (err) {
-    toast('Network error: ' + err.message, 'error');
-    return null;
-  }
+  } catch (e) { toast('Network error', 'error'); return null; }
 }
-
-// ═══════════════════════════════════════════
-// LOAD — skeleton first, then real data
-// ═══════════════════════════════════════════
 async function loadShipments() {
-  showSkeleton();
-
-  const LOCAL_KEY = 'shiptrack_local_cache';
-  try {
-    const cached = localStorage.getItem(LOCAL_KEY);
-    if (cached) {
-      const { ts, data } = JSON.parse(cached);
-      if (Date.now() - ts < 60000) {
-        allShipments = data;
-        updateStats();
-        renderTable();
-        renderSupplierPage();
-        refreshInBackground(LOCAL_KEY);
-        return;
-      }
-    }
-  } catch(e) {}
-
-  await fetchAndRender(LOCAL_KEY);
-}
-
-function showSkeleton() {
-  const cols = 15;
-  document.getElementById('tbody').innerHTML = Array(5).fill(0).map(() => `
-    <tr class="skeleton-row">${Array(cols).fill(0).map(() =>
-      `<td><div class="skel" style="width:${50+Math.random()*40}%"></div></td>`
-    ).join('')}</tr>
-  `).join('');
-  document.getElementById('empty-state').style.display = 'none';
-}
-
-async function fetchAndRender(LOCAL_KEY) {
   const data = await apiFetch('GET');
-  if (!data) { showEmptyState(); return; }
-  if (!data.success) { toast('Error: ' + data.error, 'error'); showEmptyState(); return; }
-  allShipments = data.shipments || [];
-  try { localStorage.setItem(LOCAL_KEY, JSON.stringify({ ts: Date.now(), data: allShipments })); } catch(e) {}
-  updateStats();
-  renderTable();
-  renderSupplierPage();
+  if (data && data.success) { allShipments = data.shipments || []; updateStats(); renderTable(); renderSupplierPage(); }
 }
-
-async function refreshInBackground(LOCAL_KEY) {
-  try {
-    const data = await apiFetch('GET');
-    if (!data || !data.success) return;
-    const fresh = data.shipments || [];
-    if (JSON.stringify(fresh) !== JSON.stringify(allShipments)) {
-      allShipments = fresh;
-      try { localStorage.setItem(LOCAL_KEY, JSON.stringify({ ts: Date.now(), data: allShipments })); } catch(e) {}
-      updateStats();
-      renderTable();
-      renderSupplierPage();
-    }
-  } catch(e) {}
+async function loadPayments() {
+  try { const res = await fetch(SCRIPT_URL + '?action=getPayments'); const d = await res.json(); allPayments = d.success ? d.payments : []; } catch(e) { allPayments = []; }
 }
-
-function showEmptyState() {
-  document.getElementById('tbody').innerHTML = '';
-  document.getElementById('empty-state').style.display = 'block';
-}
-
-// ═══════════════════════════════════════════
-// STATS
-// ═══════════════════════════════════════════
 function updateStats() {
-  const active = allShipments.filter(s => s.Status !== 'Closed');
-  document.getElementById('stat-total').textContent   = active.length;
-  document.getElementById('stat-transit').textContent = active.filter(s => s.Status === 'In Transit').length;
-  document.getElementById('stat-arrived').textContent = active.filter(s => s.Status === 'Arrived').length;
-  document.getElementById('stat-delayed').textContent = active.filter(s => s.Status === 'Delayed').length;
+  const a = allShipments.filter(s => s.Status !== 'Closed');
+  document.getElementById('stat-total').textContent = a.length;
+  document.getElementById('stat-transit').textContent = a.filter(s => s.Status === 'In Transit').length;
+  document.getElementById('stat-arrived').textContent = a.filter(s => s.Status === 'Arrived').length;
+  document.getElementById('stat-delayed').textContent = a.filter(s => s.Status === 'Delayed').length;
 }
-
-// ═══════════════════════════════════════════
-// RENDER TABLE
-// ═══════════════════════════════════════════
 function renderTable() {
   const q = (document.getElementById('search').value || '').toLowerCase();
-  const ACTIVE = ['Booked','In Transit','Delayed','Arrived'];
-  let list = allShipments.filter(s => {
-    const mf = currentFilter === 'all' ? true : currentFilter === 'active' ? ACTIVE.includes(s.Status) : s.Status === currentFilter;
-    const ms = !q || String(s.ID).toLowerCase().includes(q) || String(s.Origin).toLowerCase().includes(q)
-      || String(s.Destination).toLowerCase().includes(q) || String(s.Supplier||'').toLowerCase().includes(q);
-    return mf && ms;
-  });
-
-  const typeOrder = { Air:0, Road:1, Sea:2, 'Cross-border':3 };
-  list.sort((a,b) => {
-    const aActive = a.Status !== 'Closed';
-    const bActive = b.Status !== 'Closed';
-    if (aActive && !bActive) return -1;
-    if (!aActive && bActive) return 1;
-    if (!aActive && !bActive) {
-      const tA = a.LastUpdated ? new Date(a.LastUpdated).getTime() : 0;
-      const tB = b.LastUpdated ? new Date(b.LastUpdated).getTime() : 0;
-      return tB - tA;
-    }
-    const t = (typeOrder[a.ShipmentType]??9) - (typeOrder[b.ShipmentType]??9);
-    return t !== 0 ? t : new Date(a.ETA) - new Date(b.ETA);
-  });
-
-  const tbody = document.getElementById('tbody');
-  const empty = document.getElementById('empty-state');
-  if (list.length === 0) { tbody.innerHTML=''; empty.style.display='block'; updateBulkBar(); return; }
-  empty.style.display = 'none';
-
-  const tEmoji = { Air:'✈️', Sea:'🚢', Road:'🚚', 'Cross-border':'🌍' };
-  const tColor = { Air:'#EFF6FF', Sea:'#F0FDFA', Road:'#FFF7ED', 'Cross-border':'#FAF5FF' };
-
-  tbody.innerHTML = list.map(s => `
-    <tr class="${s.Status==='Closed'?'row-closed':''}" data-id="${s.ID}">
-      <td style="width:36px;text-align:center">
-        ${s.Status !== 'Closed' ? `<input type="checkbox" class="row-check" onchange="updateBulkBar()" data-id="${s.ID}" style="width:16px;height:16px;cursor:pointer;accent-color:var(--blue)">` : '<span style="color:var(--muted);font-size:.7rem">🔒</span>'}
-      </td>
-      <td><span class="ship-id">${s.ID}</span></td>
-      <td style="color:var(--muted);font-size:.8rem;white-space:nowrap">${formatDate(s.CreatedAt)}</td>
-      <td><span class="type-badge" style="background:${tColor[s.ShipmentType]||'#F8FAFC'}">${tEmoji[s.ShipmentType]||'📦'} ${s.ShipmentType}</span></td>
-      <td>${s.Origin||'—'}</td>
-      <td>${s.Destination||'—'}</td>
-      <td style="font-size:.8rem;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.Client||'—'}</td>
-      <td>${s.Supplier||'—'}</td>
-      <td>${formatCost(s.Cost, s.Currency)}</td>
-      <td style="color:var(--green);font-weight:600">${formatCost(s.SellRate, s.SellCurrency)}</td>
-      <td>${formatDate(s.ETD)}</td>
-      <td>${formatDate(s.ETA)}</td>
-      <td>${statusBadge(s.Status)}</td>
-      <td style="color:var(--muted);max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${s.Notes||'—'}</td>
-      <td><div class="action-btns">
-        <button class="btn btn-ghost btn-sm" onclick="openEdit('${s.ID}')">Edit</button>
-        <button class="btn btn-danger btn-sm" onclick="openDeleteModal('${s.ID}')">Delete</button>
-      </div></td>
-    </tr>`).join('');
-
-  updateBulkBar();
+  let list = allShipments.filter(s => (currentFilter === 'all' || (currentFilter === 'active' ? s.Status !== 'Closed' : s.Status === currentFilter)) && (!q || String(s.ID+s.Origin+s.Destination+s.Supplier).toLowerCase().includes(q)));
+  document.getElementById('tbody').innerHTML = list.map(s => `<tr class="${s.Status==='Closed'?'row-closed':''}">
+    <td><span class="ship-id">${s.ID}</span></td>
+    <td style="color:var(--muted);font-size:.8rem">${formatDate(s.CreatedAt)}</td>
+    <td>${s.ShipmentType||'—'}</td><td>${s.Origin||'—'}</td><td>${s.Destination||'—'}</td>
+    <td>${s.Client||'—'}</td><td>${s.Supplier||'—'}</td>
+    <td>${formatCost(s.Cost, s.Currency)}</td><td style="color:var(--green)">${formatCost(s.SellRate, s.SellCurrency)}</td>
+    <td>${formatDate(s.ETD)}</td><td>${formatDate(s.ETA)}</td>
+    <td>${statusBadge(s.Status)}</td>
+    <td><button class="btn btn-ghost btn-sm" onclick="openEdit('${s.ID}')">Edit</button> <button class="btn btn-danger btn-sm" onclick="openDeleteModal('${s.ID}')">🗑</button></td>
+  </tr>`).join('') || `<tr><td colspan="13" class="empty">No shipments</td></tr>`;
 }
+function setFilter(f, el) { currentFilter = f; document.querySelectorAll('.pill').forEach(p => p.classList.remove('active')); el.classList.add('active'); renderTable(); }
+function formatDate(d) { if(!d) return '—'; try { return new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); } catch { return d; } }
+function formatCost(c, cur) { const n = Number(c); return isNaN(n) || c === '' ? '—' : `${cur||'AED'} ${n.toLocaleString()}`; }
+function toInputDate(v) { if(!v) return ''; try { const d = new Date(v); return isNaN(d.getTime()) ? '' : d.toISOString().slice(0,10); } catch { return ''; } }
+function statusBadge(s) { return `<span class="status s-${s.toLowerCase().replace(' ','')}">${s}</span>`; }
 
-// ── BULK CLOSE ──────────────────────────────
-function getCheckedIDs() {
-  return Array.from(document.querySelectorAll('.row-check:checked')).map(cb => cb.dataset.id);
-}
-
-function updateBulkBar() {
-  const ids = getCheckedIDs();
-  const bar = document.getElementById('bulk-bar');
-  const cnt = document.getElementById('bulk-count');
-  if (ids.length > 0) {
-    bar.style.display = 'flex';
-    cnt.textContent = ids.length;
-  } else {
-    bar.style.display = 'none';
-  }
-}
-
-function toggleSelectAll(cb) {
-  document.querySelectorAll('.row-check').forEach(c => c.checked = cb.checked);
-  updateBulkBar();
-}
-
-async function bulkClose() {
-  const ids = getCheckedIDs();
-  if (!ids.length) return;
-  const btn = document.getElementById('bulk-close-btn');
-  btn.textContent = `Closing ${ids.length}…`;
-  btn.disabled = true;
-
-  let done = 0;
-  for (const id of ids) {
-    const s = allShipments.find(x => x.ID == id) || {};
-    const res = await apiFetch('POST', {
-      action:'updateShipment', ID:id, NewID:id,
-      Status:'Closed',
-      ShipmentType: s.ShipmentType, Origin: s.Origin, Destination: s.Destination,
-      Supplier: s.Supplier, Cost: s.Cost, Currency: s.Currency,
-      ETD: toInputDate(s.ETD), ETA: toInputDate(s.ETA), Notes: s.Notes
-    });
-    if (res && res.success) {
-      const sh = allShipments.find(x => x.ID == id);
-      if (sh) { sh.Status = 'Closed'; sh.LastUpdated = new Date().toISOString(); }
-      done++;
-    }
-  }
-
-  btn.textContent = '🔒 Close Selected';
-  btn.disabled = false;
-  toast(`✅ ${done} shipment${done>1?'s':''} closed!`, 'success');
-  updateStats();
-  renderTable();
-}
-
-function formatDate(d) {
-  if (!d) return '—';
-  try { return new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}); }
-  catch { return d; }
-}
-
-function formatCost(cost, currency) {
-  if (cost === '' || cost === undefined || cost === null) return '—';
-  const num = Number(cost);
-  if (isNaN(num)) return '—';
-  const cur = currency || 'AED';
-  return `${cur} ${num.toLocaleString()}`;
-}
-
-function toInputDate(val) {
-  if (!val) return '';
-  try {
-    const d = new Date(val);
-    if (isNaN(d.getTime())) return '';
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-  } catch { return ''; }
-}
-
-function statusBadge(s) {
-  const map = {
-    'Booked':    '<span class="status s-booked">Booked</span>',
-    'In Transit':'<span class="status s-transit">In Transit</span>',
-    'Arrived':   '<span class="status s-arrived">Arrived</span>',
-    'Delayed':   '<span class="status s-delayed">Delayed</span>',
-    'Closed':    '<span class="status s-closed">🔒 Closed</span>',
-  };
-  return map[s] || `<span class="status">${s}</span>`;
-}
-
-function jobBadge(s) {
-  return s.Status === 'Closed'
-    ? '<span class="status s-closed" style="margin-right:6px">🔒 Job Closed</span>'
-    : '<span class="status s-arrived" style="margin-right:6px">🟢 Open</span>';
-}
-
-function setFilter(f, el) {
-  currentFilter = f;
-  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-  el.classList.add('active');
-  renderTable();
-}
-
-// Auto-fill helpers
-function autoFillPolPod() {
-  const o = document.getElementById('a-origin').value.trim().toUpperCase();
-  const d = document.getElementById('a-dest').value.trim().toUpperCase();
-  if (o && d) document.getElementById('a-polpod').value = o + '/' + d;
-}
-function autoFillSubject() {
-  const t = document.getElementById('a-type').value;
-  const map = { Air:'Air Freight', Sea:'Sea Freight', Road:'Road Freight', 'Cross-border':'Cross-border Freight' };
-  if (map[t]) document.getElementById('a-subject').value = map[t];
-}
-
-// ═══════════════════════════════════════════
-// ADD SHIPMENT
-// ═══════════════════════════════════════════
 async function addShipment() {
-  const id         = document.getElementById('a-id').value.trim();
-  const opened     = document.getElementById('a-opened').value;
-  const type       = document.getElementById('a-type').value;
-  const origin     = document.getElementById('a-origin').value.trim();
-  const dest       = document.getElementById('a-dest').value.trim();
-  const etd        = document.getElementById('a-etd').value;
-  const eta        = document.getElementById('a-eta').value;
-  const status     = document.getElementById('a-status').value;
-  const supplier   = document.getElementById('a-supplier').value.trim();
-  const currency   = document.getElementById('a-currency').value;
-  const cost       = document.getElementById('a-cost').value;
-  const notes      = document.getElementById('a-notes').value.trim();
-  const client     = document.getElementById('a-client').value;
-  const blawb      = document.getElementById('a-blawb').value.trim();
-  const weight     = document.getElementById('a-weight').value.trim();
-  const polpod     = document.getElementById('a-polpod').value.trim();
-  const subject    = document.getElementById('a-subject').value.trim();
-  const sellCur    = document.getElementById('a-sell-currency').value;
-  const item1Desc  = document.getElementById('a-item1-desc').value.trim();
-  const item1Rate  = document.getElementById('a-item1-rate').value;
-  const item2Desc  = document.getElementById('a-item2-desc').value.trim();
-  const item2Rate  = document.getElementById('a-item2-rate').value;
-  const sellRate   = (parseFloat(item1Rate)||0) + (parseFloat(item2Rate)||0);
-
-  if (!id)     { toast('❌ Shipment ID is required.','error'); document.getElementById('a-id').focus(); return; }
-  if (!type)   { toast('❌ Please select a type.','error'); return; }
-  if (!origin) { toast('❌ Origin is required.','error'); return; }
-  if (!dest)   { toast('❌ Destination is required.','error'); return; }
-  if (!etd)    { toast('❌ Departure date is required.','error'); return; }
-  if (!eta)    { toast('❌ Arrival date is required.','error'); return; }
-  const etdD = new Date(etd), etaD = new Date(eta);
-  if (isNaN(etdD.getTime())) { toast('❌ Invalid departure date.','error'); return; }
-  if (isNaN(etaD.getTime())) { toast('❌ Invalid arrival date.','error'); return; }
-  if (etaD < etdD) { toast('❌ Arrival must be after departure.','error'); return; }
-
-  const addBtn = document.getElementById('add-btn');
-  addBtn.textContent='Saving…'; addBtn.disabled=true;
-  const res = await apiFetch('POST',{
-    action:'addShipment', ID:id, OpenedAt:opened, ShipmentType:type, Origin:origin, Destination:dest,
-    ETD:etd, ETA:eta, Status:status, Supplier:supplier, Cost:cost, Currency:currency, Notes:notes,
-    Client:client, BLAWB:blawb, Weight:weight, POLPOD:polpod, Subject:subject,
-    SellRate:String(sellRate), SellCurrency:sellCur,
-    Item1Desc:item1Desc, Item1Rate:item1Rate, Item2Desc:item2Desc, Item2Rate:item2Rate
-  });
-  addBtn.textContent='✅ Add Shipment'; addBtn.disabled=false;
-  if (res && res.success) {
-    toast(`Shipment ${id} added!`,'success');
-    clearAddForm();
-    showPage('dashboard',document.querySelector('[data-page=dashboard]'));
-  } else if (res) { toast('Error: '+res.error,'error'); }
+  const id = document.getElementById('a-id').value.trim(); if(!id) return toast('ID required','error');
+  const i1r = parseFloat(document.getElementById('a-item1-rate').value)||0;
+  const i2r = parseFloat(document.getElementById('a-item2-rate').value)||0;
+  const res = await apiFetch('POST', { action:'addShipment', ID:id, OpenedAt:document.getElementById('a-opened').value, Company:document.getElementById('a-company').value, ShipmentType:document.getElementById('a-type').value, Origin:document.getElementById('a-origin').value, Destination:document.getElementById('a-dest').value, ETD:document.getElementById('a-etd').value, ETA:document.getElementById('a-eta').value, Status:document.getElementById('a-status').value, Supplier:document.getElementById('a-supplier').value, Cost:document.getElementById('a-cost').value, Currency:document.getElementById('a-currency').value, Client:document.getElementById('a-client').value, BLAWB:document.getElementById('a-blawb').value, Weight:document.getElementById('a-weight').value, POLPOD:document.getElementById('a-polpod').value, Subject:document.getElementById('a-subject').value, SellCurrency:document.getElementById('a-sell-currency').value, SellRate:String(i1r+i2r), Item1Desc:document.getElementById('a-item1-desc').value, Item1Qty:document.getElementById('a-item1-qty').value, Item1Rate:String(i1r), Item2Desc:document.getElementById('a-item2-desc').value, Item2Qty:document.getElementById('a-item2-qty').value, Item2Rate:String(i2r), Notes:document.getElementById('a-notes').value });
+  if(res && res.success) { toast('Added!','success'); clearAddForm(); showPage('dashboard',document.querySelector('[data-page=dashboard]')); }
 }
+function clearAddForm() { ['a-id','a-origin','a-dest','a-supplier','a-cost','a-etd','a-eta','a-notes','a-blawb','a-weight','a-polpod','a-subject','a-item1-desc','a-item1-rate','a-item2-desc','a-item2-rate'].forEach(i=>document.getElementById(i).value=''); document.getElementById('a-opened').value=new Date().toISOString().slice(0,10); }
 
-function clearAddForm() {
-  ['a-id','a-origin','a-dest','a-supplier','a-cost','a-etd','a-eta','a-notes',
-   'a-blawb','a-weight','a-polpod','a-subject','a-item1-desc','a-item1-rate','a-item2-desc','a-item2-rate'
-  ].forEach(id => document.getElementById(id).value='');
-  document.getElementById('a-type').value='';
-  document.getElementById('a-client').value='';
-  document.getElementById('a-currency').value='AED';
-  document.getElementById('a-sell-currency').value='AED';
-  document.getElementById('a-status').value='Booked';
-  document.getElementById('a-opened').value=new Date().toISOString().slice(0,10);
-}
-
-// ═══════════════════════════════════════════
-// EDIT SHIPMENT
-// ═══════════════════════════════════════════
 function openEdit(id) {
-  const s = allShipments.find(x => x.ID == id);
-  if (!s) return;
-  document.getElementById('e-original-id').value  = s.ID;
-  document.getElementById('e-id').value            = s.ID;
-  document.getElementById('e-opened').value        = toInputDate(s.CreatedAt);
-  document.getElementById('e-type').value          = s.ShipmentType || '';
-  document.getElementById('e-origin').value        = s.Origin || '';
-  document.getElementById('e-dest').value          = s.Destination || '';
-  document.getElementById('e-supplier').value      = s.Supplier || '';
-  document.getElementById('e-currency').value      = s.Currency || 'AED';
-  document.getElementById('e-cost').value          = (s.Cost !== undefined && s.Cost !== '' && !isNaN(Number(s.Cost))) ? Number(s.Cost) : '';
-  document.getElementById('e-status').value        = s.Status || 'Booked';
-  document.getElementById('e-etd').value           = toInputDate(s.ETD);
-  document.getElementById('e-eta').value           = toInputDate(s.ETA);
-  document.getElementById('e-notes').value         = s.Notes || '';
-  document.getElementById('e-client').value        = s.Client || '';
-  document.getElementById('e-blawb').value         = s.BLAWB || '';
-  document.getElementById('e-weight').value        = s.Weight || '';
-  document.getElementById('e-polpod').value        = s.POLPOD || (s.Origin && s.Destination ? s.Origin.toUpperCase()+'/'+s.Destination.toUpperCase() : '');
-  document.getElementById('e-subject').value       = s.Subject || '';
-  document.getElementById('e-sell-currency').value = s.SellCurrency || 'AED';
-  document.getElementById('e-item1-desc').value    = s.Item1Desc || '';
-  document.getElementById('e-item1-rate').value    = (s.Item1Rate && !isNaN(Number(s.Item1Rate))) ? Number(s.Item1Rate) : '';
-  document.getElementById('e-item2-desc').value    = s.Item2Desc || '';
-  document.getElementById('e-item2-rate').value    = (s.Item2Rate && !isNaN(Number(s.Item2Rate))) ? Number(s.Item2Rate) : '';
+  const s = allShipments.find(x => x.ID == id); if(!s) return;
+  document.getElementById('e-original-id').value = s.ID; document.getElementById('e-id').value = s.ID;
+  document.getElementById('e-opened').value = toInputDate(s.CreatedAt);
+  document.getElementById('e-company').value = s.Company || 'SN Global';
+  document.getElementById('e-type').value = s.ShipmentType; document.getElementById('e-origin').value = s.Origin; document.getElementById('e-dest').value = s.Destination;
+  document.getElementById('e-etd').value = toInputDate(s.ETD); document.getElementById('e-eta').value = toInputDate(s.ETA);
+  document.getElementById('e-status').value = s.Status; document.getElementById('e-supplier').value = s.Supplier;
+  document.getElementById('e-currency').value = s.Currency||'AED'; document.getElementById('e-cost').value = s.Cost;
+  document.getElementById('e-client').value = s.Client; document.getElementById('e-blawb').value = s.BLAWB;
+  document.getElementById('e-weight').value = s.Weight; document.getElementById('e-polpod').value = s.POLPOD;
+  document.getElementById('e-subject').value = s.Subject; document.getElementById('e-sell-currency').value = s.SellCurrency||'AED';
+  document.getElementById('e-item1-desc').value = s.Item1Desc; document.getElementById('e-item1-qty').value = s.Item1Qty||1; document.getElementById('e-item1-rate').value = s.Item1Rate;
+  document.getElementById('e-item2-desc').value = s.Item2Desc; document.getElementById('e-item2-qty').value = s.Item2Qty||1; document.getElementById('e-item2-rate').value = s.Item2Rate;
+  document.getElementById('e-notes').value = s.Notes;
   document.getElementById('edit-overlay').classList.add('open');
 }
 function closeEditModal() { document.getElementById('edit-overlay').classList.remove('open'); }
-function closeEdit(e) { if(e.target===document.getElementById('edit-overlay')) closeEditModal(); }
-
 async function updateShipment() {
-  const originalID  = document.getElementById('e-original-id').value;
-  const item1Rate   = parseFloat(document.getElementById('e-item1-rate').value)||0;
-  const item2Rate   = parseFloat(document.getElementById('e-item2-rate').value)||0;
-  const sellRate    = String(item1Rate + item2Rate);
-
-  const data = {
-    action:       'updateShipment',
-    ID:           originalID,
-    NewID:        document.getElementById('e-id').value.trim(),
-    OpenedAt:     document.getElementById('e-opened').value,
-    ShipmentType: document.getElementById('e-type').value,
-    Origin:       document.getElementById('e-origin').value.trim(),
-    Destination:  document.getElementById('e-dest').value.trim(),
-    Supplier:     document.getElementById('e-supplier').value.trim(),
-    Cost:         document.getElementById('e-cost').value,
-    Currency:     document.getElementById('e-currency').value,
-    Status:       document.getElementById('e-status').value,
-    ETD:          document.getElementById('e-etd').value,
-    ETA:          document.getElementById('e-eta').value,
-    Notes:        document.getElementById('e-notes').value,
-    Client:       document.getElementById('e-client').value,
-    BLAWB:        document.getElementById('e-blawb').value.trim(),
-    Weight:       document.getElementById('e-weight').value.trim(),
-    POLPOD:       document.getElementById('e-polpod').value.trim(),
-    Subject:      document.getElementById('e-subject').value.trim(),
-    SellRate:     sellRate,
-    SellCurrency: document.getElementById('e-sell-currency').value,
-    Item1Desc:    document.getElementById('e-item1-desc').value.trim(),
-    Item1Rate:    String(item1Rate),
-    Item2Desc:    document.getElementById('e-item2-desc').value.trim(),
-    Item2Rate:    String(item2Rate),
-  };
-
-  if (!data.NewID) { toast('❌ Shipment ID cannot be empty.','error'); return; }
-
-  const saveBtn = document.getElementById('save-btn');
-  saveBtn.textContent = 'Saving…';
-  saveBtn.disabled = true;
-
-  const res = await apiFetch('POST', data);
-
-  saveBtn.textContent = '💾 Save Changes';
-  saveBtn.disabled = false;
-
-  if (res && res.success) {
-    toast('Shipment updated!', 'success');
-    closeEditModal();
-    const idx = allShipments.findIndex(x => x.ID == originalID);
-    if (idx !== -1) {
-      allShipments[idx] = {
-        ...allShipments[idx],
-        ID:           data.NewID,
-        CreatedAt:    data.OpenedAt || allShipments[idx].CreatedAt,
-        ShipmentType: data.ShipmentType,
-        Origin:       data.Origin,
-        Destination:  data.Destination,
-        Client:       data.Client,
-        Supplier:     data.Supplier,
-        Cost:         data.Cost,
-        Currency:     data.Currency,
-        SellRate:     data.SellRate,
-        SellCurrency: data.SellCurrency,
-        BLAWB:        data.BLAWB,
-        Weight:       data.Weight,
-        POLPOD:       data.POLPOD,
-        Subject:      data.Subject,
-        Item1Desc:    data.Item1Desc,
-        Item1Rate:    data.Item1Rate,
-        Item2Desc:    data.Item2Desc,
-        Item2Rate:    data.Item2Rate,
-        Status:       data.Status,
-        ETD:          data.ETD,
-        ETA:          data.ETA,
-        Notes:        data.Notes,
-        LastUpdated:  new Date().toISOString()
-      };
-    }
-    updateStats();
-    renderTable();
-    renderSupplierPage();
-  } else if (res) {
-    toast('Error: ' + res.error, 'error');
-  }
+  const i1r = parseFloat(document.getElementById('e-item1-rate').value)||0;
+  const i2r = parseFloat(document.getElementById('e-item2-rate').value)||0;
+  const res = await apiFetch('POST', { action:'updateShipment', ID:document.getElementById('e-original-id').value, NewID:document.getElementById('e-id').value, OpenedAt:document.getElementById('e-opened').value, Company:document.getElementById('e-company').value, ShipmentType:document.getElementById('e-type').value, Origin:document.getElementById('e-origin').value, Destination:document.getElementById('e-dest').value, ETD:document.getElementById('e-etd').value, ETA:document.getElementById('e-eta').value, Status:document.getElementById('e-status').value, Supplier:document.getElementById('e-supplier').value, Cost:document.getElementById('e-cost').value, Currency:document.getElementById('e-currency').value, Client:document.getElementById('e-client').value, BLAWB:document.getElementById('e-blawb').value, Weight:document.getElementById('e-weight').value, POLPOD:document.getElementById('e-polpod').value, Subject:document.getElementById('e-subject').value, SellCurrency:document.getElementById('e-sell-currency').value, SellRate:String(i1r+i2r), Item1Desc:document.getElementById('e-item1-desc').value, Item1Qty:document.getElementById('e-item1-qty').value, Item1Rate:String(i1r), Item2Desc:document.getElementById('e-item2-desc').value, Item2Qty:document.getElementById('e-item2-qty').value, Item2Rate:String(i2r), Notes:document.getElementById('e-notes').value });
+  if(res && res.success) { toast('Updated!','success'); closeEditModal(); loadShipments(); }
 }
 
-// ═══════════════════════════════════════════
-// DELETE
-// ═══════════════════════════════════════════
-function openDeleteModal(id) {
-  pendingDeleteID = id;
-  document.getElementById('del-id-label').textContent = id;
-  document.getElementById('del-overlay').classList.add('open');
-}
-function closeDeleteModal() { document.getElementById('del-overlay').classList.remove('open'); pendingDeleteID=null; }
-function closeDelete(e) { if(e.target===document.getElementById('del-overlay')) closeDeleteModal(); }
-async function confirmDelete() {
-  if (!pendingDeleteID) return;
-  const btn = event.target; btn.textContent='Deleting…'; btn.disabled=true;
-  const res = await apiFetch('POST',{action:'deleteShipment',ID:pendingDeleteID});
-  btn.textContent='Delete'; btn.disabled=false;
-  if (res && res.success) { toast('Shipment deleted.','success'); closeDeleteModal(); loadShipments(); }
-  else if (res) { toast('Error: '+res.error,'error'); }
-}
+function openDeleteModal(id) { pendingDeleteID = id; document.getElementById('del-id-label').textContent = id; document.getElementById('del-overlay').classList.add('open'); }
+function closeDeleteModal() { document.getElementById('del-overlay').classList.remove('open'); }
+async function confirmDelete() { const res = await apiFetch('POST',{action:'deleteShipment',ID:pendingDeleteID}); if(res&&res.success){toast('Deleted','success');closeDeleteModal();loadShipments();} }
 
-// ═══════════════════════════════════════════
-// SUPPLIER LEDGER & PAYMENTS
-// ═══════════════════════════════════════════
-let allPayments = [];
-let ledgerKey = null;
-const supKey = n => String(n||'').trim().toLowerCase();
-const curStr = o => Object.entries(o).map(([c,a])=>`${c} ${a.toLocaleString()}`).join(' + ') || '—';
-
-async function loadPayments(){
-  try{
-    const res = await fetch(SCRIPT_URL + '?action=getPayments', {method:'GET', redirect:'follow'});
-    const d = await res.json();
-    allPayments = (d && d.success) ? (d.payments||[]) : [];
-  }catch(e){ allPayments = []; }
-}
-function paidByShip(id){
-  return allPayments.filter(p=>String(p.ShipmentID||'').trim()===String(id).trim())
-    .reduce((m,p)=>{const c=p.Currency||'AED'; m[c]=(m[c]||0)+(parseFloat(p.Amount)||0); return m;},{});
-}
-function paidBySupplier(key){
-  return allPayments.filter(p=>supKey(p.Supplier)===key)
-    .reduce((m,p)=>{const c=p.Currency||'AED'; m[c]=(m[c]||0)+(parseFloat(p.Amount)||0); return m;},{});
-}
-function fmtPayDate(d){ if(!d) return '—'; try{ return new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}catch(e){return d;} }
-
-async function renderSupplierPage(){
+async function renderSupplierPage() {
   await loadPayments();
-  document.getElementById('sup-ledger').style.display='none';
-  document.getElementById('sup-overview').style.display='block';
+  document.getElementById('sup-ledger').style.display='none'; document.getElementById('sup-overview').style.display='block';
   const map={};
-  allShipments.forEach(s=>{
-    if(!s.Supplier||!s.Supplier.trim()) return;
-    const k=supKey(s.Supplier);
-    if(!map[k]) map[k]={name:s.Supplier.trim(), byCur:{}, count:0, open:0};
-    map[k].count++;
-    if(s.Status !== 'Closed') map[k].open++;
-    const cost=parseFloat(s.Cost), cur=s.Currency||'AED';
-    if(!isNaN(cost)&&cost>0) map[k].byCur[cur]=(map[k].byCur[cur]||0)+cost;
-  });
-  const grid=document.getElementById('supplier-grid');
+  allShipments.forEach(s=>{ if(!s.Supplier) return; const k=supKey(s.Supplier); if(!map[k]) map[k]={name:s.Supplier,byCur:{},count:0,open:0}; map[k].count++; if(s.Status!=='Closed')map[k].open++; const c=parseFloat(s.Cost),cur=s.Currency||'AED'; if(!isNaN(c)&&c>0)map[k].byCur[cur]=(map[k].byCur[cur]||0)+c; });
   const keys=Object.keys(map);
-  if(keys.length===0){
-    grid.innerHTML='<div class="empty"><div class="empty-icon">🏭</div><h3>No suppliers yet</h3><p>Add supplier names when creating shipments.</p></div>';
-    renderSupplierTable();
-    return;
-  }
+  if(!keys.length){ document.getElementById('supplier-grid').innerHTML='<div class="empty">No suppliers</div>'; return; }
   const gB={},gP={},gO={};
-  keys.forEach(k=>{
-    Object.entries(map[k].byCur).forEach(([c,a])=>gB[c]=(gB[c]||0)+a);
-    Object.entries(paidBySupplier(k)).forEach(([c,a])=>gP[c]=(gP[c]||0)+a);
-  });
+  keys.forEach(k=>{ Object.entries(map[k].byCur).forEach(([c,a])=>gB[c]=(gB[c]||0)+a); paidBySupplier(k); Object.entries(paidBySupplier(k)).forEach(([c,a])=>gP[c]=(gP[c]||0)+a); });
   Object.entries(gB).forEach(([c,a])=>gO[c]=(gO[c]||0)+a-(gP[c]||0));
-  Object.entries(gP).forEach(([c,a])=>{ if(gO[c]===undefined) gO[c]=-a; });
-  keys.sort((a,b)=>Object.values(map[b].byCur).reduce((s,v)=>s+v,0)-Object.values(map[a].byCur).reduce((s,v)=>s+v,0));
-  grid.innerHTML = `
-    <div class="supplier-card" style="border-left-color:var(--amber)">
-      <div class="supplier-name">📊 Grand Total</div>
-      <div style="font-size:.8rem;color:var(--muted);margin-top:6px">Billed: <b>${curStr(gB)}</b></div>
-      <div style="font-size:.8rem;color:var(--green);margin-top:2px">Paid: <b>${curStr(gP)}</b></div>
-      <div class="supplier-amount" style="color:var(--rose);font-size:1.15rem;margin-top:4px">Due: ${curStr(gO)}</div>
-      <div class="supplier-meta">${allShipments.filter(s=>s.Supplier&&s.Cost&&!isNaN(Number(s.Cost))).length} shipments with cost</div>
-    </div>
-    ${keys.map(k=>{
-      const paid=paidBySupplier(k), due={};
-      Object.entries(map[k].byCur).forEach(([c,a])=>due[c]=(due[c]||0)+a-(paid[c]||0));
-      Object.entries(paid).forEach(([c,a])=>{ if(due[c]===undefined) due[c]=-a; });
-      const dueTot=Object.values(due).reduce((s,v)=>s+v,0);
-      const billTot=Object.values(map[k].byCur).reduce((s,v)=>s+v,0);
-      const st = billTot>0 && dueTot<=0.009 ? '🟢' : (Object.values(paid).some(v=>v>0) ? '🟡' : '🔴');
-      return `<div class="supplier-card" style="cursor:pointer" onclick="openLedger('${k.replace(/'/g,"\\'")}')">
-        <div class="supplier-name">${st} ${map[k].name}</div>
-        <div style="font-size:.8rem;color:var(--muted);margin-top:6px">Billed: <b>${curStr(map[k].byCur)}</b></div>
-        <div style="font-size:.8rem;color:var(--green);margin-top:2px">Paid: <b>${curStr(paid)}</b></div>
-        <div class="supplier-amount" style="font-size:1.1rem;margin-top:4px">Due: ${curStr(due)}</div>
-        <div class="supplier-meta">${map[k].count} shipment${map[k].count>1?'s':''} · ${map[k].open} open · tap for ledger →</div>
-      </div>`;
-    }).join('')}`;
-  renderSupplierTable();
+  document.getElementById('supplier-grid').innerHTML = `<div class="supplier-card" style="border-left-color:var(--amber)"><div class="supplier-name">📊 Grand Total</div><div class="supplier-amount">Due: ${curStr(gO)}</div></div>` + keys.map(k=>{
+    const paid=paidBySupplier(k), due={}; Object.entries(map[k].byCur).forEach(([c,a])=>due[c]=(due[c]||0)+a-(paid[c]||0));
+    return `<div class="supplier-card" onclick="openLedger('${k}')"><div class="supplier-name">${map[k].name}</div><div style="font-size:.8rem">Billed: ${curStr(map[k].byCur)}<br>Paid: ${curStr(paid)}</div><div class="supplier-amount">Due: ${curStr(due)}</div><div class="supplier-meta">${map[k].open} open jobs</div></div>`;
+  }).join('');
 }
+function paidByShip(id){ return allPayments.filter(p=>String(p.ShipmentID)===String(id)).reduce((m,p)=>{const c=p.Currency||'AED';m[c]=(m[c]||0)+(parseFloat(p.Amount)||0);return m;},{}); }
+function paidBySupplier(key){ return allPayments.filter(p=>supKey(p.Supplier)===key).reduce((m,p)=>{const c=p.Currency||'AED';m[c]=(m[c]||0)+(parseFloat(p.Amount)||0);return m;},{}); }
 
-function renderSupplierTable() {
-  const q = (document.getElementById('sup-search').value||'').toLowerCase();
-  const list = allShipments.filter(s=>s.Supplier && (!q || s.Supplier.toLowerCase().includes(q)));
-  list.sort((a,b)=>(a.Supplier||'').localeCompare(b.Supplier||''));
-  document.getElementById('sup-tbody').innerHTML = list.length === 0
-    ? `<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--muted)">No supplier shipments found</td></tr>`
-    : list.map(s=>`
-      <tr>
-        <td><span class="ship-id">${s.ID}</span></td>
-        <td><strong>${s.Supplier||'—'}</strong></td>
-        <td>${s.Origin||'—'} → ${s.Destination||'—'}</td>
-        <td><strong>${formatCost(s.Cost, s.Currency)}</strong></td>
-        <td>${statusBadge(s.Status)}</td>
-        <td>${formatDate(s.ETA)}</td>
-      </tr>`).join('');
-}
-
-// ── LEDGER VIEW ──
-function openLedger(key){
-  ledgerKey=key;
-  const name=(allShipments.find(s=>supKey(s.Supplier)===key)||{}).Supplier||key;
-  document.getElementById('sup-overview').style.display='none';
-  document.getElementById('sup-ledger').style.display='block';
-  document.getElementById('ledger-title').textContent='🏭 '+name+' — Supplier Ledger';
-  renderLedger();
+function openLedger(key) {
+  ledgerKey=key; const name=(allShipments.find(s=>supKey(s.Supplier)===key)||{}).Supplier||key;
+  document.getElementById('sup-overview').style.display='none'; document.getElementById('sup-ledger').style.display='block';
+  document.getElementById('ledger-title').textContent='🏭 '+name+' — Ledger'; renderLedger();
 }
 function backToSuppliers(){ renderSupplierPage(); }
-function firstDueID(){
-  const ships=allShipments.filter(s=>supKey(s.Supplier)===ledgerKey);
-  for(const s of ships){
-    const c=s.Currency||'AED';
-    const bal=(parseFloat(s.Cost)||0)-((paidByShip(s.ID)[c])||0);
-    if(bal>0.009) return s.ID;
-  }
-  return ships.length?ships[0].ID:'';
-}
-function renderLedger(){
+function firstDueID(){ const ships=allShipments.filter(s=>supKey(s.Supplier)===ledgerKey); for(const s of ships){const c=s.Currency||'AED';if((parseFloat(s.Cost)||0)-(paidByShip(s.ID)[c]||0)>0.01)return s.ID;} return ships[0]?.ID||''; }
+function renderLedger() {
   const ships=allShipments.filter(s=>supKey(s.Supplier)===ledgerKey);
   const pays=allPayments.filter(p=>supKey(p.Supplier)===ledgerKey);
   const b={},pd={},du={};
   ships.forEach(s=>{const c=s.Currency||'AED';const cost=parseFloat(s.Cost);if(!isNaN(cost)&&cost>0)b[c]=(b[c]||0)+cost;});
   pays.forEach(p=>{const c=p.Currency||'AED';pd[c]=(pd[c]||0)+(parseFloat(p.Amount)||0);});
   Object.entries(b).forEach(([c,a])=>du[c]=(du[c]||0)+a-(pd[c]||0));
-  Object.entries(pd).forEach(([c,a])=>{if(du[c]===undefined)du[c]=-a;});
-  const openCount=ships.filter(s=>s.Status!=='Closed').length;
-  const closedCount=ships.length-openCount;
-  document.getElementById('ledger-sums').innerHTML=
-    `Billed: <b>${curStr(b)}</b> &nbsp;·&nbsp; Paid: <b style="color:var(--green)">${curStr(pd)}</b> &nbsp;·&nbsp; <span style="color:var(--rose);font-weight:700">OUTSTANDING: ${curStr(du)}</span> &nbsp;·&nbsp; Jobs: <b>${openCount} open / ${closedCount} closed</b>`;
-  document.getElementById('ledger-tbody').innerHTML = ships.length===0
-    ? `<tr><td colspan="8" style="text-align:center;padding:30px;color:var(--muted)">No shipments for this supplier</td></tr>`
-    : ships.map(s=>{
-      const c=s.Currency||'AED'; const cost=parseFloat(s.Cost)||0;
-      const paid=(paidByShip(s.ID)[c])||0; const bal=cost-paid;
-      const st = cost>0 && bal<=0.009 ? '<span class="status s-arrived">Paid</span>' : paid>0 ? '<span class="status s-booked">Partial</span>' : '<span class="status s-delayed">Unpaid</span>';
-      const last=pays.filter(p=>String(p.ShipmentID||'').trim()===String(s.ID).trim()).sort((x,y)=>(y.AddedAt||0)-(x.AddedAt||0))[0];
-      return `<tr>
-        <td>${jobBadge(s)}<span class="ship-id">${s.ID}</span>${s.Status==='Closed'&&s.LastUpdated?`<div style="font-size:.7rem;color:var(--muted);margin-top:3px">closed ${formatDate(s.LastUpdated)}</div>`:''}</td>
-        <td style="color:var(--muted);font-size:.8rem;white-space:nowrap">${formatDate(s.CreatedAt)}</td>
-        <td>${s.Origin||'—'} → ${s.Destination||'—'}</td>
-        <td>${formatCost(s.Cost,c)}</td>
-        <td style="color:var(--green)">${paid>0?c+' '+paid.toLocaleString():'—'}</td>
-        <td style="font-weight:700;color:${bal>0.009?'var(--rose)':'var(--green)'}">${c} ${bal.toLocaleString()}</td>
-        <td>${st}</td>
-        <td>${bal>0.009?`<button class="btn btn-primary btn-sm" onclick="openPayModal('${String(s.ID).replace(/'/g,"\\'")}')">＋ Pay</button>`:`<span style="color:var(--muted);font-size:.75rem">${last?fmtPayDate(last.PayDate):''}</span>`}</td>
-      </tr>`;}).join('');
-  document.getElementById('payhist-tbody').innerHTML = pays.length===0
-    ? `<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted)">No payments recorded yet</td></tr>`
-    : pays.sort((x,y)=>(y.AddedAt||0)-(x.AddedAt||0)).map(p=>`<tr>
-        <td>${fmtPayDate(p.PayDate)}</td>
-        <td><span class="ship-id">${p.ShipmentID||'—'}</span></td>
-        <td style="font-weight:700">${(p.Currency||'AED')} ${(parseFloat(p.Amount)||0).toLocaleString()}</td>
-        <td>${p.Method||'—'}</td>
-        <td style="color:var(--muted)">${p.Reference||'—'}</td>
-        <td><button class="btn btn-danger btn-sm" onclick="delPayment('${p.AddedAt}')">🗑</button></td>
-      </tr>`).join('');
-}
-
-// ── PAYMENT MODAL ──
-function openPayModal(shipID){
-  const s=allShipments.find(x=>String(x.ID)===String(shipID));
-  if(!s){ toast('❌ No shipment with due balance found.','error'); return; }
-  document.getElementById('p-sup').value=s.Supplier||'';
-  const ships=allShipments.filter(x=>supKey(x.Supplier)===supKey(s.Supplier));
-  document.getElementById('p-ship').innerHTML=ships.map(x=>{
-    const c=x.Currency||'AED'; const bal=(parseFloat(x.Cost)||0)-((paidByShip(x.ID)[c])||0);
-    return `<option value="${String(x.ID).replace(/"/g,'&quot;')}" ${String(x.ID)===String(shipID)?'selected':''}>${x.ID} — balance ${c} ${bal.toLocaleString()}</option>`;
+  document.getElementById('ledger-sums').innerHTML=`Billed: <b>${curStr(b)}</b> · Paid: <b style="color:var(--green)">${curStr(pd)}</b> · <span style="color:var(--rose)">OUTSTANDING: ${curStr(du)}</span>`;
+  document.getElementById('ledger-tbody').innerHTML = ships.map(s=>{
+    const c=s.Currency||'AED', cost=parseFloat(s.Cost)||0, paid=paidByShip(s.ID)[c]||0, bal=cost-paid;
+    const st = bal<=0.01 ? '<span class="status s-arrived">Paid</span>' : paid>0 ? '<span class="status s-booked">Partial</span>' : '<span class="status s-delayed">Unpaid</span>';
+    const jobSt = s.Status==='Closed' ? `<span class="status s-closed">🔒 Job Closed</span><div style="font-size:.7rem;color:var(--muted)">${formatDate(s.LastUpdated)}</div>` : '<span class="status s-arrived">🟢 Open</span>';
+    return `<tr><td>${jobSt}<br><span class="ship-id">${s.ID}</span></td><td style="font-size:.8rem">${formatDate(s.CreatedAt)}</td><td>${s.Origin}→${s.Destination}</td><td>${c} ${cost.toLocaleString()}</td><td style="color:var(--green)">${paid>0?c+' '+paid.toLocaleString():'—'}</td><td style="font-weight:700;color:${bal>0.01?'var(--rose)':'var(--green)'}">${c} ${bal.toLocaleString()}</td><td>${st}</td><td>${bal>0.01?`<button class="btn btn-primary btn-sm" onclick="openPayModal('${s.ID}')">＋ Pay</button>`:''}</td></tr>`;
   }).join('');
+  document.getElementById('payhist-tbody').innerHTML = pays.sort((x,y)=>(y.AddedAt||0)-(x.AddedAt||0)).map(p=>`<tr><td>${formatDate(p.PayDate)}</td><td>${p.ShipmentID}</td><td>${p.Currency} ${parseFloat(p.Amount).toLocaleString()}</td><td>${p.Method}</td><td>${p.Reference||'—'}</td><td><button class="btn btn-danger btn-sm" onclick="delPayment('${p.AddedAt}')">🗑</button></td></tr>`).join('') || `<tr><td colspan="6" class="empty">No payments</td></tr>`;
+}
+
+function openPayModal(id) {
+  const s=allShipments.find(x=>x.ID==id); if(!s) return;
+  document.getElementById('p-sup').value=s.Supplier;
+  document.getElementById('p-ship').innerHTML=allShipments.filter(x=>supKey(x.Supplier)===supKey(s.Supplier)).map(x=>`<option value="${x.ID}" ${x.ID==id?'selected':''}>${x.ID}</option>`).join('');
   document.getElementById('p-date').value=new Date().toISOString().slice(0,10);
-  document.getElementById('p-method').value='Bank Transfer';
-  document.getElementById('p-ref').value='';
-  prefillPay();
-  document.getElementById('pay-overlay').classList.add('open');
+  prefillPay(); document.getElementById('pay-overlay').classList.add('open');
 }
-function prefillPay(){
-  const id=document.getElementById('p-ship').value;
-  const s=allShipments.find(x=>String(x.ID)===String(id));
-  if(!s) return;
-  const c=s.Currency||'AED'; const bal=(parseFloat(s.Cost)||0)-((paidByShip(id)[c])||0);
-  document.getElementById('p-amt').value=bal>0?bal:'';
-}
+function prefillPay() { const id=document.getElementById('p-ship').value; const s=allShipments.find(x=>x.ID==id); if(s){const c=s.Currency||'AED';document.getElementById('p-amt').value=(parseFloat(s.Cost)||0)-(paidByShip(id)[c]||0);} }
 function closePayModal(){ document.getElementById('pay-overlay').classList.remove('open'); }
-function closePay(e){ if(e.target===document.getElementById('pay-overlay')) closePayModal(); }
-async function savePayment(){
-  const id=document.getElementById('p-ship').value;
-  const s=allShipments.find(x=>String(x.ID)===String(id));
-  if(!s){ toast('❌ Select a shipment.','error'); return; }
-  const amt=parseFloat(document.getElementById('p-amt').value);
-  if(isNaN(amt)||amt<=0){ toast('❌ Enter a valid amount.','error'); return; }
-  const btn=document.getElementById('pay-save-btn'); btn.textContent='Saving…'; btn.disabled=true;
-  const res=await apiFetch('POST',{action:'addPayment', Supplier:s.Supplier, ShipmentID:s.ID, Amount:String(amt),
-    Currency:s.Currency||'AED', PayDate:document.getElementById('p-date').value,
-    Method:document.getElementById('p-method').value, Reference:document.getElementById('p-ref').value.trim()});
-  btn.textContent='✅ Save Payment'; btn.disabled=false;
-  if(res&&res.success){ toast('💳 Payment recorded!','success'); closePayModal(); await loadPayments(); renderLedger(); }
-  else if(res){ toast('Error: '+res.error,'error'); }
+async function savePayment() {
+  const id=document.getElementById('p-ship').value, s=allShipments.find(x=>x.ID==id);
+  const res=await apiFetch('POST',{action:'addPayment',Supplier:s.Supplier,ShipmentID:id,Amount:document.getElementById('p-amt').value,Currency:s.Currency||'AED',PayDate:document.getElementById('p-date').value,Method:document.getElementById('p-method').value,Reference:document.getElementById('p-ref').value});
+  if(res&&res.success){toast('Saved!','success');closePayModal();loadPayments();renderLedger();}
 }
-async function delPayment(addedAt){
-  if(!confirm('Delete this payment? The amount will go back to outstanding.')) return;
-  const res=await apiFetch('POST',{action:'deletePayment', AddedAt:addedAt});
-  if(res&&res.success){ toast('Payment deleted.','success'); await loadPayments(); renderLedger(); }
-  else if(res){ toast('Error: '+res.error,'error'); }
-}
+async function delPayment(at) { if(!confirm('Delete payment?')) return; const res=await apiFetch('POST',{action:'deletePayment',AddedAt:at}); if(res&&res.success){toast('Deleted','success');loadPayments();renderLedger();} }
 
-// ═══════════════════════════════════════════
-// SETTINGS
-// ═══════════════════════════════════════════
-function saveConfig() {
-  const url = document.getElementById('cfg-url').value.trim();
-  if (!url) { toast('Please enter a URL.','error'); return; }
-  SCRIPT_URL = url;
-  try { localStorage.setItem('shiptrack_url',url); } catch(e) {}
-  toast('URL saved! Reloading data…','success');
-  loadShipments();
-}
+function saveConfig() { SCRIPT_URL = document.getElementById('cfg-url').value; localStorage.setItem('shiptrack_url', SCRIPT_URL); toast('Saved!','success'); loadShipments(); }
+function toast(msg, type='info') { const el=document.createElement('div'); el.className=`toast toast-${type}`; el.innerHTML=msg; document.getElementById('toast-wrap').appendChild(el); setTimeout(()=>el.remove(),3000); }
 
-// ═══════════════════════════════════════════
-// TOAST
-// ═══════════════════════════════════════════
-function toast(msg, type='info') {
-  const wrap = document.getElementById('toast-wrap');
-  const el = document.createElement('div');
-  el.className = `toast toast-${type}`;
-  el.innerHTML = `<span>${{success:'✅',error:'❌',info:'ℹ️'}[type]||''}</span> ${msg}`;
-  wrap.appendChild(el);
-  setTimeout(()=>el.remove(), 4000);
-}
+window.addEventListener('load', () => { document.getElementById('cfg-url').value = SCRIPT_URL; if(localStorage.getItem('shiptrack_authed')==='yes'){document.getElementById('login-screen').classList.add('hidden');loadShipments();} });
 </script>
 </body>
 </html>
