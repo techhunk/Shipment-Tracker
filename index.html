@@ -207,7 +207,7 @@
     .supplier-paid { border-left-color: var(--green); }
     .supplier-paid .supplier-amount { color: var(--green); }
 
-    /* ── SETTINGS ── */
+    /* ── SETTINGS ─ */
     .settings-grid { display: grid; gap: 20px; max-width: 640px; }
     .settings-card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); padding: 24px; }
     .settings-card h3 { font-family: 'Space Grotesk', sans-serif; font-weight: 700; margin-bottom: 16px; font-size: 1rem; }
@@ -279,7 +279,7 @@
         <span class="nav-icon">⚙️</span> Settings
       </div>
     </nav>
-    <div class="sidebar-footer">ShipTrack v3.0</div>
+    <div class="sidebar-footer">ShipTrack v3.2</div>
   </aside>
 
   <!-- MAIN -->
@@ -427,25 +427,22 @@
           </div>
 
           <!-- SECTION: Invoice Details -->
-          <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:20px 0 12px;padding-bottom:6px;border-bottom:2px solid #BFDBFE">🧾 Invoice Details (Zoho Auto-Fill)</div>
+          <div style="font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:20px 0 12px;padding-bottom:6px;border-bottom:2px solid var(--blue);border-bottom-color:#BFDBFE">🧾 Invoice Details (Zoho Auto-Fill)</div>
           <div class="form-grid">
-            <div class="field full">
-              <label>Invoicing Company</label>
-              <div style="display:flex;gap:10px">
-                <label style="display:flex;align-items:center;gap:8px;padding:10px 16px;border:2px solid var(--blue);border-radius:10px;cursor:pointer;background:#EFF6FF;font-weight:600;color:var(--blue);font-size:.9rem;margin:0">
-                  <input type="radio" name="a-company" id="a-company-sn" value="SN Global" onchange="updateClientList('a-client')" checked style="width:auto">
-                  🏢 SN Global Shipping
-                </label>
-                <label style="display:flex;align-items:center;gap:8px;padding:10px 16px;border:2px solid var(--line);border-radius:10px;cursor:pointer;font-size:.9rem;margin:0" id="a-company-cadence-label">
-                  <input type="radio" name="a-company" id="a-company-cadence" value="Cadence" onchange="updateClientList('a-client')" style="width:auto">
-                  🚢 Cadence Freight
-                </label>
-              </div>
-            </div>
             <div class="field">
               <label>Client Name *</label>
               <select id="a-client">
                 <option value="">Select client…</option>
+                <option>FUTURE POWER STAR TRADING L.L.C</option>
+                <option>Gulfroute Global Trading LLC</option>
+                <option>Mogli Labs General Trading LTD – ABU DHABI.</option>
+                <option>ELTEC TRADING</option>
+                <option>ACQUIRE HARDWARE TRADING LLC</option>
+                <option>FG TECHNICAL SERVICES LLC</option>
+                <option>FLORIDA GLOBAL TECHNICAL SERVICES L.L.C</option>
+                <option>Ismail Gheewala General Trading LLC</option>
+                <option>VALENTIA ME FZ LLE</option>
+                <option>Rebecca Foodstuff Trading LLC</option>
               </select>
             </div>
             <div class="field">
@@ -475,22 +472,23 @@
           <!-- LINE ITEMS -->
           <div style="margin-top:16px">
             <div style="font-size:.82rem;font-weight:600;margin-bottom:8px;color:var(--ink)">Invoice Line Items</div>
-            <div style="display:grid;grid-template-columns:1fr 80px 110px;gap:8px;margin-bottom:4px">
-              <div style="font-size:.75rem;color:var(--muted);font-weight:600">DESCRIPTION</div>
-              <div style="font-size:.75rem;color:var(--muted);font-weight:600">QTY</div>
-              <div style="font-size:.75rem;color:var(--muted);font-weight:600">RATE</div>
+            <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:8px">
+              <div class="field" style="margin:0">
+                <input type="text" id="a-item1-desc" placeholder="Description e.g. Door to Door by air" style="width:100%">
+              </div>
+              <div class="field" style="margin:0;width:130px">
+                <input type="number" id="a-item1-rate" placeholder="Rate (AED)" min="0">
+              </div>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 80px 110px;gap:8px;margin-bottom:8px">
-              <input type="text" id="a-item1-desc" placeholder="e.g. Door to Door by air">
-              <input type="number" id="a-item1-qty" placeholder="1" min="0" step="any" value="1">
-              <input type="number" id="a-item1-rate" placeholder="Rate" min="0" step="any">
+            <div style="display:grid;grid-template-columns:1fr auto;gap:8px;margin-bottom:4px">
+              <div class="field" style="margin:0">
+                <input type="text" id="a-item2-desc" placeholder="Extra line (optional) e.g. Customs Duty" style="width:100%">
+              </div>
+              <div class="field" style="margin:0;width:130px">
+                <input type="number" id="a-item2-rate" placeholder="Rate (AED)" min="0">
+              </div>
             </div>
-            <div style="display:grid;grid-template-columns:1fr 80px 110px;gap:8px;margin-bottom:4px">
-              <input type="text" id="a-item2-desc" placeholder="Extra line e.g. Customs Duty">
-              <input type="number" id="a-item2-qty" placeholder="1" min="0" step="any" value="1">
-              <input type="number" id="a-item2-rate" placeholder="Rate" min="0" step="any">
-            </div>
-            <div style="font-size:.75rem;color:var(--muted);margin-top:4px">💡 For Cadence: use Qty × Rate = Amount (e.g. 724 kg × 3.685 = 2,667.94)</div>
+            <div style="font-size:.75rem;color:var(--muted);margin-top:4px">💡 These line items will appear exactly in the Zoho draft invoice</div>
           </div>
 
           <div style="margin-top:20px;display:flex;gap:10px">
@@ -501,33 +499,64 @@
       </div>
     </div>
 
-    <!-- SUPPLIER OUTSTANDING -->
+    <!-- SUPPLIER OUTSTANDING (LEDGER) -->
     <div class="page" id="page-suppliers">
-      <div class="card" style="margin-bottom:24px">
-        <div class="card-header">
-          <div class="card-title">💰 Supplier Outstanding Payments</div>
-          <div style="font-size:.85rem;color:var(--muted)">Auto-calculated from all shipments</div>
+      <div id="sup-overview">
+        <div class="card" style="margin-bottom:24px">
+          <div class="card-header">
+            <div class="card-title">💰 Supplier Outstanding Payments</div>
+            <div style="font-size:.85rem;color:var(--muted)">Billed − Paid = Due · tap a supplier for its ledger</div>
+          </div>
+          <div class="modal-body">
+            <div class="supplier-grid" id="supplier-grid">
+              <div class="empty"><div class="spinner"></div></div>
+            </div>
+          </div>
         </div>
-        <div class="modal-body">
-          <div class="supplier-grid" id="supplier-grid">
-            <div class="empty"><div class="spinner"></div></div>
+        <div class="card">
+          <div class="card-header"><div class="card-title">📋 Shipments by Supplier</div>
+            <div class="search-wrap">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="sup-search" placeholder="Filter by supplier…" oninput="renderSupplierTable()">
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr><th>Shipment ID</th><th>Supplier</th><th>Route</th><th>Cost (AED)</th><th>Status</th><th>ETA</th></tr>
+              </thead>
+              <tbody id="sup-tbody"></tbody>
+            </table>
           </div>
         </div>
       </div>
-      <div class="card">
-        <div class="card-header"><div class="card-title">📋 Shipments by Supplier</div>
-          <div class="search-wrap">
-            <span class="search-icon">🔍</span>
-            <input type="text" id="sup-search" placeholder="Filter by supplier…" oninput="renderSupplierTable()">
+
+      <!-- LEDGER VIEW -->
+      <div id="sup-ledger" style="display:none">
+        <div class="card">
+          <div class="card-header">
+            <div style="display:flex;align-items:center;gap:12px">
+              <button class="btn btn-ghost btn-sm" onclick="backToSuppliers()">← Back</button>
+              <div class="card-title" id="ledger-title">Supplier Ledger</div>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="openPayModal(firstDueID())">＋ Record Payment</button>
+          </div>
+          <div style="padding:14px 24px;background:#F8FAFC;font-size:.88rem" id="ledger-sums"></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Shipment</th><th>Route</th><th>Cost</th><th>Paid</th><th>Balance</th><th>Pay Status</th><th></th></tr></thead>
+              <tbody id="ledger-tbody"></tbody>
+            </table>
           </div>
         </div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr><th>Shipment ID</th><th>Supplier</th><th>Route</th><th>Cost (AED)</th><th>Status</th><th>ETA</th></tr>
-            </thead>
-            <tbody id="sup-tbody"></tbody>
-          </table>
+        <div class="card" style="margin-top:24px">
+          <div class="card-header"><div class="card-title">💳 Payment History</div></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Date</th><th>Shipment</th><th>Amount</th><th>Method</th><th>Reference</th><th></th></tr></thead>
+              <tbody id="payhist-tbody"></tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
@@ -640,23 +669,20 @@
       <!-- Invoice Details -->
       <div style="font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:16px 0 10px;padding-bottom:5px;border-bottom:2px solid #BFDBFE">🧾 Invoice Details</div>
       <div class="form-grid">
-        <div class="field full">
-          <label>Invoicing Company</label>
-          <div style="display:flex;gap:10px;flex-wrap:wrap">
-            <label style="display:flex;align-items:center;gap:8px;padding:9px 14px;border:2px solid var(--blue);border-radius:10px;cursor:pointer;background:#EFF6FF;font-weight:600;color:var(--blue);font-size:.88rem;margin:0">
-              <input type="radio" name="e-company" id="e-company-sn" value="SN Global" onchange="updateClientList('e-client')" checked style="width:auto">
-              🏢 SN Global Shipping
-            </label>
-            <label style="display:flex;align-items:center;gap:8px;padding:9px 14px;border:2px solid var(--line);border-radius:10px;cursor:pointer;font-size:.88rem;margin:0">
-              <input type="radio" name="e-company" id="e-company-cadence" value="Cadence" onchange="updateClientList('e-client')" style="width:auto">
-              🚢 Cadence Freight
-            </label>
-          </div>
-        </div>
         <div class="field">
           <label>Client Name</label>
           <select id="e-client">
             <option value="">Select client…</option>
+            <option>FUTURE POWER STAR TRADING L.L.C</option>
+            <option>Gulfroute Global Trading LLC</option>
+            <option>Mogli Labs General Trading LTD – ABU DHABI.</option>
+            <option>ELTEC TRADING</option>
+            <option>ACQUIRE HARDWARE TRADING LLC</option>
+            <option>FG TECHNICAL SERVICES LLC</option>
+            <option>FLORIDA GLOBAL TECHNICAL SERVICES L.L.C</option>
+            <option>Ismail Gheewala General Trading LLC</option>
+            <option>VALENTIA ME FZ LLE</option>
+            <option>Rebecca Foodstuff Trading LLC</option>
           </select>
         </div>
         <div class="field">
@@ -684,28 +710,40 @@
       </div>
       <div style="margin-top:12px">
         <div style="font-size:.82rem;font-weight:600;margin-bottom:8px">Invoice Line Items</div>
-        <div style="display:grid;grid-template-columns:1fr 80px 110px;gap:8px;margin-bottom:4px">
-          <div style="font-size:.75rem;color:var(--muted);font-weight:600">DESCRIPTION</div>
-          <div style="font-size:.75rem;color:var(--muted);font-weight:600">QTY</div>
-          <div style="font-size:.75rem;color:var(--muted);font-weight:600">RATE</div>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 80px 110px;gap:8px;margin-bottom:8px">
+        <div style="display:grid;grid-template-columns:1fr 130px;gap:8px;margin-bottom:8px">
           <input type="text" id="e-item1-desc" placeholder="e.g. Door to Door by air">
-          <input type="number" id="e-item1-qty" placeholder="1" min="0" step="any" value="1">
-          <input type="number" id="e-item1-rate" placeholder="Rate" min="0" step="any">
+          <input type="number" id="e-item1-rate" placeholder="Rate" min="0">
         </div>
-        <div style="display:grid;grid-template-columns:1fr 80px 110px;gap:8px">
+        <div style="display:grid;grid-template-columns:1fr 130px;gap:8px">
           <input type="text" id="e-item2-desc" placeholder="Extra line e.g. Customs Duty">
-          <input type="number" id="e-item2-qty" placeholder="1" min="0" step="any" value="1">
-          <input type="number" id="e-item2-rate" placeholder="Rate" min="0" step="any">
+          <input type="number" id="e-item2-rate" placeholder="Rate" min="0">
         </div>
-        <div style="font-size:.72rem;color:var(--muted);margin-top:6px">💡 Total = Qty × Rate per line</div>
+        <div style="font-size:.72rem;color:var(--muted);margin-top:6px">💡 Total sell rate = sum of both line items</div>
       </div>
 
     </div>
     <div class="modal-foot">
       <button class="btn btn-ghost" onclick="closeEditModal()">Cancel</button>
       <button id="save-btn" class="btn btn-primary" onclick="updateShipment()">💾 Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT MODAL -->
+<div class="overlay" id="pay-overlay" onclick="closePay(event)">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-head"><h2>💳 Record Payment</h2><button class="close-modal" onclick="closePayModal()">×</button></div>
+    <div class="modal-body">
+      <div class="field" style="margin-bottom:12px"><label>Supplier</label><input id="p-sup" readonly></div>
+      <div class="field" style="margin-bottom:12px"><label>Shipment</label><select id="p-ship" onchange="prefillPay()"></select></div>
+      <div class="field" style="margin-bottom:12px"><label>Amount</label><input id="p-amt" type="number" step="0.01" min="0"></div>
+      <div class="field" style="margin-bottom:12px"><label>Date</label><input id="p-date" type="date"></div>
+      <div class="field" style="margin-bottom:12px"><label>Method</label><select id="p-method"><option>Bank Transfer</option><option>Cash</option><option>Card</option><option>Cheque</option><option>Other</option></select></div>
+      <div class="field"><label>Reference (TRX / cheque #)</label><input id="p-ref" placeholder="Optional"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" onclick="closePayModal()">Cancel</button>
+      <button id="pay-save-btn" class="btn btn-primary" onclick="savePayment()">✅ Save Payment</button>
     </div>
   </div>
 </div>
@@ -743,7 +781,6 @@ function checkLogin() {
     document.getElementById('login-screen').classList.add('hidden');
     return;
   }
-  // show login
 }
 
 function doLogin() {
@@ -791,9 +828,6 @@ let pendingDeleteID = null;
 window.addEventListener('load', () => {
   checkLogin();
   document.getElementById('cfg-url').value = SCRIPT_URL;
-  // Populate client dropdowns on load
-  updateClientList('a-client');
-  updateClientList('e-client');
   if (localStorage.getItem('shiptrack_authed') === 'yes') loadShipments();
 });
 
@@ -839,10 +873,8 @@ async function apiFetch(method, body) {
 // LOAD — skeleton first, then real data
 // ═══════════════════════════════════════════
 async function loadShipments() {
-  // Show skeleton rows immediately so UI feels instant
   showSkeleton();
 
-  // Try local browser cache first (< 60s old)
   const LOCAL_KEY = 'shiptrack_local_cache';
   try {
     const cached = localStorage.getItem(LOCAL_KEY);
@@ -853,14 +885,12 @@ async function loadShipments() {
         updateStats();
         renderTable();
         renderSupplierPage();
-        // Still refresh in background silently
         refreshInBackground(LOCAL_KEY);
         return;
       }
     }
   } catch(e) {}
 
-  // No cache — fetch normally
   await fetchAndRender(LOCAL_KEY);
 }
 
@@ -879,7 +909,6 @@ async function fetchAndRender(LOCAL_KEY) {
   if (!data) { showEmptyState(); return; }
   if (!data.success) { toast('Error: ' + data.error, 'error'); showEmptyState(); return; }
   allShipments = data.shipments || [];
-  // Save to local browser cache
   try { localStorage.setItem(LOCAL_KEY, JSON.stringify({ ts: Date.now(), data: allShipments })); } catch(e) {}
   updateStats();
   renderTable();
@@ -891,7 +920,6 @@ async function refreshInBackground(LOCAL_KEY) {
     const data = await apiFetch('GET');
     if (!data || !data.success) return;
     const fresh = data.shipments || [];
-    // Only re-render if data actually changed
     if (JSON.stringify(fresh) !== JSON.stringify(allShipments)) {
       allShipments = fresh;
       try { localStorage.setItem(LOCAL_KEY, JSON.stringify({ ts: Date.now(), data: allShipments })); } catch(e) {}
@@ -931,7 +959,6 @@ function renderTable() {
     return mf && ms;
   });
 
-  // ── SORT: active = Air first + nearest ETA; closed = most recently closed first
   const typeOrder = { Air:0, Road:1, Sea:2, 'Cross-border':3 };
   list.sort((a,b) => {
     const aActive = a.Status !== 'Closed';
@@ -939,12 +966,10 @@ function renderTable() {
     if (aActive && !bActive) return -1;
     if (!aActive && bActive) return 1;
     if (!aActive && !bActive) {
-      // both closed — sort by LastUpdated descending (most recently closed first)
       const tA = a.LastUpdated ? new Date(a.LastUpdated).getTime() : 0;
       const tB = b.LastUpdated ? new Date(b.LastUpdated).getTime() : 0;
       return tB - tA;
     }
-    // both active — Air first, then nearest ETA
     const t = (typeOrder[a.ShipmentType]??9) - (typeOrder[b.ShipmentType]??9);
     return t !== 0 ? t : new Date(a.ETA) - new Date(b.ETA);
   });
@@ -1014,23 +1039,17 @@ async function bulkClose() {
 
   let done = 0;
   for (const id of ids) {
+    const s = allShipments.find(x => x.ID == id) || {};
     const res = await apiFetch('POST', {
       action:'updateShipment', ID:id, NewID:id,
       Status:'Closed',
-      // preserve existing fields
-      ...(() => {
-        const s = allShipments.find(x => x.ID == id) || {};
-        return {
-          ShipmentType: s.ShipmentType, Origin: s.Origin, Destination: s.Destination,
-          Supplier: s.Supplier, Cost: s.Cost, Currency: s.Currency,
-          ETD: toInputDate(s.ETD), ETA: toInputDate(s.ETA), Notes: s.Notes
-        };
-      })()
+      ShipmentType: s.ShipmentType, Origin: s.Origin, Destination: s.Destination,
+      Supplier: s.Supplier, Cost: s.Cost, Currency: s.Currency,
+      ETD: toInputDate(s.ETD), ETA: toInputDate(s.ETA), Notes: s.Notes
     });
     if (res && res.success) {
-      // update local state immediately
-      const s = allShipments.find(x => x.ID == id);
-      if (s) { s.Status = 'Closed'; s.LastUpdated = new Date().toISOString(); }
+      const sh = allShipments.find(x => x.ID == id);
+      if (sh) { sh.Status = 'Closed'; sh.LastUpdated = new Date().toISOString(); }
       done++;
     }
   }
@@ -1083,54 +1102,6 @@ function setFilter(f, el) {
   renderTable();
 }
 
-// ═══════════════════════════════════════════
-// CLIENT DATA — per company
-// ═══════════════════════════════════════════
-const CLIENTS = {
-  'SN Global': [
-    'FUTURE POWER STAR TRADING L.L.C',
-    'Gulfroute Global Trading LLC',
-    'Mogli Labs General Trading LTD – ABU DHABI.',
-    'ELTEC TRADING',
-    'ACQUIRE HARDWARE TRADING LLC',
-    'FG TECHNICAL SERVICES LLC',
-    'FLORIDA GLOBAL TECHNICAL SERVICES L.L.C',
-    'Ismail Gheewala General Trading LLC',
-    'VALENTIA ME FZ LLE',
-    'Rebecca Foodstuff Trading LLC'
-  ],
-  'Cadence': [
-    'ELTEC TRADING',
-    'FG TECHNICAL SERVICES L.L.C',
-    'FLORIDA GLOBAL TECHNICAL SERVICES LLC',
-    'Ismail Gheewala General Trading LLC',
-    'Schemes LLC'
-  ]
-};
-
-function updateClientList(selectId) {
-  const formPrefix = selectId === 'a-client' ? 'a' : 'e';
-  const company = document.querySelector(`input[name="${formPrefix}-company"]:checked`)?.value || 'SN Global';
-  const sel = document.getElementById(selectId);
-  const current = sel.value;
-  const clients = CLIENTS[company] || [];
-  sel.innerHTML = '<option value="">Select client…</option>' +
-    clients.map(c => `<option${c === current ? ' selected' : ''}>${c}</option>`).join('');
-
-  // Update radio label borders to show selected
-  const prefix = selectId === 'a-client' ? 'a' : 'e';
-  ['sn','cadence'].forEach(co => {
-    const lbl = document.getElementById(`${prefix}-company-${co}`)?.parentElement;
-    const isSelected = document.getElementById(`${prefix}-company-${co}`)?.checked;
-    if (lbl) {
-      lbl.style.borderColor = isSelected ? 'var(--blue)' : 'var(--line)';
-      lbl.style.background  = isSelected ? '#EFF6FF' : '';
-      lbl.style.color       = isSelected ? 'var(--blue)' : '';
-      lbl.style.fontWeight  = isSelected ? '600' : '400';
-    }
-  });
-}
-
 // Auto-fill helpers
 function autoFillPolPod() {
   const o = document.getElementById('a-origin').value.trim().toUpperCase();
@@ -1159,20 +1130,16 @@ async function addShipment() {
   const cost       = document.getElementById('a-cost').value;
   const notes      = document.getElementById('a-notes').value.trim();
   const client     = document.getElementById('a-client').value;
-  const company    = document.querySelector('input[name="a-company"]:checked')?.value || 'SN Global';
   const blawb      = document.getElementById('a-blawb').value.trim();
   const weight     = document.getElementById('a-weight').value.trim();
   const polpod     = document.getElementById('a-polpod').value.trim();
   const subject    = document.getElementById('a-subject').value.trim();
   const sellCur    = document.getElementById('a-sell-currency').value;
   const item1Desc  = document.getElementById('a-item1-desc').value.trim();
-  const item1Qty   = document.getElementById('a-item1-qty').value || '1';
   const item1Rate  = document.getElementById('a-item1-rate').value;
   const item2Desc  = document.getElementById('a-item2-desc').value.trim();
-  const item2Qty   = document.getElementById('a-item2-qty').value || '1';
   const item2Rate  = document.getElementById('a-item2-rate').value;
-  // SellRate = sum of (qty × rate) for both lines
-  const sellRate   = (parseFloat(item1Qty)||1)*(parseFloat(item1Rate)||0) + (parseFloat(item2Qty)||1)*(parseFloat(item2Rate)||0);
+  const sellRate   = (parseFloat(item1Rate)||0) + (parseFloat(item2Rate)||0);
 
   if (!id)     { toast('❌ Shipment ID is required.','error'); document.getElementById('a-id').focus(); return; }
   if (!type)   { toast('❌ Please select a type.','error'); return; }
@@ -1190,10 +1157,9 @@ async function addShipment() {
   const res = await apiFetch('POST',{
     action:'addShipment', ID:id, ShipmentType:type, Origin:origin, Destination:dest,
     ETD:etd, ETA:eta, Status:status, Supplier:supplier, Cost:cost, Currency:currency, Notes:notes,
-    Client:client, Company:company, BLAWB:blawb, Weight:weight, POLPOD:polpod, Subject:subject,
+    Client:client, BLAWB:blawb, Weight:weight, POLPOD:polpod, Subject:subject,
     SellRate:String(sellRate), SellCurrency:sellCur,
-    Item1Desc:item1Desc, Item1Qty:item1Qty, Item1Rate:item1Rate,
-    Item2Desc:item2Desc, Item2Qty:item2Qty, Item2Rate:item2Rate
+    Item1Desc:item1Desc, Item1Rate:item1Rate, Item2Desc:item2Desc, Item2Rate:item2Rate
   });
   addBtn.textContent='✅ Add Shipment'; addBtn.disabled=false;
   if (res && res.success) {
@@ -1207,14 +1173,11 @@ function clearAddForm() {
   ['a-id','a-origin','a-dest','a-supplier','a-cost','a-etd','a-eta','a-notes',
    'a-blawb','a-weight','a-polpod','a-subject','a-item1-desc','a-item1-rate','a-item2-desc','a-item2-rate'
   ].forEach(id => document.getElementById(id).value='');
-  document.getElementById('a-item1-qty').value = '1';
-  document.getElementById('a-item2-qty').value = '1';
   document.getElementById('a-type').value='';
+  document.getElementById('a-client').value='';
   document.getElementById('a-currency').value='AED';
   document.getElementById('a-sell-currency').value='AED';
   document.getElementById('a-status').value='Booked';
-  document.getElementById('a-company-sn').checked = true;
-  updateClientList('a-client');
 }
 
 // ═══════════════════════════════════════════
@@ -1235,24 +1198,15 @@ function openEdit(id) {
   document.getElementById('e-etd').value           = toInputDate(s.ETD);
   document.getElementById('e-eta').value           = toInputDate(s.ETA);
   document.getElementById('e-notes').value         = s.Notes || '';
-  // Set company radio first, then populate client list
-  const company = s.Company || 'SN Global';
-  const isCadence = company === 'Cadence';
-  document.getElementById('e-company-sn').checked      = !isCadence;
-  document.getElementById('e-company-cadence').checked  = isCadence;
-  updateClientList('e-client');
-  // Now set the client value
-  document.getElementById('e-client').value            = s.Client || '';
-  document.getElementById('e-blawb').value             = s.BLAWB || '';
+  document.getElementById('e-client').value        = s.Client || '';
+  document.getElementById('e-blawb').value         = s.BLAWB || '';
   document.getElementById('e-weight').value        = s.Weight || '';
   document.getElementById('e-polpod').value        = s.POLPOD || (s.Origin && s.Destination ? s.Origin.toUpperCase()+'/'+s.Destination.toUpperCase() : '');
   document.getElementById('e-subject').value       = s.Subject || '';
   document.getElementById('e-sell-currency').value = s.SellCurrency || 'AED';
   document.getElementById('e-item1-desc').value    = s.Item1Desc || '';
-  document.getElementById('e-item1-qty').value     = (s.Item1Qty && !isNaN(Number(s.Item1Qty))) ? Number(s.Item1Qty) : 1;
   document.getElementById('e-item1-rate').value    = (s.Item1Rate && !isNaN(Number(s.Item1Rate))) ? Number(s.Item1Rate) : '';
   document.getElementById('e-item2-desc').value    = s.Item2Desc || '';
-  document.getElementById('e-item2-qty').value     = (s.Item2Qty && !isNaN(Number(s.Item2Qty))) ? Number(s.Item2Qty) : 1;
   document.getElementById('e-item2-rate').value    = (s.Item2Rate && !isNaN(Number(s.Item2Rate))) ? Number(s.Item2Rate) : '';
   document.getElementById('edit-overlay').classList.add('open');
 }
@@ -1262,10 +1216,8 @@ function closeEdit(e) { if(e.target===document.getElementById('edit-overlay')) c
 async function updateShipment() {
   const originalID  = document.getElementById('e-original-id').value;
   const item1Rate   = parseFloat(document.getElementById('e-item1-rate').value)||0;
-  const item1Qty    = parseFloat(document.getElementById('e-item1-qty').value)||1;
   const item2Rate   = parseFloat(document.getElementById('e-item2-rate').value)||0;
-  const item2Qty    = parseFloat(document.getElementById('e-item2-qty').value)||1;
-  const sellRate    = String((item1Qty * item1Rate) + (item2Qty * item2Rate));
+  const sellRate    = String(item1Rate + item2Rate);
 
   const data = {
     action:       'updateShipment',
@@ -1282,7 +1234,6 @@ async function updateShipment() {
     ETA:          document.getElementById('e-eta').value,
     Notes:        document.getElementById('e-notes').value,
     Client:       document.getElementById('e-client').value,
-    Company:      document.querySelector('input[name="e-company"]:checked')?.value || 'SN Global',
     BLAWB:        document.getElementById('e-blawb').value.trim(),
     Weight:       document.getElementById('e-weight').value.trim(),
     POLPOD:       document.getElementById('e-polpod').value.trim(),
@@ -1290,14 +1241,10 @@ async function updateShipment() {
     SellRate:     sellRate,
     SellCurrency: document.getElementById('e-sell-currency').value,
     Item1Desc:    document.getElementById('e-item1-desc').value.trim(),
-    Item1Qty:     String(item1Qty),
     Item1Rate:    String(item1Rate),
     Item2Desc:    document.getElementById('e-item2-desc').value.trim(),
-    Item2Qty:     String(item2Qty),
     Item2Rate:    String(item2Rate),
   };
-
-  console.log('Saving shipment:', JSON.stringify(data));
 
   if (!data.NewID) { toast('❌ Shipment ID cannot be empty.','error'); return; }
 
@@ -1313,7 +1260,6 @@ async function updateShipment() {
   if (res && res.success) {
     toast('Shipment updated!', 'success');
     closeEditModal();
-    // ── Update only the changed row in local state (no full page reload) ──
     const idx = allShipments.findIndex(x => x.ID == originalID);
     if (idx !== -1) {
       allShipments[idx] = {
@@ -1323,7 +1269,6 @@ async function updateShipment() {
         Origin:       data.Origin,
         Destination:  data.Destination,
         Client:       data.Client,
-        Company:      data.Company,
         Supplier:     data.Supplier,
         Cost:         data.Cost,
         Currency:     data.Currency,
@@ -1372,59 +1317,81 @@ async function confirmDelete() {
 }
 
 // ═══════════════════════════════════════════
-// SUPPLIER PAGE
+// SUPPLIER LEDGER & PAYMENTS
 // ═══════════════════════════════════════════
-function renderSupplierPage() {
-  const map = {};
-  allShipments.forEach(s => {
-    if (!s.Supplier || !s.Supplier.trim()) return;
-    const name = s.Supplier.trim();
-    const cost = parseFloat(s.Cost);
-    const cur  = s.Currency || 'AED';
-    if (!map[name]) map[name] = { byCurrency:{}, count:0 };
-    map[name].count++;
-    if (!isNaN(cost) && cost > 0) {
-      if (!map[name].byCurrency[cur]) map[name].byCurrency[cur] = 0;
-      map[name].byCurrency[cur] += cost;
-    }
-  });
+let allPayments = [];
+let ledgerKey = null;
+const supKey = n => String(n||'').trim().toLowerCase();
+const curStr = o => Object.entries(o).map(([c,a])=>`${c} ${a.toLocaleString()}`).join(' + ') || '—';
 
-  const grid = document.getElementById('supplier-grid');
-  const names = Object.keys(map);
-  if (names.length === 0) {
-    grid.innerHTML = '<div class="empty"><div class="empty-icon">🏭</div><h3>No suppliers yet</h3><p>Add supplier names when creating shipments.</p></div>';
+async function loadPayments(){
+  try{
+    const res = await fetch(SCRIPT_URL + '?action=getPayments', {method:'GET', redirect:'follow'});
+    const d = await res.json();
+    allPayments = (d && d.success) ? (d.payments||[]) : [];
+  }catch(e){ allPayments = []; }
+}
+function paidByShip(id){
+  return allPayments.filter(p=>String(p.ShipmentID||'').trim()===String(id).trim())
+    .reduce((m,p)=>{const c=p.Currency||'AED'; m[c]=(m[c]||0)+(parseFloat(p.Amount)||0); return m;},{});
+}
+function paidBySupplier(key){
+  return allPayments.filter(p=>supKey(p.Supplier)===key)
+    .reduce((m,p)=>{const c=p.Currency||'AED'; m[c]=(m[c]||0)+(parseFloat(p.Amount)||0); return m;},{});
+}
+function fmtPayDate(d){ if(!d) return '—'; try{ return new Date(d).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});}catch(e){return d;} }
+
+async function renderSupplierPage(){
+  await loadPayments();
+  document.getElementById('sup-ledger').style.display='none';
+  document.getElementById('sup-overview').style.display='block';
+  const map={};
+  allShipments.forEach(s=>{
+    if(!s.Supplier||!s.Supplier.trim()) return;
+    const k=supKey(s.Supplier);
+    if(!map[k]) map[k]={name:s.Supplier.trim(), byCur:{}, count:0};
+    map[k].count++;
+    const cost=parseFloat(s.Cost), cur=s.Currency||'AED';
+    if(!isNaN(cost)&&cost>0) map[k].byCur[cur]=(map[k].byCur[cur]||0)+cost;
+  });
+  const grid=document.getElementById('supplier-grid');
+  const keys=Object.keys(map);
+  if(keys.length===0){
+    grid.innerHTML='<div class="empty"><div class="empty-icon">🏭</div><h3>No suppliers yet</h3><p>Add supplier names when creating shipments.</p></div>';
+    renderSupplierTable();
     return;
   }
-  names.sort((a,b) => {
-    const totA = Object.values(map[a].byCurrency).reduce((s,v)=>s+v,0);
-    const totB = Object.values(map[b].byCurrency).reduce((s,v)=>s+v,0);
-    return totB - totA;
+  const gB={},gP={},gO={};
+  keys.forEach(k=>{
+    Object.entries(map[k].byCur).forEach(([c,a])=>gB[c]=(gB[c]||0)+a);
+    Object.entries(paidBySupplier(k)).forEach(([c,a])=>gP[c]=(gP[c]||0)+a);
   });
-
-  // Grand total per currency
-  const grandTotals = {};
-  names.forEach(n => {
-    Object.entries(map[n].byCurrency).forEach(([cur,amt]) => {
-      grandTotals[cur] = (grandTotals[cur]||0) + amt;
-    });
-  });
-  const grandStr = Object.entries(grandTotals).map(([cur,amt])=>`${cur} ${amt.toLocaleString()}`).join(' + ') || 'AED 0';
-
+  Object.entries(gB).forEach(([c,a])=>gO[c]=(gO[c]||0)+a-(gP[c]||0));
+  Object.entries(gP).forEach(([c,a])=>{ if(gO[c]===undefined) gO[c]=-a; });
+  keys.sort((a,b)=>Object.values(map[b].byCur).reduce((s,v)=>s+v,0)-Object.values(map[a].byCur).reduce((s,v)=>s+v,0));
   grid.innerHTML = `
     <div class="supplier-card" style="border-left-color:var(--amber)">
       <div class="supplier-name">📊 Grand Total</div>
-      <div class="supplier-amount" style="color:var(--amber);font-size:1.2rem">${grandStr}</div>
+      <div style="font-size:.8rem;color:var(--muted);margin-top:6px">Billed: <b>${curStr(gB)}</b></div>
+      <div style="font-size:.8rem;color:var(--green);margin-top:2px">Paid: <b>${curStr(gP)}</b></div>
+      <div class="supplier-amount" style="color:var(--rose);font-size:1.15rem;margin-top:4px">Due: ${curStr(gO)}</div>
       <div class="supplier-meta">${allShipments.filter(s=>s.Supplier&&s.Cost&&!isNaN(Number(s.Cost))).length} shipments with cost</div>
     </div>
-    ${names.map(n=>{
-      const amtStr = Object.entries(map[n].byCurrency).map(([cur,amt])=>`${cur} ${amt.toLocaleString()}`).join('<br>') || '—';
-      return `<div class="supplier-card">
-        <div class="supplier-name">🏭 ${n}</div>
-        <div class="supplier-amount" style="font-size:1.1rem">${amtStr}</div>
-        <div class="supplier-meta">${map[n].count} shipment${map[n].count>1?'s':''}</div>
+    ${keys.map(k=>{
+      const paid=paidBySupplier(k), due={};
+      Object.entries(map[k].byCur).forEach(([c,a])=>due[c]=(due[c]||0)+a-(paid[c]||0));
+      Object.entries(paid).forEach(([c,a])=>{ if(due[c]===undefined) due[c]=-a; });
+      const dueTot=Object.values(due).reduce((s,v)=>s+v,0);
+      const billTot=Object.values(map[k].byCur).reduce((s,v)=>s+v,0);
+      const st = billTot>0 && dueTot<=0.009 ? '🟢' : (Object.values(paid).some(v=>v>0) ? '🟡' : '🔴');
+      return `<div class="supplier-card" style="cursor:pointer" onclick="openLedger('${k.replace(/'/g,"\\'")}')">
+        <div class="supplier-name">${st} ${map[k].name}</div>
+        <div style="font-size:.8rem;color:var(--muted);margin-top:6px">Billed: <b>${curStr(map[k].byCur)}</b></div>
+        <div style="font-size:.8rem;color:var(--green);margin-top:2px">Paid: <b>${curStr(paid)}</b></div>
+        <div class="supplier-amount" style="font-size:1.1rem;margin-top:4px">Due: ${curStr(due)}</div>
+        <div class="supplier-meta">${map[k].count} shipment${map[k].count>1?'s':''} · tap for ledger →</div>
       </div>`;
-    }).join('')}
-  `;
+    }).join('')}`;
   renderSupplierTable();
 }
 
@@ -1443,6 +1410,109 @@ function renderSupplierTable() {
         <td>${statusBadge(s.Status)}</td>
         <td>${formatDate(s.ETA)}</td>
       </tr>`).join('');
+}
+
+// ── LEDGER VIEW ──
+function openLedger(key){
+  ledgerKey=key;
+  const name=(allShipments.find(s=>supKey(s.Supplier)===key)||{}).Supplier||key;
+  document.getElementById('sup-overview').style.display='none';
+  document.getElementById('sup-ledger').style.display='block';
+  document.getElementById('ledger-title').textContent='🏭 '+name+' — Supplier Ledger';
+  renderLedger();
+}
+function backToSuppliers(){ renderSupplierPage(); }
+function firstDueID(){
+  const ships=allShipments.filter(s=>supKey(s.Supplier)===ledgerKey);
+  for(const s of ships){
+    const c=s.Currency||'AED';
+    const bal=(parseFloat(s.Cost)||0)-((paidByShip(s.ID)[c])||0);
+    if(bal>0.009) return s.ID;
+  }
+  return ships.length?ships[0].ID:'';
+}
+function renderLedger(){
+  const ships=allShipments.filter(s=>supKey(s.Supplier)===ledgerKey);
+  const pays=allPayments.filter(p=>supKey(p.Supplier)===ledgerKey);
+  const b={},pd={},du={};
+  ships.forEach(s=>{const c=s.Currency||'AED';const cost=parseFloat(s.Cost);if(!isNaN(cost)&&cost>0)b[c]=(b[c]||0)+cost;});
+  pays.forEach(p=>{const c=p.Currency||'AED';pd[c]=(pd[c]||0)+(parseFloat(p.Amount)||0);});
+  Object.entries(b).forEach(([c,a])=>du[c]=(du[c]||0)+a-(pd[c]||0));
+  Object.entries(pd).forEach(([c,a])=>{if(du[c]===undefined)du[c]=-a;});
+  document.getElementById('ledger-sums').innerHTML=
+    `Billed: <b>${curStr(b)}</b> &nbsp;·&nbsp; Paid: <b style="color:var(--green)">${curStr(pd)}</b> &nbsp;·&nbsp; <span style="color:var(--rose);font-weight:700">OUTSTANDING: ${curStr(du)}</span>`;
+  document.getElementById('ledger-tbody').innerHTML = ships.length===0
+    ? `<tr><td colspan="7" style="text-align:center;padding:30px;color:var(--muted)">No shipments for this supplier</td></tr>`
+    : ships.map(s=>{
+      const c=s.Currency||'AED'; const cost=parseFloat(s.Cost)||0;
+      const paid=(paidByShip(s.ID)[c])||0; const bal=cost-paid;
+      const st = cost>0 && bal<=0.009 ? '<span class="status s-arrived">Paid</span>' : paid>0 ? '<span class="status s-booked">Partial</span>' : '<span class="status s-delayed">Unpaid</span>';
+      const last=pays.filter(p=>String(p.ShipmentID||'').trim()===String(s.ID).trim()).sort((x,y)=>(y.AddedAt||0)-(x.AddedAt||0))[0];
+      return `<tr>
+        <td><span class="ship-id">${s.ID}</span></td>
+        <td>${s.Origin||'—'} → ${s.Destination||'—'}</td>
+        <td>${formatCost(s.Cost,c)}</td>
+        <td style="color:var(--green)">${paid>0?c+' '+paid.toLocaleString():'—'}</td>
+        <td style="font-weight:700;color:${bal>0.009?'var(--rose)':'var(--green)'}">${c} ${bal.toLocaleString()}</td>
+        <td>${st}</td>
+        <td>${bal>0.009?`<button class="btn btn-primary btn-sm" onclick="openPayModal('${String(s.ID).replace(/'/g,"\\'")}')">＋ Pay</button>`:`<span style="color:var(--muted);font-size:.75rem">${last?fmtPayDate(last.PayDate):''}</span>`}</td>
+      </tr>`;}).join('');
+  document.getElementById('payhist-tbody').innerHTML = pays.length===0
+    ? `<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--muted)">No payments recorded yet</td></tr>`
+    : pays.sort((x,y)=>(y.AddedAt||0)-(x.AddedAt||0)).map(p=>`<tr>
+        <td>${fmtPayDate(p.PayDate)}</td>
+        <td><span class="ship-id">${p.ShipmentID||'—'}</span></td>
+        <td style="font-weight:700">${(p.Currency||'AED')} ${(parseFloat(p.Amount)||0).toLocaleString()}</td>
+        <td>${p.Method||'—'}</td>
+        <td style="color:var(--muted)">${p.Reference||'—'}</td>
+        <td><button class="btn btn-danger btn-sm" onclick="delPayment('${p.AddedAt}')">🗑</button></td>
+      </tr>`).join('');
+}
+
+// ── PAYMENT MODAL ──
+function openPayModal(shipID){
+  const s=allShipments.find(x=>String(x.ID)===String(shipID));
+  if(!s){ toast('❌ No shipment with due balance found.','error'); return; }
+  document.getElementById('p-sup').value=s.Supplier||'';
+  const ships=allShipments.filter(x=>supKey(x.Supplier)===supKey(s.Supplier));
+  document.getElementById('p-ship').innerHTML=ships.map(x=>{
+    const c=x.Currency||'AED'; const bal=(parseFloat(x.Cost)||0)-((paidByShip(x.ID)[c])||0);
+    return `<option value="${String(x.ID).replace(/"/g,'&quot;')}" ${String(x.ID)===String(shipID)?'selected':''}>${x.ID} — balance ${c} ${bal.toLocaleString()}</option>`;
+  }).join('');
+  document.getElementById('p-date').value=new Date().toISOString().slice(0,10);
+  document.getElementById('p-method').value='Bank Transfer';
+  document.getElementById('p-ref').value='';
+  prefillPay();
+  document.getElementById('pay-overlay').classList.add('open');
+}
+function prefillPay(){
+  const id=document.getElementById('p-ship').value;
+  const s=allShipments.find(x=>String(x.ID)===String(id));
+  if(!s) return;
+  const c=s.Currency||'AED'; const bal=(parseFloat(s.Cost)||0)-((paidByShip(id)[c])||0);
+  document.getElementById('p-amt').value=bal>0?bal:'';
+}
+function closePayModal(){ document.getElementById('pay-overlay').classList.remove('open'); }
+function closePay(e){ if(e.target===document.getElementById('pay-overlay')) closePayModal(); }
+async function savePayment(){
+  const id=document.getElementById('p-ship').value;
+  const s=allShipments.find(x=>String(x.ID)===String(id));
+  if(!s){ toast('❌ Select a shipment.','error'); return; }
+  const amt=parseFloat(document.getElementById('p-amt').value);
+  if(isNaN(amt)||amt<=0){ toast('❌ Enter a valid amount.','error'); return; }
+  const btn=document.getElementById('pay-save-btn'); btn.textContent='Saving…'; btn.disabled=true;
+  const res=await apiFetch('POST',{action:'addPayment', Supplier:s.Supplier, ShipmentID:s.ID, Amount:String(amt),
+    Currency:s.Currency||'AED', PayDate:document.getElementById('p-date').value,
+    Method:document.getElementById('p-method').value, Reference:document.getElementById('p-ref').value.trim()});
+  btn.textContent='✅ Save Payment'; btn.disabled=false;
+  if(res&&res.success){ toast('💳 Payment recorded!','success'); closePayModal(); await loadPayments(); renderLedger(); }
+  else if(res){ toast('Error: '+res.error,'error'); }
+}
+async function delPayment(addedAt){
+  if(!confirm('Delete this payment? The amount will go back to outstanding.')) return;
+  const res=await apiFetch('POST',{action:'deletePayment', AddedAt:addedAt});
+  if(res&&res.success){ toast('Payment deleted.','success'); await loadPayments(); renderLedger(); }
+  else if(res){ toast('Error: '+res.error,'error'); }
 }
 
 // ═══════════════════════════════════════════
