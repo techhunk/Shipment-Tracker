@@ -359,26 +359,26 @@ function updateStats() {
 }
 
 function renderTable() {
-  const q = (document.getElementById('search').value || '').toLowerCase();
-  let list = allShipments.filter(s => (currentFilter === 'all' || (currentFilter === 'active' ? s.Status !== 'Closed' : s.Status === currentFilter)) && (!q || String(s.ID+s.Origin+s.Destination+s.Supplier).toLowerCase().includes(q)));
-  // ── SORT: Active first → Air on top → nearest ETA → Closed last
-  const typeOrder = { Air:0, Road:1, Sea:2, 'Cross-border':3 };
-  list.sort((a,b) => {
-    const aActive = a.Status !== 'Closed';
-    const bActive = b.Status !== 'Closed';
-    if (aActive && !bActive) return -1;
-    if (!aActive && bActive) return 1;
-    if (!aActive && !bActive) {
-      const tA = a.LastUpdated ? new Date(a.LastUpdated).getTime() : 0;
-      const tB = b.LastUpdated ? new Date(b.LastUpdated).getTime() : 0;
-      return tB - tA;
-    }
-    const t = (typeOrder[a.ShipmentType]??9) - (typeOrder[b.ShipmentType]??9);
-    return t !== 0 ? t : new Date(a.ETA) - new Date(b.ETA);
-  });
-  const tEmoji = { Air:'✈️', Sea:'🚢', Road:'🚚', 'Cross-border':'🌍' };
-  const tColor = { Air:'#EFF6FF', Sea:'#F0FDFA', Road:'#FFF7ED', 'Cross-border':'#FAF5FF' };
-  document.getElementById('tbody').innerHTML = list.length === 0 ? `<tr><td colspan="13" class="empty">No shipments</td></tr>` : list.map(s => `<tr class="${s.Status==='Closed'?'row-closed':''}">
+const q = (document.getElementById('search').value || '').toLowerCase();
+let list = allShipments.filter(s => (currentFilter === 'all' || (currentFilter === 'active' ? s.Status !== 'Closed' : s.Status === currentFilter)) && (!q || String(s.ID+s.Origin+s.Destination+s.Supplier).toLowerCase().includes(q)));
+
+// ── SORTING: Active first, Air first, nearest ETA first ──
+const typeOrder = { Air:0, Road:1, Sea:2, 'Cross-border':3 };
+list.sort((a,b) => {
+const aActive = a.Status !== 'Closed';
+const bActive = b.Status !== 'Closed';
+if (aActive && !bActive) return -1;
+if (!aActive && bActive) return 1;
+if (!aActive && !bActive) {
+const tA = a.LastUpdated ? new Date(a.LastUpdated).getTime() : 0;
+const tB = b.LastUpdated ? new Date(b.LastUpdated).getTime() : 0;
+return tB - tA;
+}
+const t = (typeOrder[a.ShipmentType]??9) - (typeOrder[b.ShipmentType]??9);
+return t !== 0 ? t : new Date(a.ETA) - new Date(b.ETA);
+});
+
+document.getElementById('tbody').innerHTML = list.length === 0 ? `<tr><td colspan="13" class="empty">No shipments</td></tr>` : list.map(s => `<tr class="${s.Status==='Closed'?'row-closed':''}">
 <td><span class="ship-id">${s.ID}</span></td>
 <td style="color:var(--muted);font-size:.8rem">${formatDate(s.CreatedAt)}</td>
 <td><span class="type-badge" style="background:${tColor[s.ShipmentType]||'#F8FAFC'}">${tEmoji[s.ShipmentType]||'📦'} ${s.ShipmentType||'—'}</span></td>
